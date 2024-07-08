@@ -6,7 +6,7 @@ forward paths.
 """
 
 import sys
-import heapq
+from heapq import heappop, heappush
 
 def next_position(my_map, current_position, new_direction):
     """
@@ -73,7 +73,7 @@ def dijkstra(start_pos, min_forward, max_forward):
 
     while heap:
         fields = ['heat_loss', 'position', 'forward_movements', 'direction']
-        current = dict(zip(fields, heapq.heappop(heap)))
+        current = dict(zip(fields, heappop(heap)))
         current_position_key = (
             current['position'],
             current['forward_movements'],
@@ -116,7 +116,7 @@ def dijkstra(start_pos, min_forward, max_forward):
                         )] = new['heat_loss']
                     new_position_key = (new['position'], new['forward_movements'], new['direction'])
                     previous_nodes[new_position_key] = current_position_key
-                    heapq.heappush(
+                    heappush(
                         heap,
                         (
                             new['heat_loss'],
