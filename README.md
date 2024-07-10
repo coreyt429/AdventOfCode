@@ -10,12 +10,12 @@ Starting with the 2016 puzzles, I'm trying to get a clean pylint run from each s
 
 Notes on chatGPT and these solutions:
   - gpt3.5 and gpt4 are not good at figuring out these puzzles
-  - common gpt questions:
+  - common gpt questions I did find useful:
     - How do I do this <paste Perl code> in python
 	- How do I do X in python
 	- Explain this <paste python code from solution I don't understand>
 
-
-
-
-
+Notes on my solutions:
+  - I'm attempting to make these solutions easy to read and understand, and will update documentation on previous solutions to meet this goal
+  - This is a learning excersise for me, so I will vary coding style, and tools to push myself
+  - early solutions (2023 and 2015) were made with no real python training, and may not be pretty
