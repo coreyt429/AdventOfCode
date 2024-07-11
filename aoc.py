@@ -5,12 +5,72 @@ contains utility functions for working AdventOfCode puzzles
 import sys
 import json
 from datetime import datetime
+import requests
+import os
+from getpass import getpass
 
 class AdventOfCode:
     def __init__(self, year=None, day=None):
         today = datetime.today()
+
         self.year = year if year is not None else today.year
         self.day = day if day is not None else today.day
+        self.session_file = '.aoc.session'
+
+    def get_session_id(self):
+        if os.path.exists(self.session_file):
+            with open(self.session_file, 'r') as f:
+                self.session_id =  f.read().strip()
+                return self.session_id
+        return None
+
+    def save_session_id(self):
+        with open(self.session_file, 'w') as f:
+            f.write(self.session_id)
+
+    def test_session(self):
+        response = self.session.get('https://adventofcode.com')
+        return 'Advent of Code' in response.text
+
+    def get_input(self):
+        self.init_session()
+        url = f'https://adventofcode.com/{self.year}/day/{self.day}/input'
+        response = self.session.get(url)
+        if response.status_code == 200:
+            self.save_input(response.text)
+            print(f"Input for day {self.day} of year {self.year} has been saved.")
+            return response.text
+        else:
+            print(f"Failed to retrieve input. Status code: {response.status_code}")
+            return None
+
+    def save_input(self, content):
+        if not os.path.exists(f'{self.year}'):
+            os.makedirs(f'{self.year}')
+        with open(f'{self.year}/{self.day}/input.txt', 'w') as f:
+            f.write(content)
+    def login_to_aoc(self):
+        self.session = requests.Session()
+        self.session.cookies.set('session', self.session_id)
+        return self.session
+
+    def init_session(self):
+        self.get_session_id()
+        self.session = None
+
+        while True:
+            if self.session_id:
+                self.session = self.login_to_aoc()
+                if self.test_session():
+                    break
+                else:
+                    print("Saved session ID is invalid.")
+                    self.session_id = None
+            else:
+                print("Please enter your Advent of Code session ID.")
+                print("You can find this in your browser's cookies for adventofcode.com")
+                self.session_id = getpass("Session ID: ")
+                self.save_session_id()
 
     def set_date(self, year, day):
         """
@@ -35,8 +95,13 @@ class AdventOfCode:
         try:
             return open(file_name, 'r', encoding='utf-8')
         except OSError as error_message:
-            print(f"Error opening file {file_name}: {error_message}")
-            sys.exit()
+            try:
+                self.get_input()
+                return open(file_name, 'r', encoding='utf-8')
+            except OSError as error_message:
+                # file is missing, lets download it
+                print(f"Error opening file {file_name}: {error_message}")
+                sys.exit()
 
     def load_lines(self, file_name=None):
         """
