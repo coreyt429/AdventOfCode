@@ -1,6 +1,7 @@
 import aoc
-aoc.set_date(YEAR, DAY)
 
-lines = aoc.load_lines()
 
-print(lines)
+if __name__ == "__main__":
+	my_aoc = aoc.AdventOfCode(YEAR,DAY)
+	lines = my_aoc.load_lines()
+	print(lines)

@@ -98,7 +98,6 @@ def main():
     subprocess.run(['C:/Program Files/Sublime Text/sublime_text.exe', solution_path], shell=False)
 
     print("Opening Shell")
-    #os.chdir(day_dir)
     # FIXME: shell should also be configurable
     wt = os.path.join(
             'c:/Users/Corey',
@@ -138,3 +137,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+Todo:
+  - .aoc.cfg.json
+  - store editor path
+  - store wt path
+"""
