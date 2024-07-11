@@ -1,6 +1,7 @@
 import requests
 import os
 from getpass import getpass
+import sys
 
 SESSION_FILE = '.aoc.session'
 
@@ -57,8 +58,16 @@ def main():
             session_id = getpass("Session ID: ")
             save_session_id(session_id)
 
-    year = 2016
-    day = 9
+    try:
+        year = int(sys.argv[1])
+        day = int(sys.argv[2])
+    except IndexError as error_message:
+        print("usage: python fetch_input.py {YEAR} {DAY}")
+        sys.exit()
+    except ValueError:
+        print("usage: python fetch_input.py {YEAR} {DAY}")
+        sys.exit()
+
 
     input_content = get_input(session, year, day)
     if input_content:

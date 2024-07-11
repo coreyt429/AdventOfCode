@@ -3,6 +3,7 @@ AdventOfCode utility Module
 contains utility functions for working AdventOfCode puzzles
 """
 import sys
+import json
 from datetime import datetime
 
 class AdventOfCode:
@@ -151,6 +152,10 @@ def create_jupyter_notebook(path, year, day):
     subprocess.run(['git', 'add', path], check=True)
 
 def main():
+    # load config
+    file_path = '.aoc.cfg.json'
+    with open(file_path, 'r') as file:
+        cfg = json.load(file)
     year, day = get_year_day()
     original_dir = os.getcwd()
     year_dir = year
@@ -168,19 +173,13 @@ def main():
     copy_and_modify_template(year, day, template_path, solution_path)
     
     print("Opening solution.py ...")
-    # FIXME: this should use some kind of configuration for editor
-    subprocess.run(['C:/Program Files/Sublime Text/sublime_text.exe', solution_path], shell=False)
+    subprocess.run([cfg['editor'], solution_path], shell=False)
 
+    # Note, terminal currently only supports windows terminal
+    # we could replace the command line parameters with a template from cfg
     print("Opening Shell")
-    # FIXME: shell should also be configurable
-    wt = os.path.join(
-            'c:/Users/Corey',
-            'AppData/Local/Microsoft/WindowsApps',
-            'Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe',
-            'wt.exe'
-        )
     print(' '.join([
-            wt,
+            cfg['terminal'],
             '-w 0 sp -H -s 0.7',
             f'-d {original_dir}',
             '--title AdventOfCode',
@@ -193,7 +192,7 @@ def main():
         #wt -w 0 sp -H -s 0.7 -d C:\Users\corey\Dev\AdventOfCode\ --title AdventOfCode powershell.exe -NoExit -Command "function global:run { python -m 2016.9.solution }"
         #wt -w 0 sp -H -s 0.7 -d C:\Users\corey\Dev\AdventOfCode\ --title AdventOfCode powershell.exe -NoExit -Command "function global:run { python -m 2016.9.solution }"
         [
-            wt, '-w', '0', 'sp', '-H', '-s', '0.7', '-d', '.',
+            cfg['terminal'], '-w', '0', 'sp', '-H', '-s', '0.7', '-d', '.',
             '--title', 'AdventOfCode', 'powershell.exe', '-NoExit',
             '-Command', f'"function global:run {{ python -m {year}.{day}.solution }}"'
         ], shell=True)
@@ -205,6 +204,8 @@ def main():
     print("Opening Puzzle")
     os.startfile(f'https://adventofcode.com/{year}/day/{day}')
     #os.startfile(f'https://adventofcode.com/{year}/day/{day}/input')
+    #Insert code to pull input file here (or not, input should be pulled with
+    # an aoc method from the solution)
 
     print("Launching Jupyter notebook...")
     os.chdir(original_dir)  # Change back to the original directory
@@ -212,11 +213,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-"""
-Todo:
-  - .aoc.cfg.json
-  - store editor path
-  - store wt path
-"""
