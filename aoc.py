@@ -3,6 +3,7 @@ AdventOfCode utility Module
 contains utility functions for working AdventOfCode puzzles
 """
 import sys
+import re
 import json
 from datetime import datetime
 import requests
@@ -15,7 +16,14 @@ class AdventOfCode:
 
         self.year = year if year is not None else today.year
         self.day = day if day is not None else today.day
-        self.session_file = '.aoc.session'
+        matches = re.match(r'(.*AdventOfCode).*',os.getcwd())
+        if matches:
+            base_dir = matches.group(1)
+        else:
+            base_dir = os.getcwd()
+
+        self.session_file = os.path.join(base_dir,'.aoc.session')
+        self.session_id = self.get_session_id()
 
     def get_session_id(self):
         if os.path.exists(self.session_file):
@@ -49,6 +57,7 @@ class AdventOfCode:
             os.makedirs(f'{self.year}')
         with open(f'{self.year}/{self.day}/input.txt', 'w') as f:
             f.write(content)
+
     def login_to_aoc(self):
         self.session = requests.Session()
         self.session.cookies.set('session', self.session_id)
@@ -238,7 +247,9 @@ def main():
     copy_and_modify_template(year, day, template_path, solution_path)
     
     print("Opening solution.py ...")
-    subprocess.run([cfg['editor'], solution_path], shell=False)
+    #subprocess.run([cfg['editor'], solution_path], shell=False)
+    subprocess.Popen([cfg['editor'], solution_path], start_new_session=True)
+
 
     # Note, terminal currently only supports windows terminal
     # we could replace the command line parameters with a template from cfg
