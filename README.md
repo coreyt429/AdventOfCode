@@ -18,4 +18,6 @@ Notes on chatGPT and these solutions:
 Notes on my solutions:
   - I'm attempting to make these solutions easy to read and understand, and will update documentation on previous solutions to meet this goal
   - This is a learning excersise for me, so I will vary coding style, and tools to push myself
-  - early solutions (2023 and 2015) were made with no real python training, and may not be pretty
+  - Early solutions (2023 and 2015) were made with no real python training, and may not be pretty
+  - I'm a VoIP Engineer who likes to code, not a computer scientist. I'm really good at functional code, and weaker on creative mathmatical solutions.
+  
