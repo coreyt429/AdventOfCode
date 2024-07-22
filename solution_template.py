@@ -10,8 +10,10 @@ def solve(input_value, part):
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(YEAR,DAY)
-    lines = my_aoc.load_lines()
-    print(lines)
+    #input_text = my_aoc.load_text()
+    #print(input_text)
+    input_lines = my_aoc.load_lines()
+    print(input_lines)
     # parts structure to loop
     parts = {
         1: 1,
