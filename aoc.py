@@ -254,23 +254,23 @@ def main():
     # Note, terminal currently only supports windows terminal
     # we could replace the command line parameters with a template from cfg
     print("Opening Shell")
+    #  powershell -NoExit -Command "function global:run { python -m 2016.21.solution};function global:check { pylint 2016/21/solution.py }"
+    #func_run = f"function global:run {{ python -m {year}.{day}.solution }}"
+    #func_check = f"function global:check {{ pylint {year}/{day}/solution.py }}"
+
+    command = f"aoc.ps1 {year} {day}"
+
     print(' '.join([
-            cfg['terminal'],
-            '-w 0 sp -H -s 0.7',
-            f'-d {original_dir}',
-            '--title AdventOfCode',
-            'powershell.exe -NoExit',
-            f'-Command "function global:run {{ python -m {year}.{day}.solution }}"'
-        ]))
+        cfg['terminal'], '-w', '0', 'sp', '-H', '-s', '0.7', '-d', '.',
+        '--title', 'AdventOfCode', 'powershell.exe', '-NoExit',
+        '-Command', f'"{command}"'
+    ]))
 
     subprocess.run(
-        #wt -w 0 sp -H -s 0.7 -d C:\Users\corey\Dev\AdventOfCode\ --title AdventOfCode
-        #wt -w 0 sp -H -s 0.7 -d C:\Users\corey\Dev\AdventOfCode\ --title AdventOfCode powershell.exe -NoExit -Command "function global:run { python -m 2016.9.solution }"
-        #wt -w 0 sp -H -s 0.7 -d C:\Users\corey\Dev\AdventOfCode\ --title AdventOfCode powershell.exe -NoExit -Command "function global:run { python -m 2016.9.solution }"
         [
             cfg['terminal'], '-w', '0', 'sp', '-H', '-s', '0.7', '-d', '.',
             '--title', 'AdventOfCode', 'powershell.exe', '-NoExit',
-            '-Command', f'"function global:run {{ python -m {year}.{day}.solution }}"'
+            '-Command', f'"{command}"'
         ], shell=True)
         
     notebook_path = os.path.join(day_dir, 'scratch_pad.ipynb')
