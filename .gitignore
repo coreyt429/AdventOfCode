@@ -1,0 +1,11 @@
+# Ignore Python cache directories
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# Ignore other files and directories as needed
+node_modules/
+.env
+*.log
+# ignore session file
+.aoc.session
+.aoc.*
