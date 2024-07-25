@@ -1,6 +1,22 @@
 """
 Advent Of Code 2016 day 24
 
+This one was a learning experience.
+
+BFS, DFS, and Dijkstra usually get me through the path finding puzzles, but I was 
+struggling with the size of this search space.
+
+So I had to learn A* and piece together a hybrid solution.
+
+I use A* to map the shortest path from each node to all other nodes
+
+Then fed that graph data into Dijkstra to get the shortest path to hit
+all nodes. 
+
+This approach worked for part 2 as well, though I did need to add loop detection 
+in part 2.
+
+
 """
 # import system modules
 import time
@@ -8,9 +24,6 @@ import re
 from heapq import heappush, heappop
 from queue import PriorityQueue
 from colorama import init, Fore, Style
-
-
-
 
 # import my modules
 import aoc # pylint: disable=import-error
@@ -62,7 +75,7 @@ def get_neighbors(position, maze):
 
 def a_star(start, goal, maze, heuristics):
     """
-    Function to execute a_star algorithm to detect shortest path between each pair
+    Function to execute A* algorithm to detect shortest path between each pair
     """
     # set start_node  (position, g_score, h_score)
     start_node = Node(heuristics[start]['pos'], 0, heuristics[start]['distances'][goal])
