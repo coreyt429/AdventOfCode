@@ -1,11 +1,16 @@
 """
 Advent Of Code 2016 day 25
 
-I struggled a bit with this one. read a few clues, then studied the output to find
-the relevant loop.
+Thanks to day 23 struggles, this one was easier.
 
-instructions 5, 6, and 7 loop to calculate egg_count factorial. So I added a 
-shortcut for that loop to speed it up.
+There are two loops to deal with, but only one saves a significant amount of time.
+The 3, 4, 5, 6, 7 loop I solved, so now it completes in 7 seconds
+There is another loop at 12, that I haven't worked out yet.
+
+Don't forget that the rules from Day 23 still apply.  The tgl operation,
+may impact the out operation.  I'm not 100% certain that this happened, 
+but I accounted for it in case.  Nevermind, I put a check in for this case,
+and it does not seem to occur.  Still worth handling just in case.
 
 """
 # import system modules
@@ -260,17 +265,20 @@ def solve(input_value):
     #target = '010101010101010101010101010101010101'
     # to improve runtime, reduced to the smallest match that guarantees our answer
     target = '01010101'
-    seed = 0
+    seed = -1
     signal = ''
+    # loop until we find the target
     while signal != target:
-        #seed=175
+        seed += 1
+        # set register a to seed
         registers['a'] = seed
+        # decode program (do this on each pass to reset tgl'd instructions)
         program = decode_program(input_value)
+        # execute program
         signal = run_program(program)
+        # debug print
         #print(f"Seed: {seed} {signal}")
-        #break
-        if signal != target:
-            seed += 1
+
     return seed
 
 if __name__ == "__main__":
@@ -281,7 +289,8 @@ if __name__ == "__main__":
     #print(input_lines)
     # parts dict to loop
     parts = {
-        1: 1
+        1: 1,
+        2: 2
     }
     # dict to store answers
     answer = {
@@ -291,7 +300,7 @@ if __name__ == "__main__":
     # dict to map functions
     funcs = {
         1: solve,
-        2: solve
+        2: lambda ignore_input: ( "Click on 'Transmit Signal'")
     }
     # loop parts
     for part in parts:
