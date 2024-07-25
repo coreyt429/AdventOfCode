@@ -36,12 +36,12 @@ if __name__ == "__main__":
         2: solve
     }
     # loop parts
-    for part in parts:
+    for my_part in parts:
         # log start time
-        start = time.time()
+        start_time = time.time()
         # get answer
-        answer[part] = funcs[part](input_lines, part)
+        answer[my_part] = funcs[part](input_lines, my_part)
         # log end time
-        end = time.time()
+        end_time = time.time()
         # print results
-        print(f"Part {part}: {answer[part]}, took {end-start} seconds")
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
