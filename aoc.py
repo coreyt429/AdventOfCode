@@ -158,11 +158,15 @@ def get_year_day():
     current_day = datetime.now().day
 
     if len(sys.argv) == 3:
-        return sys.argv[1], sys.argv[2]
+        return str(int(sys.argv[1])), str(int(sys.argv[2]))
     else:
         year = input(f"Enter year (default: {current_year}): ") or str(current_year)
-        day = input(f"Enter day (default: {current_day:02d}): ") or f"{current_day:02d}"
-        return year, day
+        day = input(f"Enter day (default: {current_day}): ") or f"{current_day}"
+        while not day.isdigit() and year.isdigit:
+            print(f"Non Numeric input: {year} {day}")
+            year = input(f"Enter year (default: {current_year}): ") or str(current_year)
+            day = input(f"Enter day (default: {current_day}): ") or f"{current_day}"
+        return str(int(year)), str(int(day))
 
 def create_directory(path):
     if not os.path.exists(path):
