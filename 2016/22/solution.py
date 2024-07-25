@@ -4,17 +4,20 @@ Advent Of Code 2016 day 22
 """
 import time
 import re
-import sys
 from heapq import heappush, heappop
 from copy import deepcopy
 import aoc # pylint: disable=import-error
 
 # regex for matching grid data
 pattern_df = re.compile(r'.*x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)%')
+
+# static globals for tuple deciphering
 SIZE=0
 USED=1
 AVAIL=2
 PERCENT=3
+X=0
+Y=1
 
 class HeapEntry:
     """
@@ -22,44 +25,35 @@ class HeapEntry:
     workaround for heapq not liking dict
     """
     def __init__(self, my_steps, my_node, my_data):
+        """
+        Initialize HeapEntry
+        """
+        # store step counter
         self.steps = my_steps
+        # store target node
         self.target = (0,0)
+        # store current node
         self.node = my_node
+        # store node data
         self.data = my_data
 
     def __lt__(self, other):
+        """
+        Less than function for heapq sorting
+        """
         return (self.steps, self.node) < (other.steps, other.node)
 
-    def deprecated__str__(self):
-        minimum, maximum = get_range(self.data)
-        #retval = f"Steps: {self.steps}, Position: ({self.node})\n"
-        retval = ""
-        for y_val in range(0,maximum[1]+1):
-            for x_val in range(0,maximum[0]+1):
-                symbols = '  '
-                pos = (x_val, y_val)
-                if pos == self.target:
-                    symbols = '()'
-                if pos == self.node:
-                    symbols = '[]'
-                retval += f"{symbols[0]} {self.data[pos][USED]}T/{self.data[pos][SIZE]}T {symbols[1]}"
-                if x_val < maximum[0]:
-                    retval += " -- "
-            retval += "\n"
-            if y_val < maximum[1]:
-                for x_val in range(0,maximum[0]+1):
-                    retval += "    |    "
-                    if x_val < maximum[0]:
-                        retval += "    "
-            retval += "\n"
-        return retval
 
     def __str__(self):
+        """
+        Function for string handling
+        """
+        # get range
         minimum, maximum = get_range(self.data)
         #retval = f"Steps: {self.steps}, Position: ({self.node})\n"
         retval = ""
-        for y_val in range(0,maximum[1]+1):
-            for x_val in range(0,maximum[0]+1):
+        for y_val in range(0,maximum[Y]+1):
+            for x_val in range(0,maximum[X]+1):
                 symbols = '  '
                 pos = (x_val, y_val)
                 if pos == self.target:
@@ -70,7 +64,7 @@ class HeapEntry:
                     retval += f"{symbols[0]}{self.data[pos][USED]:>3d}/{self.data[pos][SIZE]:>3d}{symbols[1]}"
                 else:
                     retval += f"{symbols[0]}###/{self.data[pos][SIZE]:>3d}{symbols[1]}"
-                if x_val < maximum[0]:
+                if x_val < maximum[X]:
                     retval += " "
             retval += "\n"
         return retval
@@ -274,7 +268,7 @@ def find_shortest_path(nodes, start_node, target_node):
     total_steps += steps
     #print(total_steps, nodes)
     current = HeapEntry(total_steps, start_node, nodes)
-    #print(current, current.steps)
+    print(current, current.steps)
     while current.node !=  target_node:
         empty = find_empty(current.data)
         current.data = move_data(current.data, current.node, empty)
