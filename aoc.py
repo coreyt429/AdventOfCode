@@ -254,6 +254,9 @@ def main():
     #subprocess.run([cfg['editor'], solution_path], shell=False)
     subprocess.Popen([cfg['editor'], solution_path], start_new_session=True)
 
+    old_solution_path = os.path.join(day_dir, 'script.py')
+    if os.path.exists(old_solution_path):
+        subprocess.Popen([cfg['editor'], old_solution_path], start_new_session=True)
 
     # Note, terminal currently only supports windows terminal
     # we could replace the command line parameters with a template from cfg
