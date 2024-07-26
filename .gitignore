@@ -9,3 +9,4 @@ node_modules/
 # ignore session file
 .aoc.session
 .aoc.*
+.reminder
