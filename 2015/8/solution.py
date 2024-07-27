@@ -10,59 +10,45 @@ import re
 # import my modules
 import aoc # pylint: disable=import-error
 
+pattern_hex = re.compile(r'(\\x[0-9a-f]{2})')
+WHITESPACE_CHARS = " \t\n\r"  # Space, tab, newline, carriage return
+
 def part1(parsed_data):
     """
     Function to dolve part 1
     """
-    re_hex=r'(\\x[0-9a-f]{2})'
-    retval = 0
-    sum1 = 0
-    sum2 = 0
+    replacement_pairs = (('\\\\', '#'), (r'\"', '#'), ('"',''))
+    sums = {1: 0, 2: 0}
     for line in parsed_data:
-        size1 = len(line)
-        line2 = line.replace('\\\\', '#')
-        line2 = line2.replace(r'\"', '#')
-        line2 = line2.replace('"','')
-        sum1+=size1
-        line2 = re.sub(re_hex,'#',line2)
-        whitespace_chars = " \t\n\r"  # Space, tab, newline, carriage return
-        for char in whitespace_chars:
-            line2 = line2.replace(char, "")
-        size2 = len(line2)
-        sum2 += size2
-    retval = sum1 - sum2
-    return retval
+        sums[1] += len(line)
+        for replace_pair in replacement_pairs:
+            line = line.replace(*replace_pair)
+        line = pattern_hex.sub('#',line)
+        for char in WHITESPACE_CHARS:
+            line = line.replace(char, "")
+        sums[2] += len(line)
+    return sums[1] - sums[2]
 
 def part2(parsed_data):
     """
     Function to solve part 2
     """
-    re_hex=r'(\\x[0-9a-f]{2})'
-    retval = 0
-    sum1 = 0
-    sum2 = 0
+    replacement_pairs = (('\\\\', '#'), ('\"', '%'), ('"','\\"'), ('#','\\\\\\\\'), ('%','"\\"'))
+    sums = {1: 0, 2: 0}
     for line in parsed_data:
-        size1 = len(line)
-        line2 = line.replace('\\\\', '#')
-        line2 = line2.replace('\"', '%')
-        line2 = line2.replace('"','\\"')
-        line2 = line2.replace('#','\\\\\\\\')
-        line2 = line2.replace('%','"\\"')
-        sum1+=size1
-        line2 = re.sub(re_hex,"\\\\\\\\xNN",line2)
-        whitespace_chars = " \t\n\r"  # Space, tab, newline, carriage return
-        for char in whitespace_chars:
-            line2 = line2.replace(char, "")
-        size2 = len(line2)
-        sum2 += size2
-    retval = sum2 - sum1
-    return retval
+        sums[1] += len(line)
+        for replace_pair in replacement_pairs:
+            line = line.replace(*replace_pair)
+        line = pattern_hex.sub("\\\\\\\\xNN",line)
+        for char in WHITESPACE_CHARS:
+            line = line.replace(char, "")
+        sums[2] += len(line)
+    return sums[2] - sums[1]
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2015,8)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
     input_lines = my_aoc.load_lines()
+
     # parts dict to loop
     parts = {
         1: 1,
