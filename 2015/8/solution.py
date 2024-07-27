@@ -1,14 +1,21 @@
-import sys
+"""
+Advent Of Code 2015 day 8
+
+"""
+# import system modules
+import time
 import re
 
-def parse_input(data):
-    # Split the data into lines
-    lines = data.strip().split('\n')
-    return lines
+
+# import my modules
+import aoc # pylint: disable=import-error
 
 def part1(parsed_data):
-    reHex=r'(\\x[0-9a-f]{2})'
-    retval = 0;
+    """
+    Function to dolve part 1
+    """
+    re_hex=r'(\\x[0-9a-f]{2})'
+    retval = 0
     sum1 = 0
     sum2 = 0
     for line in parsed_data:
@@ -17,7 +24,7 @@ def part1(parsed_data):
         line2 = line2.replace(r'\"', '#')
         line2 = line2.replace('"','')
         sum1+=size1
-        line2 = re.sub(reHex,'#',line2)
+        line2 = re.sub(re_hex,'#',line2)
         whitespace_chars = " \t\n\r"  # Space, tab, newline, carriage return
         for char in whitespace_chars:
             line2 = line2.replace(char, "")
@@ -27,8 +34,11 @@ def part1(parsed_data):
     return retval
 
 def part2(parsed_data):
-    reHex=r'(\\x[0-9a-f]{2})'
-    retval = 0;
+    """
+    Function to solve part 2
+    """
+    re_hex=r'(\\x[0-9a-f]{2})'
+    retval = 0
     sum1 = 0
     sum2 = 0
     for line in parsed_data:
@@ -39,7 +49,7 @@ def part2(parsed_data):
         line2 = line2.replace('#','\\\\\\\\')
         line2 = line2.replace('%','"\\"')
         sum1+=size1
-        line2 = re.sub(reHex,"\\\\\\\\xNN",line2)
+        line2 = re.sub(re_hex,"\\\\\\\\xNN",line2)
         whitespace_chars = " \t\n\r"  # Space, tab, newline, carriage return
         for char in whitespace_chars:
             line2 = line2.replace(char, "")
@@ -49,16 +59,32 @@ def part2(parsed_data):
     return retval
 
 if __name__ == "__main__":
-    with open(sys.argv[1] , "r") as f:
-        parsed_data = parse_input(f.read())
-    #print(parsed_data)
-
-    #print("Part 1")
-    answer1 = part1(parsed_data)
-    
-    #print("Part 2")
-    answer2 = part2(parsed_data)
-
-    print(f"Part1: {answer1}")
-    print(f"Part2: {answer2}")
-    
+    my_aoc = aoc.AdventOfCode(2015,8)
+    #input_text = my_aoc.load_text()
+    #print(input_text)
+    input_lines = my_aoc.load_lines()
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: part1,
+        2: part2
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_lines)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
