@@ -1,9 +1,15 @@
-import sys
+"""
+Advent Of Code 2015 day 9
+
+"""
+# import system modules
+import time
 import re
 
-def parse_input(data):
-    # Split the data into lines
-    lines = data.strip().split('\n')
+# import my modules
+import aoc # pylint: disable=import-error
+
+def parse_input(lines):
     routes = []
     for line in lines:
         tmp = line.split(' ')
@@ -15,7 +21,7 @@ def parse_input(data):
         routes.append(route)
     return routes
 
-def goto(map,routes,locations,currentLoc,already):
+def goto(parsed_data,routes,locations,currentLoc,already):
     #print(f'map,locations,{currentLoc},{already}')
     visited = already + (currentLoc,)
     for nextLoc in locations:
@@ -83,16 +89,33 @@ def part2(parsed_data):
     return retval
 
 if __name__ == "__main__":
-    with open(sys.argv[1] , "r") as f:
-        parsed_data = parse_input(f.read())
-    #print(parsed_data)
-
-    #print("Part 1")
-    answer1 = part1(parsed_data)
-    
-    #print("Part 2")
-    answer2 = part2(parsed_data)
-
-    print(f"Part1: {answer1}")
-    print(f"Part2: {answer2}")
-    
+    my_aoc = aoc.AdventOfCode(2015,9)
+    #input_text = my_aoc.load_text()
+    #print(input_text)
+    input_lines = my_aoc.load_lines()
+    print(input_lines)
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: part1,
+        2: part2
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](parse_input(input_lines))
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
