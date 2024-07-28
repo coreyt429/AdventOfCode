@@ -61,7 +61,7 @@ def solve(input_string, num_iters):
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2015,10)
-    INPUT_TEXT = '1113222113'
+    input_text = my_aoc.load_text()
     # parts dict to loop
     parts = {
         1: 40,
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         # log start time
         start_time = time.time()
         # get answer
-        answer[my_part] = funcs[my_part](INPUT_TEXT, start_string)
+        answer[my_part] = funcs[my_part](input_text, start_string)
         # log end time
         end_time = time.time()
         # print results
