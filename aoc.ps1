@@ -25,8 +25,33 @@ function global:check {
     pylint "$global:aoc_year/$global:aoc_day/solution.py" 
 }
 
+# show files
+function global:show {
+    ls $global:aoc_year/$global:aoc_day/
+}
+
+# clean up
+function global:clean {
+    $files = @(
+        "$global:aoc_year\$global:aoc_day\*.txt",
+        "$global:aoc_year\$global:aoc_day\script.py",
+        "$global:aoc_year\$global:aoc_day\test.py",
+        "$global:aoc_year\$global:aoc_day\stole.py"
+    )
+
+    foreach ($file in $files) {
+        if (Test-Path $file) {
+            Remove-Item $file -Force
+            Write-Host "Removed: $file"
+        } else {
+            Write-Host "File not found: $file"
+        }
+    }
+}
+
 # push changes to github
-function global:push { 
+function global:push {
+    clean 
     git commit -a -m "$global:aoc_year $global:aoc_day"
     git push
 }
@@ -56,3 +81,5 @@ if (Test-Path $reminderFile) {
 } else {
     Write-Host "The file '$reminderFile' does not exist in the current directory."
 }
+
+show
