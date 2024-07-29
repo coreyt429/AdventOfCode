@@ -122,9 +122,8 @@ class AdventOfCode:
         Returns:
             - list of lines from the file
         """
-        with self.get_file(file_name) as file:
-            return file.read().rstrip().split('\n')
-
+        return self.load_text(file_name).rstrip().split('\n')
+        
     def load_text(self, file_name=None):
         """
         Function to load an input file
@@ -137,6 +136,18 @@ class AdventOfCode:
         """
         with self.get_file(file_name) as file:
             return file.read().rstrip()
+
+    def load_integers(self, file_name=None):
+        """
+        Function to load an input file
+
+        Parameters:
+            - file_name - string name of file to load, default input.txt
+
+        Returns:
+            - list of ints from file
+        """
+        return [int(x) for x in self.load_lines(file_name)]
 
 
 
