@@ -39,26 +39,38 @@ def score_recipe(properties,ingredients,qty):
     """
     Funciton to score recipe
     """
+    # init retva, props and values
     retval = 1
     props = set()
     values= {}
-    for ingredient in properties:
-        for prop in properties[ingredient]:
+    # add properties from ingredients from poperties to props
+    for ingredient in properties.values():
+        for prop in ingredient:
             props.add(prop)
+    # calculate values for properties
     for prop in props:
+        # skip calories
         if prop == 'calories':
             continue
+        # init to 0
         values[prop] = 0
+        # walk ingredients
         for i, ingredient in enumerate(ingredients):
+            # value of property = sum of ingredient property value and quantity
             values[prop] += properties[ingredient][prop] * qty[i]
+    # set 0 as floor for values, removing any negative values, and multiply retval by value
     for val in values.values():
         val = max(val, 0)
         retval *= val
+    # init calories
     calories = 0
+    # calculate calories for recipe
     for i, ingredient in enumerate(ingredients):
         calories += properties[ingredient]['calories'] * qty[i]
+    # if calories == 500, save in scores2 for part2
     if calories == 500:
         scores2.add(retval)
+    # return part 1 score
     return retval
 
 def find_recipe(properties,ingredients=(),qty=()):
@@ -77,9 +89,12 @@ def find_recipe(properties,ingredients=(),qty=()):
         for i in range(100 - quantity, 0, -1):
             find_recipe(properties, ingredients, tuple(list(qty) + [i]))
     elif quantity < 100 or quantity > 100:
+        # not a complete recipe
         return -1
     else:
+        # calculate score for recipe
         score = score_recipe(properties, ingredients, qty)
+        # add to scores for part1
         scores.add(score)
         return score
     return 0
