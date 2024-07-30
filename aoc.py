@@ -149,6 +149,18 @@ class AdventOfCode:
         """
         return [int(x) for x in self.load_lines(file_name)]
 
+    def load_grid(self, file_name=None):
+        """
+        Function to load an input file
+
+        Parameters:
+            - file_name - string name of file to load, default input.txt
+
+        Returns:
+            - list of lists from file
+        """
+        return [list(line) for line in self.load_lines(file_name)]
+
 
 
 """
