@@ -1,24 +1,28 @@
 """
-AdventOfCode 2016 7
+Advent Of Code 2016 day 7
+
+already fast, refactored, simplifying main logic and moving to current format
+
 """
+# import system modules
+import time
 import re
-import sys
+
+# import my modules
+import aoc # pylint: disable=import-error
 
 supernet_pattern = re.compile(r'(\[\w+\])')
-
-def load_data(file_name):
-    """
-    load data from file_name
-    """
-    with open(file_name,'r',encoding='utf-8') as file:
-        return list(file.read().rstrip().split('\n'))
 
 def contains_abba(my_string):
     """
     Checks for abba pattern in string
     """
-    for idx in range(len(my_string)-3):
-        if my_string[idx] == my_string[idx+3] and my_string[idx+1] == my_string[idx+2] and my_string[idx] != my_string[idx+1]:
+    for idx in range(len(my_string) - 3):
+        if (
+            my_string[idx] == my_string[idx + 3] and
+            my_string[idx + 1] == my_string[idx + 2] and
+            my_string[idx] != my_string[idx + 1]
+        ):
             return True
     return False
 
@@ -68,16 +72,45 @@ def supports_tls(my_string):
         return True
     return False
 
-if __name__ == "__main__":
-    lines = load_data(sys.argv[1])
-    counter = {
-        'p1': 0,
-        'p2': 0
+def solve(lines, part):
+    """
+    Function to solve puzzle
+    """
+    counter = 0
+    func_map = {
+        1: supports_tls,
+        2: supports_ssl
     }
     for line in lines:
-        if supports_tls(line):
-            counter['p1']+=1
-        if supports_ssl(line):
-            counter['p2']+=1
-    print(f"Part 1: {counter['p1']}")
-    print(f"Part 2: {counter['p2']}")
+        if func_map[part](line):
+            counter += 1
+    return counter
+
+if __name__ == "__main__":
+    my_aoc = aoc.AdventOfCode(2016,7)
+    input_lines = my_aoc.load_lines()
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: solve,
+        2: solve
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_lines, my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
