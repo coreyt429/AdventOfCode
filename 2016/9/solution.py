@@ -15,8 +15,12 @@ That worked, but I don't learn anything from just copying code.  So I commented 
 decompress (now def decompress_borrowed) function to be sure I understood it.  Then
 stripped away the code and worked form my comments to rebuild it in my style (def
 decompress)
-"""
 
+update:  this was where my current template started to take shape. so only minor changes
+to bring it fully up to date.
+
+"""
+import time
 import re
 import aoc #pylint: disable=import-error
 
@@ -102,7 +106,7 @@ def decompress_borrowed_to_study(s): # pylint: disable=invalid-name
         # for part 2, lets get recursive
         if part2: # pylint: disable=undefined-variable
             # decompress next marker[0] characters multiplied by marker[1]
-            ret += decompress(s[:int(marker[0])]) * int(marker[1])
+            ret += decompress_borrowed_to_study(s[:int(marker[0])]) * int(marker[1])
         else:
             # add length of marker[0] characters multiplied by marker[1]
             ret += len(s[:int(marker[0])]) * int(marker[1])
@@ -113,7 +117,7 @@ def decompress_borrowed_to_study(s): # pylint: disable=invalid-name
     return ret
 
 # borrowed algorithm. rewritten from my notes
-def decompress(input_string,version_two=False):
+def decompress(input_string, part):
     """
     recursive decompress function
     original algorithm credit: u/blockingthesky
@@ -147,9 +151,9 @@ def decompress(input_string,version_two=False):
         multiplier=int(match.group(2))
         next_span = input_string[int(match.span()[1]):match.span()[1]+span]
         # for part 2, lets get recursive
-        if version_two:
+        if part == 2:
             # decompress next span characters multiplied by multiplier
-            decompressed_length += decompress(next_span,version_two)*multiplier
+            decompressed_length += decompress(next_span, part)*multiplier
         else:
             # add length of span characters multiplied by multiplier
             decompressed_length += len(next_span)*multiplier
@@ -165,6 +169,29 @@ def decompress(input_string,version_two=False):
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2016,9)
     input_text = my_aoc.load_text()
-    print(f"Part 1: {len(decompress_string(input_text))}")
-    print(f"Part 1: {decompress(input_text)}")
-    print(f"Part 2: {decompress(input_text,True)}")
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: decompress,
+        2: decompress
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_text, my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+    

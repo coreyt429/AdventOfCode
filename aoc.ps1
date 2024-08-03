@@ -55,6 +55,39 @@ function global:push {
     git commit -a -m "$global:aoc_year $global:aoc_day"
     git push
 }
+
+function global:process_all {
+    param (
+        [scriptblock]$command
+    )
+
+    # Loop through directories matching 2*
+    foreach ($yearDir in Get-ChildItem -Directory -Name -Filter "2*") {
+        # Set the global variable aoc_year to the directory name
+        $global:aoc_year = $yearDir
+        Write-Host "Set global:aoc_year to $global:aoc_year"
+        
+        # Loop through subdirectories named 1 to 25
+        foreach ($day in 1..25) {
+            $dayDir = "$yearDir\$day"
+            if (Test-Path -Path $dayDir -PathType Container) {
+                # Set the global variable aoc_day to the directory number
+                $global:aoc_day = $day
+                Write-Host "Set global:aoc_day to $global:aoc_day for directory $dayDir"
+                & $command
+            }
+        }
+    }
+}
+
+function global:run_all {
+    global:process_all { run }
+}
+
+function global:check_all {
+    global:process_all { check }
+}
+
 Write-Host "Functions 'run' and 'check' have been defined for year $global:aoc_year, day $global:aoc_day."
 Write-Host "Use 'run' to execute the solution,'check' to run pylint and 'push' to update github."
 Write-Host "The variables 'aoc_year' and 'aoc_day' are now available globally."
