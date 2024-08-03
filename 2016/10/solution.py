@@ -10,15 +10,21 @@ Then modify the give function to be recursive.
 
 Okay I went another direction, and made it object oriented.
 
+update: minor changes to main and solve() to update format. cleanup for pylint
+
 """
+#import system modules
 import re
-import aoc
+import time
+
+# import my modules
+import aoc # pylint: disable=import-error
 
 class Bin:
     """
     Simple class for output bins
     """
-    def __init__(self,idx):
+    def __init__(self, idx):
         """
         init Bin object
         """
@@ -44,7 +50,7 @@ class Bot:
     """
     class for bots
     """
-    def __init__(self,idx):
+    def __init__(self, idx):
         self.idx = idx
         self.type = 'bot'
         # chips empty
@@ -77,7 +83,7 @@ class Bot:
 
         return retval
 
-    def receive(self,chip):
+    def receive(self, chip):
         """
         Receive a chip from a bot or input bin
         """
@@ -89,9 +95,12 @@ class Bot:
             # distribute chips
             for high_low in ['high','low']:
                 if not self.targets[high_low] is None:
-                    self.give(self.targets[high_low],high_low)          
+                    self.give(self.targets[high_low],high_low)
 
-    def give(self,target,highlow):
+    def give(self, target, highlow):
+        """
+        Function to give chip to another bot or bin
+        """
         # give away a chip
         if highlow == 'high':
             # high, set chip to maximum value in bot, and remove that chip from bot
@@ -100,10 +109,11 @@ class Bot:
             # high, set chip to minumum value in bot, and remove that chip from bot
             chip = self.chips.pop(self.chips.index(min(self.chips)))
         target.receive(chip)
-        
+
 # regular expressions to match instructions
 value_pattern = re.compile(r'value (\d+) goes to bot (\d+)')
-gives_pattern = re.compile(r'bot (\d+) gives (low|high) to (\w+) (\d+)( and (low|high) to (\w+) (\d+))?')
+gives_pattern = re.compile(r'bot (\d+) gives (\w+) to (\w+) (\d+)( and (\w+) to (\w+) (\d+))?')
+
 def parse_instruction(instruction):
     """
     Function to parse instruction string, and update bots and bins
@@ -129,17 +139,15 @@ def parse_instruction(instruction):
         # is it a give instruction
         match = gives_pattern.match(instruction)
         if match:
-            #                  1-bot 2-chip 3-t1     4-t1idx                    6-chip   7-t2  8-t2idx 
-            #match.groups() = ('1', 'low', 'output', '1', ' and high to bot 0', 'high', 'bot', '0')
             groups = match.groups()
             # first chip rule
             idx = groups[0]
-            
+
             # initialize bot if it doesn't exist
             if not idx in state['bot']:
                 state['bot'][idx] = Bot(idx)
             bot = state['bot'][idx]
-            for high_low,target_type, target_idx in (groups[1:4], groups[5:]): # ('1', 'low', 'output', '1')
+            for high_low,target_type, target_idx in (groups[1:4], groups[5:]):
                 if high_low is None:
                     continue
                 # initialize target if it doesn't exist
@@ -153,24 +161,54 @@ def parse_instruction(instruction):
         else:
             # we shouldn't get here, but who knows what is in the input
             print(f"Unhandled instruction: {instruction}")
-        
 
+def solve(lines, part):
+    """
+    Function to solve puzzle
+    """
+    for line in  sorted(lines):
+        parse_instruction(line)
+    if part == 1:
+        target = (17,61)
+        for idx, bot in state['bot'].items():
+            if target in bot.comparisons:
+                return bot.idx
+    # part 2
+    product = 1
+    for idx in range(3):
+        product *= int(state['output'][str(idx)].chips[0])
+    return product
 
 if __name__ == "__main__":
+    # global state
     state = {
         "bot" :{},
         "output":{}
     }
     my_aoc = aoc.AdventOfCode(2016,10)
-    for line in  sorted(my_aoc.load_lines()):
-        parse_instruction(line)
-
-    target = (17,61)
-    for idx, bot in state['bot'].items():
-        if target in bot.comparisons:
-            print(f"Part 1: {bot.idx}")
-            break
-    product = 1
-    for idx in range(3):
-        product *= int(state['output'][str(idx)].chips[0])
-    print(f"Part 2: {product}")
+    input_lines = my_aoc.load_lines()
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: solve,
+        2: solve
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_lines, my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
