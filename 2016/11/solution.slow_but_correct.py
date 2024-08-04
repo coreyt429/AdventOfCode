@@ -23,21 +23,12 @@ current h_score is the product of the floor index and the count of items on the 
 
 The current heuristics work, but there is some randomness.  sometimes it answers really quickly, 
 and sometimes it takes a while.  sometimes it gets the right answer first, sometimes it doesnt.
-
-This version is accurate, but slow on part 2
-
-Randomness has been worked out.  The sets I was using for the floors were causing it.
-
-In this version I changed the sets to lists, and removed all sorting, so original order is
-preserved. New items on a floor are appended to the floor.  0.75 sec for part 1, 220 seconds
-for part 2.
-
-Next, lets try prepending instead of appending when we move to a floor. 
-okay, that caused wrong answers to be found first. reverting.
 """
 import time
 import logging
 import re
+import copy
+from heapq import heappop, heappush
 from queue import PriorityQueue
 import itertools
 import sys
@@ -48,7 +39,7 @@ class Node:
     """
     Node class for scoring positions
     """
-    def __init__(self, floor, floors, g_score, h_score):
+    def __init__(self, floor, floors, g_score, h_score, parent=None):
         """
         Init node
         """
@@ -59,6 +50,7 @@ class Node:
         self.h_score = h_score
         self.f_score = g_score + h_score
         self.threshold = float('infinity')
+        self.parent = parent
 
     def __gt__(self, other):
         """
@@ -75,10 +67,9 @@ class Node:
         if self.f_score == other.f_score:
             return self.h_score < other.h_score
         return self.f_score < other.f_score
-
+    
     def __str__(self):
-        my_string = f"g_score: {self.g_score}, h_score: {self.h_score}, "
-        my_string += f"f_score: {self.f_score}, threshold: {self.threshold}\n"
+        my_string = f"g_score: {self.g_score}, h_score: {self.h_score}, f_score: {self.f_score}, threshold: {self.threshold}\n"
         floor_num = 4
         for floor in reversed(self.floors):
             my_string += f"{floor_num}:" + " ".join(floor) + "\n"
@@ -232,11 +223,11 @@ def parse_notes(input_string):
     for item in items:
         match = pattern_microchip.match(item)
         if match:
-            building[floor].append(f"{elements[match.group(1)]}M")
+            building[floor].add(f"{elements[match.group(1)]}M")
         else:
             match = pattern_generator.match(item)
             if match:
-                building[floor].append(f"{elements[match.group(1)]}G")
+                building[floor].add(f"{elements[match.group(1)]}G")
             else:
                 pass
 
@@ -248,37 +239,38 @@ def anonymize(floors):
     elements_seen = []
     for floor_num in range(3,-1,-1):
         floor = floors[floor_num]
-        for item in list(floor):
+        for item in sorted(list(floor)):
             if not item[:-1] in elements_seen:
                 elements_seen.append(item[:-1])
+    #print(elements_seen)
     # convert tuples or sets to list so we can work with them
-    list_floors = [list(floor) for floor in floors]
+    list_floors = [sorted(list(floor)) for floor in floors]
     # walk all the items and replace the element with its index
     # ex:  HG -> 0G, LiM -> 1M
     for floor in list_floors:
-        #floor_summary = ' '.join(floor)
         for item, label in enumerate(floor):
             for idx, element in enumerate(elements_seen):
-                #if floor_summary.count(element) > 1:
                 if element in label:
                     #print(f"{floor[item]} replace {element} with {str(idx)}")
                     floor[item] = label.replace(element, str(idx))
-    return tuple(tuple(list(floor)) for floor in list_floors)
+            #print(floor[item])
+    #exit()
+    return tuple(tuple(floor) for floor in list_floors)
 
 def is_valid(floor):
     """
     Function to test validity of a floor configuration
     """
     # sets to classify generators and micro_chips
-    generators = []
-    micro_chips = []
+    generators = set()
+    micro_chips = set()
     # walk the items in the floor
     for item in floor:
         # if item end in G add it's element to generators
         if item[-1] == 'G':
-            generators.append(item[:-1])
+            generators.add(item[:-1])
         else: # add to micro_chips instead
-            micro_chips.append(item[:-1])
+            micro_chips.add(item[:-1])
     # if there are any generators, lets look at the microchips
     if len(generators) > 0:
         # walk micro_chips
@@ -349,7 +341,33 @@ def next_floors(current):
         next_floor_list.append(floor)
     return next_floor_list
 
-def try_move(current_node, items, new):
+def try_move(stops, items, current, new):
+    """
+    Function to try moves and return new heap entries
+    """
+    new_heap=[]
+    # clone current['floors']
+    new['floors'] = copy.deepcopy(current['floors'])
+    # move items from current['floor'] to new['floor']
+    for item in items:
+        # ignore if None
+        if item:
+            new['floors'][current['floor']].remove(item)
+            new['floors'][new['floor']].add(item)
+    # if both floors are still valid
+    if (is_valid(new['floors'][current['floor']]) and
+        is_valid(new['floors'][new['floor']])):
+        # add to heap
+        new_heap.append((
+            stops + 1,
+            new['floor'],
+            tuple(tuple(floor) for floor in new['floors'])
+            )
+        )
+    return new_heap
+
+#try_move_a_star(current_node, items, new)
+def try_move_a_star(current_node, items, new):
     """
     Function to try moves and return new heap entries
     """
@@ -362,41 +380,30 @@ def try_move(current_node, items, new):
     # clone current['floors']
     new['floors'] = []
     for floor in current_node.floors:
-        new['floors'].append(list(floor))
+        new['floors'].append(set(floor))
     # move items from current['floor'] to new['floor']
     for item in items:
         # ignore if None
         if item:
-            new['floors'][current_node.floor].pop(new['floors'][current_node.floor].index(item))
-            new['floors'][new['floor']].append(item)
+            new['floors'][current_node.floor].remove(item)
+            new['floors'][new['floor']].add(item)
     # if both floors are still valid
     if (is_valid(new['floors'][current_node.floor]) and
         is_valid(new['floors'][new['floor']])):
         # add to new_nodes
-        # def __init__(self, floor, floors, g_score, h_score):
-        new_nodes.append(
-            Node(
-                new['floor'],
-                tuple(tuple(list(floor)) for floor in new['floors']),
-                current_node.g_score + 1,
-                calc_h_score(
-                    tuple(
-                        tuple(list(floor)) for floor in new['floors']
-                    ), current_node.g_score, current_node.threshold
-                )
-            )
+        # def __init__(self, floor, floors, g_score, h_score, parent=None):
+        new_nodes.append(Node(
+            new['floor'],
+            tuple(tuple(sorted(list(floor))) for floor in new['floors']),
+            current_node.g_score + 1,
+            h_score(tuple(tuple(sorted(list(floor))) for floor in new['floors']), current_node.g_score, current_node.threshold),
+            current_node
+        )
         )
     return new_nodes
 
-# preserving failed h_score routines for future review
 def h_score_works_slow(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    boosts score if stops //2 + score > threshold (min_solved)
-    decreases (prioritizes) score if lower floors are empty
-    """
-    #score = min_stops_remaining(floors)
+    #score = min_steps_remaining(floors)
     score = 0
     for idx, floor in enumerate(floors):
         score += (3-idx) * len(floor)
@@ -412,25 +419,14 @@ def h_score_works_slow(floors, stops, threshold):
     return score
 
 def h_score_simple(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    """
-    print(stops, threshold)
     score = 0
     for idx, floor in enumerate(floors):
         score += (3 - idx) * len(floor)
     return score
 
-def calc_h_score(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    penalizes if we can't reach solution before min_solved
-    rewards empty lower floors and 4th floor more loaded than third
-
-    """
-    score = min_stops_remaining(floors)
+def h_score(floors, stops, threshold):
+    #print(f"h_score({floors}, {stops}, {threshold})")
+    score = min_steps_remaining(floors)
     # if it will take more elevator stops to complete than we have left
     # before min_solved, then we aren't on the right track, so lets bump
     # score up to deprioritize this route
@@ -438,7 +434,7 @@ def calc_h_score(floors, stops, threshold):
         score *= 1000
     else:
         score *= 100
-
+    
     if len(floors[0]) == 0:
         score -= 1000
         if len(floors[1]) == 0:
@@ -447,77 +443,43 @@ def calc_h_score(floors, stops, threshold):
                 score -= 3000
     return score
 
-def min_stops_remaining(floors):
-    """
-    Calculate the stops needed to get all elements to the top
-    if we could move them at will
-    """
+def min_steps_remaining(floors):
     score = 0
     for idx, floor in enumerate(floors):
-        score += (3 - idx) * len(floor)
+        score += (3 - idx) * len(floor) 
     return score // 2
 
 def h_score_percentage(floors, stops, threshold):
-    """
-    Function to calculate h_score based on percentage completion
-    rewards for lower floors being empty
-    """
-    print(stops, threshold)
     max_items = sum(len(floor) for floor in floors)
-    # max_items * (4-1) since the highest floor gives the maximum multiplier
-    max_score = max_items * 3
-    score = min_stops_remaining(floors)
+    max_score = max_items * 3  # max_items * (4-1) since the highest floor gives the maximum multiplier
+    score = min_steps_remaining(floors)
     percentage_complete = score / max_score if max_score > 0 else 1
     score = 1 - percentage_complete
 
-    if len(floors[0]) == 0:
-        score -= 0.5
-        if len(floors[1]) == 0:
-            score -= 1
+    #if len(floors[0]) == 0:
+    #    score -= 0.5
+    #    if len(floors[1]) == 0:
+    #        score -= 1
     return score
 
-def init_goal(floors):
-    """
-    Function to initialize goal
-    I ended up not using, this, bur preseving for now
-    """
+def solve_a_star(floors):
     goal = 0
     # sum items as goal
     for floor in floors:
         goal += len(floor)
-    goal = calc_h_score(([],[],[],[range(goal)]), 0 , float('infinity'))
-    return goal
-
-def a_star_next_nodes(current_node):
-    """
-    Function to get next nodes to potentially
-    add to open_set
-    """
-    # for valid floors in current_floor +/- 1
-    new_nodes = []
-    new = {}
-    for new['floor'] in next_floors_a_star(current_node):
-        # find each possible pairing, including empty (None)
-        for items in itertools.combinations(
-            list(current_node.floors[current_node.floor]) + [None],
-            2
-        ):
-            # ignore matches
-            if items[0] != items[1]:
-                for new_node in try_move(current_node, items, new):
-                    new_nodes.append(new_node)
-    return new_nodes
-
-def solve_a_star(floors):
-    """
-    Function to solve puzzle using A* algorithm
-    """
     # multiply by floor 3
     min_solved = float('infinity')
-    start_node = Node(
-        0, tuple(tuple(list(floor)) for floor in floors), 0,
-        calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved)
-    )
+    goal = h_score((set(),set(),set(),set(range(goal))), 0 , min_solved)
+    #def a_star(start, goal, maze, heuristics):
+    """
+    Function to execute A* algorithm to detect shortest solution
+    """
+    # set start_node  (position, g_score, h_score)
+    # def __init__(self, floor, floors, g_score, h_score, parent=None):
+    #heappush(heap,(0,0,tuple(tuple(floor) for floor in floors)))
+    
+
+    start_node = Node(0, tuple(tuple(sorted(list(floor))) for floor in floors), 0, h_score(tuple(tuple(sorted(list(floor))) for floor in floors), 0, min_solved))
     # initialize PriorityQueue
     open_set = PriorityQueue()
     # add start_node to priority_queue (f_score, node)
@@ -526,47 +488,128 @@ def solve_a_star(floors):
     closed_set = {}
 
     # process open set
+    last_q = 0
     counter = 0
     while not open_set.empty():
         counter += 1
         # get current node
         current_node = open_set.get()[1]
-        # check for solution first
-        if is_solved({'floor': current_node.floor, 'floors': current_node.floors}):
-            return current_node.g_score
-            #if current_node.g_score < min_solved:
-            #    print(f"Took {counter} tries {current_node.g_score}")
-            #    print(f"Found win in {current_node.g_score} stops: {current_node.floors}")
-            #    print(current_node)
-            #    min_solved = current_node.g_score
-            #    # just returning first solution to save time
-            #    # this is optimized for this input, we would just need to continue if
-            #    # we were solving for general solutions
-            #    return min_solved
-            #continue
-        # is this state in closed_set?
-        # update closed set if we re in closed set, but fewer steps we'll process
-        # otherwise continue
-        if (current_node.anonymized in closed_set and
-            current_node.g_score > closed_set.get(current_node.anonymized, float('infinity'))):
+        #print(current_node)
+        if open_set.qsize() // 1000 != last_q:
+            last_q = open_set.qsize() // 1000
+            #print(f"Counter: {counter} Queue: {open_set.qsize()}. min_solved = {min_solved}")
+            #print(current_node)
+        #if current_node.g_score in [46, 47]:
+        #    print(current_node)
+        # add to closed set
+        # are we at the goal?
+        if current_node.h_score == goal:
+            if current_node.g_score < min_solved:
+                print(f"Took {counter} tries")
+                #print(f"Found win in {current_node.g_score} stops: {current_node.floors}")
+                #print(current_node)
+                min_solved = current_node.g_score
+                # this worked for part1, we were getting the lowest step win first
+                # with the current h_score. earlier h_score routines were hitting 
+                # longer step count wins first, so this may not work for part 2  
+                #if min_solved in [47, 71]:
+                #    return min_solved
+                #next_node = current_node
+                #path = []
+                #while next_node:
+                #    path.append(next_node)
+                #    next_node = next_node.parent
+                #for next_node in reversed(path):
+                #    print(next_node)
             continue
+        # is this state in closed_set?
+        if current_node.anonymized in closed_set:
+            # update closed set if we re in closed set, but fewer steps we'll process
+            # otherwise continue
+            if current_node.g_score > closed_set.get(current_node.anonymized, float('infinity')):
+                continue
         closed_set[current_node.anonymized] = current_node.g_score
         if current_node.g_score >= min_solved:
+            #print(f"Discarding too many steps: {current_node.g_score, current_node.h_score, current_node.f_score}")
             continue
         # is it possible to beat current score?
-        if min_stops_remaining(current_node.floors) + current_node.g_score > min_solved:
+        if min_steps_remaining(current_node.floors) + current_node.g_score > min_solved:
             continue
         # update threshold so children calculate h_score accordingly
         current_node.threshold = min_solved
-        for new_node in a_star_next_nodes(current_node):
-            # skip if already seen, unless it is a lower step count.
-            if (new_node.anonymized not in closed_set or
-                new_node.g_score < closed_set[new_node.anonymized]):
-                open_set.put((new_node.f_score, new_node))
+        # for valid floors in current_floor +/- 1
+        new = {}
+        for new['floor'] in next_floors_a_star(current_node):
+            # find each possible pairing, including empty (None)
+            for items in itertools.combinations(
+                sorted(list(current_node.floors[current_node.floor])) + [None],
+                2
+            ):
+                # ignore matches
+                if items[0] != items[1]:
+                    for new_node in try_move_a_star(current_node, items, new):
+                        # skip if already seen, unless it is a lower step count.
+                        if new_node.anonymized not in closed_set or new_node.g_score < closed_set[new_node.anonymized]:
+                            open_set.put((new_node.f_score, new_node))
+    print("Finished processing")
+    return min_solved  # No path found
+
+
+def solve_bfs(floors):
+    """
+    Function to solve part1
+    """
+    #Initialize heap and add start floor
+    heap = []
+    # Add first item to heap
+    # Heap description:
+    #   - stop_count int initialized to 0
+    #   - current_floor int initialized to 0 (first floor)
+    #   - tuple of tuples to represent the floors and items on them
+    heappush(heap,(0,0,tuple(tuple(floor) for floor in floors)))
+    # initialize visited as empty set
+    visited=set()
+    # set min_solved to infinity
+    min_solved = float('infinity')
+    # process heap
+    while heap:
+        # get current record from the heap
+        current = {}
+        stops, current['floor'], floors_as_tuples = heappop(heap)
+        if stops > min_solved:
+            continue
+        # convert floors to list of lists
+        current['floors'] = [set(floor) for floor in floors_as_tuples]
+        # is this a solution:
+        if is_solved(current):
+            # shorter solution?
+            if stops < min_solved:
+                min_solved = stops
+            # move on to next heap item
+            continue
+        # check to see if we have already been here
+        current['state'] = anonymize(current['floors'])
+        if (current['floor'], current['state']) in visited:
+            # yes, next
+            continue
+        # no, add to visited states and process
+        visited.add((current['floor'],current['state']))
+
+        # for valid floors in current_floor +/- 1
+        new = {}
+        for new['floor'] in next_floors(current):
+            # find each possible pairing, including empty (None)
+            for items in itertools.combinations(
+                list(current['floors'][current['floor']]) + [None],
+                2
+            ):
+                # ignore matches
+                if items[0] != items[1]:
+                    for result in try_move(stops, items, current, new):
+                        heappush(heap, result)
     return min_solved
 
 if __name__ == "__main__":
-    # sample data
     test_data = [
         "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.", #pylint: disable=line-too-long
         "The second floor contains a hydrogen generator.",
@@ -577,43 +620,28 @@ if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2016,11)
     lines = my_aoc.load_lines()
     building = [
-        [],
-        [],
-        [],
-        []
+        set(),
+        set(),
+        set(),
+        set()
     ]
     #print(sys.argv,len(sys.argv))
     if len(sys.argv) > 1:
         lines = test_data
-    for note in lines:
+    for note in sorted(lines):
         parse_notes(note)
-
-    # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
-    # dict to map functions
-    funcs = {
-        1: solve_a_star,
-        2: solve_a_star
-    }
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        if my_part == 2:
-            for item_element in 'ED':
-                for item_type in 'MG':
-                    building[0].append(f"{item_element}{item_type}")
-        # get answer
-        answer[my_part] = funcs[my_part](building)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+    
+    #print(building)
+    start_time = time.time()
+    part1 = solve_a_star(building)
+    end_time = time.time()
+    print(f"Part 1: {part1} ({end_time - start_time} seconds)")
+    #exit()
+    for item_element in 'ED':
+        for item_type in 'MG':
+            building[0].add(f"{item_element}{item_type}")
+    #print(building)
+    start_time = time.time()
+    part2 = solve_a_star(building)
+    end_time = time.time()
+    print(f"Part 2: {part2} ({end_time - start_time} seconds)")
