@@ -2,6 +2,7 @@
 Advent Of Code 2016 day 13
 
 """
+import time
 from heapq import heappop, heappush
 import aoc # pylint: disable=import-error
 
@@ -36,16 +37,25 @@ def neighbors(point,seed):
                     set_neighbors.add((point[0],p_y))
     return set_neighbors
 
-def solve(start=(1,1), seed=10, target=(7,4)):
+def solve(seed, part):
     """
-    Function to dolve part1
+    Function to solve puzzle
+    For part == 1, we are doing a bfs to find the minimum steps to get to (31, 39)
+    For part == 2, we run our bfs, but we are only interested in the count of
+    locations we can reach in 50 steps or less.
     """
+    start = (1, 1)
+    target = (31, 39)
     visited = set()
     heap = []
     heappush(heap,(0,start,()))
     min_steps = float('infinity')
     while heap:
         steps, point, path = heappop(heap)
+        # How many locations (distinct x,y coordinates, including your starting location)
+        # can you reach in at most 50 steps?
+        if part == 2 and steps > 50:
+            continue
         visited.add(point)
         if point == target:
             if steps < min_steps:
@@ -55,28 +65,36 @@ def solve(start=(1,1), seed=10, target=(7,4)):
             for neighbor in neighbors(point, seed):
                 if neighbor not in visited:
                     heappush(heap,(steps+1, neighbor, new_path))
-    return min_steps
-
-#How many locations (distinct x,y coordinates, including your starting
-#location) can you reach in at most 50 steps?
-def solve2(start=(1,1), seed=10):
-    """
-    Function to solve part 2
-    """
-    visited = set()
-    heap = []
-    heappush(heap,(0,start))
-    while heap:
-        steps, point = heappop(heap)
-        if steps > 50:
-            continue
-        visited.add(point)
-        for neighbor in neighbors(point, seed):
-            if neighbor not in visited:
-                heappush(heap,(steps+1, neighbor))
+    if part == 1:
+        return min_steps
+    # part 2
     return len(visited)
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2016,13)
-    print(f"Part 1: {solve((1,1),1358,(31,39))}")
-    print(f"Part 2: {solve2((1,1),1358)}")
+    input_text = my_aoc.load_text()
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: solve,
+        2: solve
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](int(input_text), my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
