@@ -61,7 +61,7 @@ def find_chars(input_string, count):
             break
     return matched_chars
 
-def find_key(seed,protocol):
+def find_key(seed, protocol):
     """
     Function to find keys, and return the index of the 64th key
     """
@@ -78,9 +78,9 @@ def find_key(seed,protocol):
     while len(my_keys) < 72:
         # get md5sum
         if protocol == 1:
-            my_checksum = checksum(idx,seed)
+            my_checksum = checksum(idx, seed)
         else:
-            my_checksum = expanded_checksum(idx,seed)
+            my_checksum = expanded_checksum(idx, seed)
         # get all matching 5 char set
         my_chars = find_chars(my_checksum,5)
         # did we match?
@@ -105,11 +105,30 @@ def find_key(seed,protocol):
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2016,14)
     # set seed, set to abc for test data
-    seeds = {
-        1: 'ngcjuoqr',
-        2: 'ngcjuoqr'
+    input_text = my_aoc.load_text()
+    print(input_text)
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
     }
-    # Execute parts one and two
-    for part in [1, 2]:
-        start = time.time()
-        print(f"Part {part}:  {find_key(seeds[part],part)}, took {time.time() - start} seconds")
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: find_key,
+        2: find_key
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_text, my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
