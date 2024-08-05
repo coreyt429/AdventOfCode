@@ -6,17 +6,13 @@ This was reminiscent of 2015 day 23, so I was able to borrow some code there.
 """
 # import system modules
 import re
+import time
 
 # import my modules
 import aoc # pylint: disable=import-error
 
 # define globals to use
-registers = {
-    'a': 0,
-    'b': 0,
-    'c': 0,
-    'd': 0
-}
+registers = {}
 
 instructions = []
 instructions.append('inc')
@@ -27,19 +23,17 @@ instructions.append('jnz')
 pattern_instruction = re.compile(r'(\w+) (\S+) *(\S+)?')
 pattern_jump_value = re.compile(r'([+-])?(\d+)')
 
-def decode_program(input_text):
+def decode_program(lines):
     """
     Function to parse text block the program instructions
 
     parameters:
-        uinput_text: string name of data
+        lines: list of strings
 
     returns:
         program: list of dict, program instructions
     """
     program = []
-    # split text into lines
-    lines = input_text.split('\n')
 
 	# process each line
     for line in lines:
@@ -130,28 +124,49 @@ def run_program(program):
             else:
             	# Yes, move forward 1
                 pointer+=1
-		#debug lines to trace any issues
-        #print(f"After: ({current_line}): pointer: {pointer}, registers: {registers}")
-        #print(f"{registers['a']} {registers['b']} {registers['c']} {registers['d']}")
 
-if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016,12)
-    # I probably should have used load_lines here, to keep decode_program from
-    # needing to split the lines.  Since this only runs once either way, it is
-    # not an optimization factor. I'm not fixing it.
-    input_file_text = my_aoc.load_text()
-    # get program from text
-    my_program = decode_program(input_file_text)
-    # execute program
-    run_program(my_program)
-    # report results
-    print(f"Part 1: {registers['a']}")
-    # reset registers (c=1 this time)
+def solve(lines, part):
+    """
+    Function to solve puzzle
+    """
     registers['a'] = 0
     registers['b'] = 0
-    registers['c'] = 1
+    registers['c'] = 0
     registers['d'] = 0
+    if part == 2:
+        registers['c'] = 1
+
+    # get program from text
+    my_program = decode_program(lines)
     # execute program
     run_program(my_program)
-    # report results
-    print(f"Part 2: {registers['a']}")
+    return registers['a']
+
+if __name__ == "__main__":
+    my_aoc = aoc.AdventOfCode(2016, 12)
+    input_lines = my_aoc.load_lines()
+    # parts dict to loop
+    parts = {
+        1: 1,
+        2: 2
+    }
+    # dict to store answers
+    answer = {
+        1: None,
+        2: None
+    }
+    # dict to map functions
+    funcs = {
+        1: solve,
+        2: solve
+    }
+    # loop parts
+    for my_part in parts:
+        # log start time
+        start_time = time.time()
+        # get answer
+        answer[my_part] = funcs[my_part](input_lines, my_part)
+        # log end time
+        end_time = time.time()
+        # print results
+        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
