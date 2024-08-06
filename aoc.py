@@ -16,6 +16,8 @@ class AdventOfCode:
 
         self.year = year if year is not None else today.year
         self.day = day if day is not None else today.day
+        # define, but don't calculate yet, we may not need them
+        self.neighbor_offsets = {}
         matches = re.match(r'(.*AdventOfCode).*',os.getcwd())
         if matches:
             base_dir = matches.group(1)
@@ -24,7 +26,6 @@ class AdventOfCode:
 
         self.session_file = os.path.join(base_dir,'.aoc.session')
         self.session_id = self.get_session_id()
-
     def get_session_id(self):
         if os.path.exists(self.session_file):
             with open(self.session_file, 'r') as f:
@@ -160,7 +161,151 @@ class AdventOfCode:
             - list of lists from file
         """
         return [list(line) for line in self.load_lines(file_name)]
+    
+    def get_neighbor_offsets(self):
+        """
+        Function to calculate neighbor offsets, and store them
+        """
+        if "tuple" not in self.neighbor_offsets:
+            # define offsets
+            self.neighbor_offsets["tuple"] = []
+            self.neighbor_offsets["complex"] = []
+            # calculate offsets:
+            for point_x in [-1, 0, 1]:
+                for point_y in [-1, 0, 1]:
+                    point = tuple((point_x, point_y))
+                    if not point == (0,0):
+                        self.neighbor_offsets['tuple'].append(point)
+                        self.neighbor_offsets['complex'].append(complex(*point))
+        return self.neighbor_offsets
 
+    def get_neighbors(self, maze, point, **kwargs):
+        """
+        Function to get neighbors of a point on a map or maze
+        This function assumes screen coordinates.  If using another coordinate system,
+        please update. Maybe a rule flag to specify?
+
+        Notes: see 2023.21 for infinite complex example
+
+        Args:
+            maze: list_x(list_y()) or dict(tuple(x,y) or dict(complex())) 
+            point: tuple(x,y) or complex() # should match maze, or things may break
+            **kwargs:  using kwargs for rules instead to be more flexible
+            rules: dict{} , example:
+                rules = {
+                    "type": "bounded", # or infinite
+                    "invalid": "#",
+                    "coordinate_system": "screen" # or matrix, or cartesian, others noted below, 
+                        are not yet supported
+                }
+        Returns:
+            neighbors: list(tuple(x,y)) or list(complex())
+
+        Notes:
+            tuple to complex:
+                complex(my_tuple)
+            complex to tuple:
+                tuple(my_complex.real, my_complex.imag)
+            Coordinate System	X Increases	Y Increases	Common Use
+            Screen Coordinates	To the right	Down	Computer graphics, UI, web design
+            Matrix Coordinates	To the right (cols)	Down (rows)	Spreadsheets, grid-based systems
+            Cartesian Coordinates	To the right	Up	Mathematics, physics, engineering
+            Polar Coordinates	N/A (radius and angle)	N/A	Navigation, physics, engineering
+            Geographic Coordinates	N/A (longitude)	N/A (latitude)	Geography, GPS
+            Isometric Coordinates	120-degree intervals	120-degree intervals	Video games,
+                CAD, technical drawing
+        """
+        X=0
+        Y=1
+        # define booleans:
+        is_dict = isinstance(maze, dict)
+        #is_list = isinstance(maze, list)
+        is_complex = False
+        if is_dict:
+            is_complex = isinstance(list(maze.keys())[0], complex)
+        # I think I'm getting technical here, but this may matter when we go to apply rules
+        # as I typically provide matrix coordinates as (row, col)
+        if kwargs.get('coordinate_system', 'screen') ==  'matrix':
+            X=1
+            Y=0
+        # define offsets
+        offsets = self.get_neighbor_offsets()
+
+        # empty list of neighbors
+        neighbors = []
+        if is_complex:
+            for offset in offsets["complex"]:
+                neighbors.append(point + offset)
+        else:
+            for offset in offsets["tuple"]:
+                neighbors.append(tuple([point[X] - offset[X], point[Y] - offset[Y]]))
+        # process rule type:bounded
+        if kwargs.get("type", "bounded") == "bounded":
+            min, max = self.get_maze_size(maze)
+            valid_neighbors = []
+            for neighbor in neighbors:
+                if is_dict:
+                    if neighbor in maze:
+                        valid_neighbors.append(neighbor)
+                else:
+                    if min[X] <= neighbor[X] <= max[X] and min[Y] <= neighbor[Y] <= max[Y]:
+                        valid_neighbors.add(neighbor)
+                neighbors = valid_neighbors
+        # are there invalid character rules, note, this will probably break in type:infinite
+        if "invalid" in kwargs:
+            valid_neighbors = []
+            for neighbor in neighbors:
+                if is_dict:
+                    if not maze[neighbor] in kwargs['invalid']:
+                        valid_neighbors.append(neighbor)
+                else:
+                    # using 0/1 here instead of X/Y to avoid an extra if condition to 
+                    # look for swapped x/y for matrix coordinates, when we get to a
+                    # matrix coordinate puzzle, we will need to test thoroughly
+                    if not maze[neighbor[0][1]] in kwargs['invalid']:
+                        valid_neighbors.append(neighbor)
+            neighbors = valid_neighbors
+        return neighbors
+    
+    def get_maze_size(self, maze):
+        """
+        Function to get min(X,Y), max(X,Y) for maze
+        """
+        X=0
+        Y=1
+        if isinstance(maze, list):
+            # list of list, return 0 to length
+            min = tuple([0, 0])
+            max = tuple([len(maze), len(maze[0])])
+            return min, max
+        if not isinstance(maze, dict):
+            print(f"get_maze_size no rule to handle {type(maze)}")
+            sys.exit()
+        # complex or tuple?
+        min = [float('infinity')]*2
+        max = [float('infinity')*-1]*2
+        is_complex = isinstance(list(maze.keys())[0], complex)
+        for key in maze.keys():
+            if is_complex:
+                if key.real < min[X]:
+                    min[X] = int(key.real)
+                if key.real > max[X]:
+                    max[X] = int(key.real)
+                if key.imag < min[Y]:
+                    min[Y] = int(key.imag)
+                if key.imag > max[Y]:
+                    max[Y] = int(key.imag)
+            else:
+                if key[X] < min[X]:
+                    min[X] = key[X]
+                if key[X] > max[X]:
+                    max[X] = key[X]
+                if key[Y] < min[Y]:
+                    min[Y] = key[Y]
+                if key[Y] > max[Y]:
+                    max[Y] = key[Y]
+        return min, max
+    
 
 
 """
