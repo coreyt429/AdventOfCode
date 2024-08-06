@@ -1,6 +1,9 @@
 """
 Advent Of Code 2016 day 15
 
+This one is not 100% in my current style, but it does produce the same output.
+It is structually in the same spirit, so moving on.
+
 """
 import re
 import time
