@@ -306,7 +306,16 @@ class AdventOfCode:
                     max[Y] = key[Y]
         return min, max
     
-
+    def manhattan_distance(self,start, goal):
+        """
+        Function to calculate manhattan distance between two points
+        """
+        X=0
+        Y=1
+        if isinstance(start, tuple):
+            return abs(start[X] - goal[X]) + abs(start[Y] - goal[Y])
+        if isinstance(start, complex):
+            return int(abs(start.real - goal.real) + abs(start.imag - goal.imag))
 
 """
 Below here are functions to support the __main__:
