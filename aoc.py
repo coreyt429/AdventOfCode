@@ -162,21 +162,30 @@ class AdventOfCode:
         """
         return [list(line) for line in self.load_lines(file_name)]
     
-    def get_neighbor_offsets(self):
+    def get_neighbor_offsets(self, **kwargs):
         """
         Function to calculate neighbor offsets, and store them
         """
+        offsets = {
+            'n': (0, -1),
+            'ne': (1, -1),
+            'e': (1, 0),
+            'se': (1, 1),
+            's': (0, 1),
+            'sw': (-1, 1),
+            'w': (-1, 0),
+            'nw': (-1, -1)
+        }
+        directions = kwargs.get('directions', offsets.keys())
         if "tuple" not in self.neighbor_offsets:
             # define offsets
             self.neighbor_offsets["tuple"] = []
             self.neighbor_offsets["complex"] = []
             # calculate offsets:
-            for point_x in [-1, 0, 1]:
-                for point_y in [-1, 0, 1]:
-                    point = tuple((point_x, point_y))
-                    if not point == (0,0):
-                        self.neighbor_offsets['tuple'].append(point)
-                        self.neighbor_offsets['complex'].append(complex(*point))
+            for direction in directions:
+                point = offsets[direction]
+                self.neighbor_offsets['tuple'].append(point)
+                self.neighbor_offsets['complex'].append(complex(*point))
         return self.neighbor_offsets
 
     def get_neighbors(self, maze, point, **kwargs):
@@ -197,6 +206,7 @@ class AdventOfCode:
                     "invalid": "#",
                     "coordinate_system": "screen" # or matrix, or cartesian, others noted below, 
                         are not yet supported
+                    "directions": list(('n','s','e','w'))
                 }
         Returns:
             neighbors: list(tuple(x,y)) or list(complex())
@@ -229,8 +239,8 @@ class AdventOfCode:
             X=1
             Y=0
         # define offsets
-        offsets = self.get_neighbor_offsets()
-
+        offsets = self.get_neighbor_offsets(**kwargs)
+        
         # empty list of neighbors
         neighbors = []
         if is_complex:
@@ -242,14 +252,15 @@ class AdventOfCode:
         # process rule type:bounded
         if kwargs.get("type", "bounded") == "bounded":
             min, max = self.get_maze_size(maze)
+            #print(f"Maze size: min: {min}, max: {max}")
             valid_neighbors = []
             for neighbor in neighbors:
                 if is_dict:
                     if neighbor in maze:
                         valid_neighbors.append(neighbor)
                 else:
-                    if min[X] <= neighbor[X] <= max[X] and min[Y] <= neighbor[Y] <= max[Y]:
-                        valid_neighbors.add(neighbor)
+                    if min[X] <= neighbor[X] < max[X] and min[Y] <= neighbor[Y] < max[Y]:
+                        valid_neighbors.append(neighbor)
                 neighbors = valid_neighbors
         # are there invalid character rules, note, this will probably break in type:infinite
         if "invalid" in kwargs:
