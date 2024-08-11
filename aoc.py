@@ -480,7 +480,10 @@ def main():
 
     print("Launching Jupyter notebook...")
     os.chdir(original_dir)  # Change back to the original directory
-    subprocess.run(['jupyter', 'notebook', notebook_path])
+    #subprocess.run(['jupyter', 'notebook', notebook_path])
+    # update, we can run this from vs code now
+    subprocess.Popen([cfg['editor'], notebook_path], start_new_session=True)
+
 
 if __name__ == "__main__":
     main()
