@@ -364,3 +364,20 @@ class Grid():
             self.pos = neighbors[direction]
             return True
         return False
+
+def manhattan_distance(start, goal):
+    """
+    Function to calculate manhattan distance between two points
+    in 2D (x,y) or 3D (x,y,z)
+    """
+    X = 0
+    Y = 1
+    Z = 2
+    
+    if isinstance(start, tuple):
+        if len(start) == 2:  # 2D coordinates
+            return abs(start[X] - goal[X]) + abs(start[Y] - goal[Y])
+        elif len(start) == 3:  # 3D coordinates
+            return abs(start[X] - goal[X]) + abs(start[Y] - goal[Y]) + abs(start[Z] - goal[Z])
+    if isinstance(start, complex):  # Still handle complex numbers as 2D
+        return int(abs(start.real - goal.real) + abs(start.imag - goal.imag))
