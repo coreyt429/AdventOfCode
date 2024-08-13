@@ -166,27 +166,51 @@ class AdventOfCode:
         """
         Function to calculate neighbor offsets, and store them
         """
-        offsets = {
-            'n': (0, -1),
-            'ne': (1, -1),
-            'e': (1, 0),
-            'se': (1, 1),
-            's': (0, 1),
-            'sw': (-1, 1),
-            'w': (-1, 0),
-            'nw': (-1, -1)
+        offset_collection = {}
+        offset_collection['cartesian'] = {
+            'n': (0, 1),    # Move up
+            'ne': (1, 1),   # Move up-right
+            'e': (1, 0),    # Move right
+            'se': (1, -1),  # Move down-right
+            's': (0, -1),   # Move down
+            'sw': (-1, -1), # Move down-left
+            'w': (-1, 0),   # Move left
+            'nw': (-1, 1)   # Move up-left
         }
+        offset_collection['matrix'] = {
+            'n': (-1, 0),   # Move up
+            'ne': (-1, 1),  # Move up-right
+            'e': (0, 1),    # Move right
+            'se': (1, 1),   # Move down-right
+            's': (1, 0),    # Move down
+            'sw': (1, -1),  # Move down-left
+            'w': (0, -1),   # Move left
+            'nw': (-1, -1)  # Move up-left
+        }
+        offset_collection['screen'] = {
+            'n': (0, -1),   # Move up
+            'ne': (1, -1),  # Move up-right
+            'e': (1, 0),    # Move right
+            'se': (1, 1),   # Move down-right
+            's': (0, 1),    # Move down
+            'sw': (-1, 1),  # Move down-left
+            'w': (-1, 0),   # Move left
+            'nw': (-1, -1)  # Move up-left
+        }
+
+        # Always reset the neighbor offsets for fresh calculation
+        self.neighbor_offsets = {"tuple": [], "complex": []}
+
+        offsets = offset_collection[kwargs.get('coordinate_system', 'screen')]
         directions = kwargs.get('directions', offsets.keys())
-        if "tuple" not in self.neighbor_offsets:
-            # define offsets
-            self.neighbor_offsets["tuple"] = []
-            self.neighbor_offsets["complex"] = []
-            # calculate offsets:
-            for direction in directions:
-                point = offsets[direction]
-                self.neighbor_offsets['tuple'].append(point)
-                self.neighbor_offsets['complex'].append(complex(*point))
+
+        # Calculate offsets:
+        for direction in directions:
+            point = offsets[direction]
+            self.neighbor_offsets['tuple'].append(point)
+            self.neighbor_offsets['complex'].append(complex(*point))
         return self.neighbor_offsets
+
 
     def get_neighbors(self, maze, point, **kwargs):
         """
@@ -240,7 +264,7 @@ class AdventOfCode:
             Y=0
         # define offsets
         offsets = self.get_neighbor_offsets(**kwargs)
-        
+        print(f"offsets: {offsets}")
         # empty list of neighbors
         neighbors = []
         if is_complex:
@@ -248,13 +272,14 @@ class AdventOfCode:
                 neighbors.append(point + offset)
         else:
             for offset in offsets["tuple"]:
-                neighbors.append(tuple([point[X] - offset[X], point[Y] - offset[Y]]))
+                neighbors.append(tuple([point[X] + offset[X], point[Y] + offset[Y]]))
         # process rule type:bounded
         if kwargs.get("type", "bounded") == "bounded":
             min, max = self.get_maze_size(maze)
             #print(f"Maze size: min: {min}, max: {max}")
             valid_neighbors = []
             for neighbor in neighbors:
+                print(f"bounded, checking {neighbor}")
                 if is_dict:
                     if neighbor in maze:
                         valid_neighbors.append(neighbor)
@@ -266,14 +291,18 @@ class AdventOfCode:
         if "invalid" in kwargs:
             valid_neighbors = []
             for neighbor in neighbors:
+                print(f"invalid: checking {neighbor}")
                 if is_dict:
+                    print(f"dict: {neighbor}: {maze[neighbor]} in {kwargs['invalid']}")
                     if not maze[neighbor] in kwargs['invalid']:
                         valid_neighbors.append(neighbor)
                 else:
                     # using 0/1 here instead of X/Y to avoid an extra if condition to 
                     # look for swapped x/y for matrix coordinates, when we get to a
                     # matrix coordinate puzzle, we will need to test thoroughly
-                    if not maze[neighbor[0][1]] in kwargs['invalid']:
+                    #if not maze[neighbor[0][1]] in kwargs['invalid']:
+                    print(f"list: {neighbor}: {maze[neighbor[X]][neighbor[Y]]} in {kwargs['invalid']}")
+                    if not maze[neighbor[X]][neighbor[Y]] in kwargs['invalid']:
                         valid_neighbors.append(neighbor)
             neighbors = valid_neighbors
         return neighbors
@@ -484,6 +513,164 @@ def main():
     # update, we can run this from vs code now
     subprocess.Popen([cfg['editor'], notebook_path], start_new_session=True)
 
+
+####
+# Test Functions
+####
+
+
+def test_get_neighbor_offsets():
+    # Instantiate the object
+    my_aoc = aoc.AdventOfCode(2017, 19)
+    
+    # Test for 'screen' coordinate system
+    screen_result = my_aoc.get_neighbor_offsets(directions=['n', 's', 'e', 'w'], coordinate_system="screen")
+    expected_screen = {
+        'tuple': [(0, -1), (0, 1), (1, 0), (-1, 0)],
+        'complex': [complex(0, -1), complex(0, 1), complex(1, 0), complex(-1, 0)]
+    }
+    assert screen_result['tuple'] == expected_screen['tuple'], f"Screen coordinates failed: {screen_result['tuple']}"
+    assert screen_result['complex'] == expected_screen['complex'], f"Screen coordinates failed: {screen_result['complex']}"
+
+    # Test for 'matrix' coordinate system
+    matrix_result = my_aoc.get_neighbor_offsets(directions=['n', 's', 'e', 'w'], coordinate_system="matrix")
+    expected_matrix = {
+        'tuple': [(-1, 0), (1, 0), (0, 1), (0, -1)],
+        'complex': [complex(-1, 0), complex(1, 0), complex(0, 1), complex(0, -1)]
+    }
+    assert matrix_result['tuple'] == expected_matrix['tuple'], f"Matrix coordinates failed: {matrix_result['tuple']}"
+    assert matrix_result['complex'] == expected_matrix['complex'], f"Matrix coordinates failed: {matrix_result['complex']}"
+    
+    # Test for 'cartesian' coordinate system (assuming 'screen' is the cartesian system)
+    cartesian_result = my_aoc.get_neighbor_offsets(directions=['n', 's', 'e', 'w'])
+    expected_cartesian = {
+        'tuple': [(0, -1), (0, 1), (1, 0), (-1, 0)],
+        'complex': [complex(0, -1), complex(0, 1), complex(1, 0), complex(-1, 0)]
+    }
+    assert cartesian_result['tuple'] == expected_cartesian['tuple'], f"Cartesian coordinates failed: {cartesian_result['tuple']}"
+    assert cartesian_result['complex'] == expected_cartesian['complex'], f"Cartesian coordinates failed: {cartesian_result['complex']}"
+
+    print("All tests passed!")
+
+def test_get_neighbors():
+    # Instantiate the object
+    my_aoc = aoc.AdventOfCode(2017, 19)
+
+    # Define a simple maze as a dictionary
+    maze_dict = {
+        (0, 0): '.', (0, 1): '.', (0, 2): '#',
+        (1, 0): '.', (1, 1): '.', (1, 2): '.',
+        (2, 0): '#', (2, 1): '#', (2, 2): '.'
+    }
+
+    # Define a simple maze as a list of lists
+    maze_list = [
+        ['.', '.', '#'],
+        ['.', '.', '.'],
+        ['#', '#', '.']
+    ]
+    
+    # Test case 1: Screen coordinates, bounded grid, no invalid characters (dict)
+    point = (1, 1)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "screen",
+        "directions": ['n', 's', 'e', 'w']
+    }
+    expected_neighbors = [(1, 0), (1, 2), (2, 1), (0, 1)]
+    result = my_aoc.get_neighbors(maze_dict, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 1 (dict) failed: {result}"
+    
+    # Test case 2: Matrix coordinates, bounded grid, no invalid characters (dict)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "matrix",
+        "directions": ['n', 's', 'e', 'w']
+    }
+    expected_neighbors = [(0, 1), (2, 1), (1, 2), (1, 0)]
+    result = my_aoc.get_neighbors(maze_dict, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 2 (dict) failed: {result}"
+
+    # Test case 3: Cartesian coordinates, bounded grid, no invalid characters (dict)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "cartesian",
+        "directions": ['n', 's', 'e', 'w']
+    }
+    expected_neighbors = [(1, 0), (1, 2), (2, 1), (0, 1)]
+    result = my_aoc.get_neighbors(maze_dict, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 3 (dict) failed: {result}"
+
+    # Test case 4: Screen coordinates, bounded grid, with invalid characters (dict)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "screen",
+        "directions": ['n', 's', 'e', 'w'],
+        "invalid": "#"
+    }
+    expected_neighbors = [(1, 0), (1, 2), (0, 1)]
+    result = my_aoc.get_neighbors(maze_dict, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 4 (dict) failed: {result}"
+    
+    # Test case 5: Screen coordinates, unbounded grid, with invalid characters (dict)
+    rules = {
+        "type": "infinite",
+        "coordinate_system": "screen",
+        "directions": ['n', 's', 'e', 'w'],
+        "invalid": "#"
+    }
+    expected_neighbors = [(1, 0), (1, 2), (0, 1)]
+    result = my_aoc.get_neighbors(maze_dict, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 5 (dict) failed: {result}"
+
+    # Test case 6: Screen coordinates, bounded grid, no invalid characters (list)
+    expected_neighbors = [(1, 0), (1, 2), (0, 1)]
+    result = my_aoc.get_neighbors(maze_list, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 6 (list) failed: {result}"
+    
+    # Test case 7: Matrix coordinates, bounded grid, no invalid characters (list)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "matrix",
+        "directions": ['n', 's', 'e', 'w']
+    }
+    expected_neighbors = [(0, 1), (2, 1), (1, 2), (1, 0)]
+    result = my_aoc.get_neighbors(maze_list, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 7 (list) failed: {result}"
+
+    # Test case 8: Cartesian coordinates, bounded grid, no invalid characters (list)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "cartesian",
+        "directions": ['n', 's', 'e', 'w']
+    }
+    expected_neighbors = [(1, 0), (1, 2), (2, 1), (0, 1)]
+    result = my_aoc.get_neighbors(maze_list, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 8 (list) failed: {result}"
+
+    # Test case 9: Screen coordinates, bounded grid, with invalid characters (list)
+    rules = {
+        "type": "bounded",
+        "coordinate_system": "screen",
+        "directions": ['n', 's', 'e', 'w'],
+        "invalid": "#"
+    }
+    expected_neighbors = [(1, 0), (1, 2), (0, 1)]
+    result = my_aoc.get_neighbors(maze_list, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 9 (list) failed: {result}"
+    
+    # Test case 10: Screen coordinates, unbounded grid, with invalid characters (list)
+    rules = {
+        "type": "infinite",
+        "coordinate_system": "screen",
+        "directions": ['n', 's', 'e', 'w'],
+        "invalid": "#"
+    }
+    expected_neighbors = [(1, 0), (1, 2), (0, 1)]
+    result = my_aoc.get_neighbors(maze_list, point, **rules)
+    assert sorted(result) == sorted(expected_neighbors), f"Test 10 (list) failed: {result}"
+
+    print("All tests passed!")
 
 if __name__ == "__main__":
     main()
