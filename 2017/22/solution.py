@@ -121,8 +121,8 @@ def solve(input_value, part):
         cycles = 10000000
     for _ in range(cycles):
         carrier.activity_burst()
-        if part == 2:
-            print(carrier)
+        #if part == 2:
+        #    print(carrier)
     return carrier.stats['infected']
 
 if __name__ == "__main__":
