@@ -7,6 +7,8 @@ class Grid():
         self.cfg = {}
         self.cfg['coordinate_system'] = kwargs.get('coordinate_system', 'screen')
         self.cfg['datastore'] = kwargs.get('datastore', 'dict')
+        self.cfg['type'] = kwargs.get('type', 'bounded')
+        self.cfg['default_value'] = kwargs.get('default_value', '.')
         self.map = self.load_map(grid_map)
         self.pos = kwargs.get('start_pos', (0,0))
         if self.cfg['datastore'] == 'dict':
@@ -93,12 +95,12 @@ class Grid():
                             if complex(x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get(complex(x, y), ' ')
+                                my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
                             if (x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get((x, y), ' ')
+                                my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
         elif self.cfg['coordinate_system'] == 'screen':
             if self.cfg['datastore'] == 'list':
@@ -119,12 +121,12 @@ class Grid():
                             if complex(x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get(complex(x, y), ' ')
+                                my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
                             if (x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get((x, y), ' ')
+                                my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
         elif self.cfg['coordinate_system'] == 'cartesian':
             if self.cfg['datastore'] == 'list':
@@ -141,18 +143,22 @@ class Grid():
                 # Determine the size of the grid
                 max_x = self.cfg["max"][X] + 1
                 max_y = self.cfg["max"][Y] + 1
-                for y in range(max_y - 1, -1, -1):
-                    for x in range(max_x):
+                min_x = self.cfg["min"][X]
+                min_y = self.cfg["min"][Y] - 1
+                # FIXME:  this is handling correctly, other functions of cartesian need
+                #         to be checked to be sure they are taking min into account
+                for y in range(max_y - 1, min_y, -1):
+                    for x in range(min_x, max_x):
                         if do_complex:
                             if complex(x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get(complex(x, y), ' ')
+                                my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
                             if (x, y) == self.pos:
                                 my_string += '*'
                             else:
-                                my_string += self.map.get((x, y), ' ')
+                                my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
         else:
             my_string = f"Unhandled coordinate_system: {self.cfg['coordinate_system']}"
@@ -309,7 +315,7 @@ class Grid():
             for direction, offset in offsets["tuple"].items():
                 neighbors[direction] = tuple([self.pos[X] + offset[X], self.pos[Y] + offset[Y]])
         # process rule type:bounded
-        if kwargs.get("type", "bounded") == "bounded":
+        if self.cfg["type"] == "bounded":
             min, max = self.get_map_size()
             #print(f"Maze size: min: {min}, max: {max}")
             valid_neighbors = {}
@@ -361,6 +367,12 @@ class Grid():
             direction = translation_table[direction]
         neighbors = self.get_neighbors(directions=[direction], **kwargs)
         if direction in neighbors:
+            if self.cfg["type"] == "infinite":
+                if isinstance(self.map, dict) and neighbors[direction] not in self.map:
+                    self.map[neighbors[direction]] = self.cfg["default_value"]
+                    self.cfg['min'], self.cfg['max'] =  self.get_map_size()
+                elif isinstance(self.map, list):
+                    print("Infinite currenlty only supported for dict")
             self.pos = neighbors[direction]
             return True
         return False
