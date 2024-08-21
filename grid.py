@@ -10,6 +10,7 @@ class Grid():
         self.cfg['type'] = kwargs.get('type', 'bounded')
         self.cfg['default_value'] = kwargs.get('default_value', '.')
         self.map = self.load_map(grid_map)
+        self.overrides = kwargs.get('overrides', None)
         self.pos = kwargs.get('start_pos', (0,0))
         if self.cfg['datastore'] == 'dict':
             self.cfg['pos_type'] = kwargs.get('pos_type', 'tuple')
@@ -71,6 +72,9 @@ class Grid():
     def __str__(self):
         X=0
         Y=1
+        overrides = self.overrides
+        if not overrides:
+            overrides = {self.pos: '*'}
         do_complex = False
         if self.cfg['datastore'] == 'dict':
             if self.cfg['pos_type'] == 'complex':
@@ -80,8 +84,8 @@ class Grid():
             if self.cfg['datastore'] == 'list':
                 for y, row  in enumerate(self.map):
                     for x, char in enumerate(row):
-                        if (y, x) == self.pos:
-                            my_string += '*'
+                        if (y, x) in overrides:
+                            my_string += overrides[(x,y)]
                         else:
                             my_string += char
                     my_string += '\n'
@@ -92,13 +96,13 @@ class Grid():
                 for x in range(max_x):
                     for y in range(max_y):
                         if do_complex:
-                            if complex(x, y) == self.pos:
-                                my_string += '*'
+                            if complex(x, y) in overrides:
+                                my_string += overrides[complex(x, y)]
                             else:
                                 my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
-                            if (x, y) == self.pos:
-                                my_string += '*'
+                            if (x, y) in overrides:
+                                my_string += overrides[(x,y)]
                             else:
                                 my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
@@ -106,8 +110,8 @@ class Grid():
             if self.cfg['datastore'] == 'list':
                 for y in range(len(self.map)):
                     for x in range(len(self.map[0])):
-                        if (x, y) == self.pos:
-                            my_string += '*'
+                        if (x, y) in overrides:
+                            my_string += overrides[(x,y)]
                         else:
                             my_string += self.map[x][y]
                     my_string += '\n'
@@ -118,13 +122,13 @@ class Grid():
                 for y in range(max_y):
                     for x in range(max_x):
                         if do_complex:
-                            if complex(x, y) == self.pos:
-                                my_string += '*'
+                            if complex(x, y) in overrides:
+                                my_string += overrides[(x,y)]
                             else:
                                 my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
-                            if (x, y) == self.pos:
-                                my_string += '*'
+                            if (x, y) in overrides:
+                                my_string += overrides[(x,y)]
                             else:
                                 my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
@@ -134,8 +138,8 @@ class Grid():
                 max_y = len(self.map[0])
                 for y in range(max_y - 1, -1, -1):
                     for x in range(max_x):
-                        if (x, y) == self.pos:
-                            my_string += '*'
+                        if (x, y) in overrides:
+                            my_string += overrides[(x,y)]
                         else:
                             my_string += self.map[x][y]
                     my_string += '\n'   
@@ -150,13 +154,13 @@ class Grid():
                 for y in range(max_y - 1, min_y, -1):
                     for x in range(min_x, max_x):
                         if do_complex:
-                            if complex(x, y) == self.pos:
-                                my_string += '*'
+                            if complex(x, y) in overrides:
+                                my_string += overrides[complex(x,y)]
                             else:
                                 my_string += self.map.get(complex(x, y), self.cfg["default_value"])
                         else:
-                            if (x, y) == self.pos:
-                                my_string += '*'
+                            if (x, y) in overrides:
+                                my_string += overrides[(x,y)]
                             else:
                                 my_string += self.map.get((x, y), self.cfg["default_value"])
                     my_string += '\n'
