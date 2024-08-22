@@ -20,6 +20,16 @@ function global:run {
     python -m "$global:aoc_year.$global:aoc_day.solution" 
 }
 
+function global:run_high { 
+    $scriptPath = "$global:aoc_year.$global:aoc_day.solution"
+    
+    # Start the process in the current window and wait for it to finish
+    $process = Start-Process -FilePath "python" -ArgumentList "-m $scriptPath" -NoNewWindow -PassThru -Wait
+
+    # Set the priority (Normal, Idle, BelowNormal, AboveNormal, High, RealTime)
+    $process.PriorityClass = "High"
+}
+
 # check solution.py
 function global:check { 
     pylint "$global:aoc_year/$global:aoc_day/solution.py" 

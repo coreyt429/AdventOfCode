@@ -381,7 +381,7 @@ class Grid():
             return True
         return False
 
-def manhattan_distance(start, goal):
+def manhattan_distance_old(start, goal):
     """
     Function to calculate manhattan distance between two points
     in 2D (x,y) or 3D (x,y,z)
@@ -397,3 +397,18 @@ def manhattan_distance(start, goal):
             return abs(start[X] - goal[X]) + abs(start[Y] - goal[Y]) + abs(start[Z] - goal[Z])
     if isinstance(start, complex):  # Still handle complex numbers as 2D
         return int(abs(start.real - goal.real) + abs(start.imag - goal.imag))
+
+def manhattan_distance(start, goal):
+    """
+    Function to calculate manhattan distance between two points
+    in 2D (x,y) or 3D (x,y,z)
+    """
+    # handle 2d or 3d tuples
+    if isinstance(start, tuple):
+        return sum(abs(s - g) for s, g in zip(start, goal))
+    
+    # Handle complex numbers as 2D
+    if isinstance(start, complex):
+        return int(abs(start.real - goal.real) + abs(start.imag - goal.imag))
+    
+    raise TypeError("Unsupported coordinate type. Must be tuple or complex.")
