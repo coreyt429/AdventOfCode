@@ -1,6 +1,33 @@
 from copy import deepcopy
+from queue import PriorityQueue
 
 #FIXME, dont' take complex  coordinates into account
+
+class Node:
+    """
+    Node class A* shortest path solution
+    """
+    def __init__(self, position, g_score, h_score, parent=None):
+        """
+        Init node
+        """
+        self.position = position
+        self.g_score = g_score
+        self.h_score = h_score
+        self.f_score = g_score + h_score
+        self.parent = parent
+
+    def __gt__(self, other):
+        """
+        Node greater than
+        """
+        return self.f_score > other.f_score
+
+    def __lt__(self, other):
+        """
+        Node less than
+        """
+        return self.f_score < other.f_score
 
 class Grid():
     def __init__(self, grid_map, **kwargs):
@@ -8,10 +35,11 @@ class Grid():
         self.cfg['coordinate_system'] = kwargs.get('coordinate_system', 'screen')
         self.cfg['datastore'] = kwargs.get('datastore', 'dict')
         self.cfg['type'] = kwargs.get('type', 'bounded')
-        self.cfg['default_value'] = kwargs.get('default_value', '.')
+        self.cfg['default_value'] = kwargs.get('default_value', ' ')
         self.map = self.load_map(grid_map)
-        self.overrides = kwargs.get('overrides', None)
+        self.overrides = kwargs.get('overrides', {})
         self.pos = kwargs.get('start_pos', (0,0))
+        self.iter_pos = (0, 0)
         if self.cfg['datastore'] == 'dict':
             self.cfg['pos_type'] = kwargs.get('pos_type', 'tuple')
             if self.cfg['pos_type'] == 'complex':
@@ -67,7 +95,21 @@ class Grid():
                 for col, char in enumerate(line):
                     tmp_dict[(row, col)] = char
             return tmp_dict
-            
+    
+    def __iter__(self):
+        # FIXME: currently only handling screen coordinates
+        self.iter_pos = [-1, 0]
+        return self
+    
+    def __next__(self):
+        # FIXME: currently only handling screen coordinates
+        self.iter_pos[0] += 1
+        if self.iter_pos[0] > self.cfg['max'][0]:
+            self.iter_pos[0] = 0
+            self.iter_pos[1] += 1
+        if self.iter_pos[1] > self.cfg['max'][1]:
+            raise StopIteration
+        return tuple(self.iter_pos)
     
     def __str__(self):
         X=0
@@ -116,22 +158,26 @@ class Grid():
                             my_string += self.map[x][y]
                     my_string += '\n'
             elif self.cfg['datastore'] == 'dict':
-                # Determine the size of the grid
-                max_x = self.cfg["max"][X] + 1
-                max_y = self.cfg["max"][Y] + 1
-                for y in range(max_y):
-                    for x in range(max_x):
-                        if do_complex:
-                            if complex(x, y) in overrides:
-                                my_string += overrides[(x,y)]
-                            else:
-                                my_string += self.map.get(complex(x, y), self.cfg["default_value"])
+                # FIXME: this uses self.__iter__ to generate the map
+                # that currently only works for screen coordinate dicts
+                # update other sections as that improves
+                last_y = 0
+                for point in self:
+                    # new row, new line
+                    if point[1] != last_y:
+                        last_y = point[1]
+                        my_string += "\n"
+                    if do_complex:
+                        if complex(point) in overrides:
+                            my_string += overrides[point]
                         else:
-                            if (x, y) in overrides:
-                                my_string += overrides[(x,y)]
-                            else:
-                                my_string += self.map.get((x, y), self.cfg["default_value"])
-                    my_string += '\n'
+                            my_string += self.map.get(complex(point), self.cfg["default_value"])
+                    else:
+                        if point in overrides:
+                            my_string += overrides[point]
+                        else:
+                            my_string += self.map.get(point, self.cfg["default_value"])
+                my_string += '\n'
         elif self.cfg['coordinate_system'] == 'cartesian':
             if self.cfg['datastore'] == 'list':
                 max_x = len(self.map)
@@ -150,7 +196,7 @@ class Grid():
                 min_x = self.cfg["min"][X]
                 min_y = self.cfg["min"][Y] - 1
                 # FIXME:  this is handling correctly, other functions of cartesian need
-                #         to be checked to be sure they are taking min into account
+                #         to be checked to be sure they are taking minimum into account
                 for y in range(max_y - 1, min_y, -1):
                     for x in range(min_x, max_x):
                         if do_complex:
@@ -176,36 +222,36 @@ class Grid():
         Y=1
         if isinstance(self.map, list):
             # list of list, return 0 to length
-            min = tuple([0, 0])
-            max = tuple([len(self.map), len(self.map[0])])
-            return min, max
+            minimum = tuple([0, 0])
+            maximum = tuple([len(self.map), len(self.map[0])])
+            return minimum, maximum
         if not isinstance(self.map, dict):
             print(f"get_map_size no rule to handle {type(self.map)}")
             sys.exit()
         # complex or tuple?
-        min = [float('infinity')]*2
-        max = [float('infinity')*-1]*2
+        minimum = [float('infinity')]*2
+        maximum = [float('infinity')*-1]*2
         is_complex = isinstance(list(self.map.keys())[0], complex)
         for key in self.map.keys():
             if is_complex:
-                if key.real < min[X]:
-                    min[X] = int(key.real)
-                if key.real > max[X]:
-                    max[X] = int(key.real)
-                if key.imag < min[Y]:
-                    min[Y] = int(key.imag)
-                if key.imag > max[Y]:
-                    max[Y] = int(key.imag)
+                if key.real < minimum[X]:
+                    minimum[X] = int(key.real)
+                if key.real > maximum [X]:
+                    maximum [X] = int(key.real)
+                if key.imag < minimum[Y]:
+                    minimum[Y] = int(key.imag)
+                if key.imag > maximum[Y]:
+                    maximum[Y] = int(key.imag)
             else:
-                if key[X] < min[X]:
-                    min[X] = key[X]
-                if key[X] > max[X]:
-                    max[X] = key[X]
-                if key[Y] < min[Y]:
-                    min[Y] = key[Y]
-                if key[Y] > max[Y]:
-                    max[Y] = key[Y]
-        return min, max
+                if key[X] < minimum[X]:
+                    minimum[X] = key[X]
+                if key[X] > maximum[X]:
+                    maximum[X] = key[X]
+                if key[Y] < minimum[Y]:
+                    minimum[Y] = key[Y]
+                if key[Y] > maximum[Y]:
+                    maximum[Y] = key[Y]
+        return minimum, maximum
 
     def get_neighbor_offsets(self, **kwargs):
         """
@@ -267,8 +313,9 @@ class Grid():
         Args:
             # inherited from class now
             #maze: list_x(list_y()) or dict(tuple(x,y) or dict(complex())) 
-            #point: tuple(x,y) or complex() # should match maze, or things may break
             **kwargs:  using kwargs for rules instead to be more flexible
+            point: tuple(x,y) or complex() # should match maze, or things may break
+                    defaults to self.pos
             rules: dict{} , example:
                 rules = {
                     "type": "bounded", # or infinite
@@ -296,6 +343,8 @@ class Grid():
         """
         X=0
         Y=1
+        # init point, default to self.pos
+        point = kwargs.get("point", self.pos)
         # define booleans:
         is_dict = isinstance(self.map, dict)
         #is_list = isinstance(self.map, list)
@@ -314,14 +363,13 @@ class Grid():
         neighbors = {}
         if is_complex:
             for direction, offset in offsets["complex"].items():
-                neighbors[direction] = self.pos + offset
+                neighbors[direction] = point + offset
         else:
             for direction, offset in offsets["tuple"].items():
-                neighbors[direction] = tuple([self.pos[X] + offset[X], self.pos[Y] + offset[Y]])
+                neighbors[direction] = tuple([point[X] + offset[X], point[Y] + offset[Y]])
         # process rule type:bounded
         if self.cfg["type"] == "bounded":
-            min, max = self.get_map_size()
-            #print(f"Maze size: min: {min}, max: {max}")
+            minimum, maximum = self.get_map_size()
             valid_neighbors = {}
             for direction, neighbor in neighbors.items():
                 #print(f"bounded, checking {neighbor}")
@@ -329,7 +377,7 @@ class Grid():
                     if neighbor in self.map:
                         valid_neighbors[direction] = neighbor
                 else:
-                    if min[X] <= neighbor[X] < max[X] and min[Y] <= neighbor[Y] < max[Y]:
+                    if minimum[X] <= neighbor[X] < maximum[X] and minimum[Y] <= neighbor[Y] < maximum[Y]:
                         valid_neighbors[direction] = neighbor
                 neighbors = valid_neighbors
         # are there invalid character rules, note, this will probably break in type:infinite
@@ -352,6 +400,12 @@ class Grid():
             neighbors = valid_neighbors
         return neighbors
     
+    def get_point(self, point, default='.'):
+        """
+        Function to retrieve the value of a point
+        """
+        return self.map.get(point, default)
+
     def move(self, direction, **kwargs):
         translation_table = {
             "up":    "n",
@@ -380,6 +434,72 @@ class Grid():
             self.pos = neighbors[direction]
             return True
         return False
+
+    def shortest_path(self, start, goal, invalid=['#']):
+        #def a_star(start, goal, maze, heuristics):
+        """
+        Function to execute A* algorithm to detect shortest path between each pair
+        Note, for now this only supports screen coordinate tuple dicts
+
+        Args:
+            self: Grid() object
+            start: tuple() x/y coordinate
+            goal: tuple() x/y coordinate
+            invalid: list(str()) characters to exlude from path
+        
+        Returns:
+            path: list(tuple()) x/y coordinates of path
+        
+        A* Node parameters:
+            position: tuple() x/y coordinates
+            g_score: int() steps taken
+            h_score: int() heuristic manhattan_distance(position, goal)
+            
+        """
+        # set start_node  (position, g_score, h_score)
+        start_node = Node(start, 0, manhattan_distance(start, goal))
+        # initialize PriorityQueue
+        open_set = PriorityQueue()
+        # add start_node to priority_queue (f_score, node)
+        open_set.put((start_node.f_score, start_node))
+        # initialize closed set
+        closed_set = set()
+
+        # process open set
+        while not open_set.empty():
+            # get current node
+            current_node = open_set.get()[1]
+
+            # are we at the goal?
+            if current_node.position == goal:
+                path = []
+                # start at current node
+                while current_node:
+                    # add position to path
+                    path.append(current_node.position)
+                    # move to parent
+                    current_node = current_node.parent
+                # return reverse path
+                return path[::-1]
+
+            # add to closed set
+            closed_set.add(current_node.position)
+            # get neighbors
+            for direction, neighbor_pos in self.get_neighbors(point=current_node.position, invalid=invalid).items():
+                # skip if already closed
+                if neighbor_pos in closed_set:
+                    continue
+                # Set neighbor node
+                neighbor_node = Node(
+                    neighbor_pos,
+                    current_node.g_score + 1,
+                    manhattan_distance(neighbor_pos, goal),
+                    current_node
+                )
+                # if not already in open_set, add it
+                if (neighbor_node.f_score, neighbor_node) not in open_set.queue:
+                    open_set.put((neighbor_node.f_score, neighbor_node))
+        return None  # No path found
 
 def manhattan_distance_old(start, goal):
     """
@@ -412,3 +532,4 @@ def manhattan_distance(start, goal):
         return int(abs(start.real - goal.real) + abs(start.imag - goal.imag))
     
     raise TypeError("Unsupported coordinate type. Must be tuple or complex.")
+
