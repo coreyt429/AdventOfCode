@@ -46,6 +46,18 @@ Still a bit slow on part 1 (36 seconds), maybe revisit the first step selection.
 at the penultimate step, let's try starting with the second step, and move out until we
 we have multiple first steps or we reach the penultimate step.
 
+Part 2, solution works for test case 1. 
+
+Solution for input data gets:
+Elf Power: 34, score: 41552, winner: E, elf_losses: 0
+
+Which AoC said was too low.  Try other test cases to see if something is off there.
+All of the test cases run perectly.
+the input data ends in the right number of turns, and the remaining hit_points are off
+by 15.  The difference appears to be in elves 8 and 19.  Try printing that round to compare.
+
+
+
 """
 # import system modules
 import time
@@ -392,13 +404,16 @@ class Player:
     def __str__(self):
         return f"{self.player_id}: {self.team} @ {self.pos} [{self.hit_points}]"
 
-def play_game(game):
+def play_game(game, elf_attack=3):
     players = Players()
     my_map = Grid(game)
     for point in my_map:
         team = my_map.get_point(point)
         if team in ['G','E']:
-            players.append(Player(players, my_map, team, point))
+            new_player = Player(players, my_map, team, point)
+            if new_player.team == 'E':
+                new_player.attack = elf_attack
+            players.append(new_player)
     #print(my_map)
     #print(f"Initial: {[player.hit_points for player in players]}")
     completed_turns = 0
@@ -429,13 +444,23 @@ def play_game(game):
         for line in map_list:
             line = line.replace('     ','    ')
         #print('\n'.join(map_list))
+        # part 2 short circuit on first elf death
+        for player in players.players:
+            if player.team == 'E'  and player.attack > 3 and not player.alive:
+                game_over = True
+
+    
           
             
-    
+    winner = next(iter(players)).team
     remaining_hit_points = [player.hit_points for player in players]
     result = completed_turns * sum(remaining_hit_points)
-    #print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
-    return result
+    print(f"Team {winner} wins!")
+    print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
+    for player in players.players:
+        print(f"player: {player}, alive: {player.alive}")
+    elf_losses = len([player for player in players.players if player.team == 'E' and not player.alive])
+    return result, winner, elf_losses
 
 def solve(input_value, part):
     """
@@ -443,16 +468,18 @@ def solve(input_value, part):
     """
     if part == 1:
         #return None
-        return play_game(input_value)
+        score, winner, elf_losses = play_game(input_value)
+        return score
 
     if part == 2:
-        #for game in test_games:
-        #    play_game(game)
-        return None
-    
-    if part == 3:
-        return None
-    
+        elf_power = 33
+        winner = ''
+        elf_losses = -1
+        while elf_losses != 0:
+            elf_power += 1
+            score, winner, elf_losses = play_game(input_value, elf_power)
+            print(f"Elf Power: {elf_power}, score: {score}, winner: {winner}, elf_losses: {elf_losses}")
+        return score
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2018,15)
@@ -460,20 +487,17 @@ if __name__ == "__main__":
     # parts dict to loop
     parts = {
         1: 1,
-        2: 2,
-        3: 3
+        2: 2
     }
     # dict to store answers
     answer = {
         1: None,
-        2: None,
-        3: None
+        2: None
     }
     # dict to map functions
     funcs = {
         1: solve,
-        2: solve,
-        3: solve
+        2: solve
     }
     # loop parts
     for my_part in parts:

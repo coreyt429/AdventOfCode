@@ -413,7 +413,7 @@ class Grid():
 
     def shortest_paths(self, start, goal, invalid=['#'], directions=['n','s','e','w'], max_paths=1,limit=None, **kwargs):
         debug = kwargs.get('debug', False)
-        if debug: print(f"shortest_paths({start}, {goal}, {invalid}, {directions}, {max_paths}, {limit})")
+        #if debug: print(f"shortest_paths({start}, {goal}, {invalid}, {directions}, {max_paths}, {limit})")
         """
         Function to execute A* algorithm to detect shortest path between each pair
         Note, for now this only supports screen coordinate tuple dicts
@@ -454,31 +454,31 @@ class Grid():
         while not open_set.empty():
             # get current node
             current_node = open_set.get()[1]
-            if debug: print(f"current_position: {current_node.position}")
+            #if debug: print(f"current_position: {current_node.position}")
             if current_node.position in closed_set:
-                if debug: print(f"current_position already closed: {current_node.position}")
+                #if debug: print(f"current_position already closed: {current_node.position}")
                 continue
             
             if limit and current_node.g_score > limit:
                 closed_set.add(current_node.position)
-                if debug: print(f"limit reached: {limit} < {current_node.g_score}")
+                #if debug: print(f"limit reached: {limit} < {current_node.g_score}")
                 continue
 
             # ignore paths that are longer than the shortest seen
             if current_node.g_score > shortest_length:
                 if current_node.position == goal:
                     path = current_node.path()
-                    if debug: print(f"failed path of length({len(path)}): {path}")
+                    #if debug: print(f"failed path of length({len(path)}): {path}")
                 continue
             if current_node.has_loop():
-                if debug: print(f"Loop detected: {current_node.path()}")
+                #if debug: print(f"Loop detected: {current_node.path()}")
                 continue
 
             # are we at the goal?
             if current_node.position == goal:
                 path = current_node.path()
-                if debug: print(f"Found path of length({len(path)}): {path}")
-                if debug: print(f"{current_node.g_score} == {shortest_length}: {current_node.g_score == shortest_length}")
+                #if debug: print(f"Found path of length({len(path)}): {path}")
+                #if debug: print(f"{current_node.g_score} == {shortest_length}: {current_node.g_score == shortest_length}")
                 if current_node.g_score == shortest_length:
                     # add  path to shortest paths
                     shortest_paths.append(path)
@@ -487,7 +487,7 @@ class Grid():
                     shortest_paths = [path]
                     shortest_length = current_node.g_score
                     if len(shortest_paths) == max_paths:
-                        if debug: print(f"max_paths {max_paths} reached {len(shortest_paths)}")
+                        #if debug: print(f"max_paths {max_paths} reached {len(shortest_paths)}")
                         return shortest_paths
                 continue
 
@@ -495,15 +495,15 @@ class Grid():
             closed_set.add(current_node.position)
             # get neighbors
             neighbors = self.get_neighbors(point=current_node.position, invalid=invalid, directions=directions)
-            if debug: print(f"neighbors of {current_node.position} are {neighbors}")
+            #if debug: print(f"neighbors of {current_node.position} are {neighbors}")
             for direction in directions:
-                if debug: print(f"Trying neighbor: {direction} {neighbors.get(direction, None)}")
+                #if debug: print(f"Trying neighbor: {direction} {neighbors.get(direction, None)}")
                 neighbor_pos = neighbors.get(direction, None)
                 if not neighbor_pos:
                     continue
                 # skip if already closed
                 if neighbor_pos in closed_set:
-                    if debug: print(f"neighbor: {neighbor_pos} already closed")
+                    #if debug: print(f"neighbor: {neighbor_pos} already closed")
                     continue
                 # Set neighbor node
                 neighbor_node = Node(
@@ -515,8 +515,8 @@ class Grid():
                 # if not already in open_set, add it
                 if (neighbor_node.f_score, neighbor_node) not in open_set.queue:
                     open_set.put((neighbor_node.f_score, neighbor_node))
-                else:
-                    if debug: print(f"neighbor: {neighbor_node.position} f_score: {neighbor_node.f_score} already in open set")
+                #else:
+                    #if debug: print(f"neighbor: {neighbor_node.position} f_score: {neighbor_node.f_score} already in open set")
         return shortest_paths
 
 manhattan_distance_cache = {}
