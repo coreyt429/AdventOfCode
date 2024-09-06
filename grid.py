@@ -74,10 +74,12 @@ class GridIterator:
         self.iter_index = -1
         if self.cfg['coordinate_system'] == 'screen':
             # upper left hand corner -1x
-            self.iter_pos = [-1, 0]
+            #self.iter_pos = [-1, 0]
+            self.iter_pos = [self.cfg['min'][0] -1, self.cfg['min'][1]]
         elif self.cfg['coordinate_system'] == 'matrix':
             # upper left hand corner -1col
-            self.iter_pos = [0, -1]
+            self.iter_pos = [self.cfg['min'][0], self.cfg['min'][1] -1]
+            #self.iter_pos = [0, -1]
         elif self.cfg['coordinate_system'] == 'cartesian':
             # upper left hand corner -1x
             self.iter_pos = [self.cfg['min'][0] -1, self.cfg['max'][1]]
@@ -90,7 +92,7 @@ class GridIterator:
         if self.cfg['coordinate_system'] == 'screen':
             self.iter_pos[0] += 1
             if self.iter_pos[0] > self.cfg['max'][0]:
-                self.iter_pos[0] = 0
+                self.iter_pos[0] = self.cfg['min'][0]
                 self.iter_pos[1] += 1
             if self.iter_pos[1] > self.cfg['max'][1]:
                 raise StopIteration
@@ -98,7 +100,7 @@ class GridIterator:
             # advance column
             self.iter_pos[1] += 1
             if self.iter_pos[1] > self.cfg['max'][1]:
-                self.iter_pos[1] = 0
+                self.iter_pos[1] = self.cfg['min'][1]
                 # advance row
                 self.iter_pos[0] += 1
             if self.iter_pos[0] > self.cfg['max'][0]:
@@ -107,7 +109,7 @@ class GridIterator:
             # advance x
             self.iter_pos[0] += 1
             if self.iter_pos[0] > self.cfg['max'][0]:
-                self.iter_pos[0] = 0
+                self.iter_pos[0] = self.cfg['min'][0]
                 # decrement y
                 self.iter_pos[1] -= 1
             if self.iter_pos[1] < self.cfg['min'][1]:
@@ -131,8 +133,11 @@ class Grid():
         self.cfg['pos_type'] = kwargs.get('pos_type', 'tuple')
         if self.cfg['pos_type'] == 'complex':
             deprecated(f"pos_type {self.cfg['pos_type']} not supported")
+        self.update()
+        
+    def update(self):
         self.cfg['min'], self.cfg['max'] =  self.get_map_size()
-      
+
     def load_map(self, grid_map):
         X=0
         Y=1
@@ -166,8 +171,7 @@ class Grid():
             return tmp_dict
     
     def __iter__(self):
-        if self.cfg["type"] == "infinite":
-            self.cfg['min'], self.cfg['max'] =  self.get_map_size()
+        #self.update()
         return GridIterator(self.map, self.cfg)
 
     def __str__(self):
@@ -228,7 +232,10 @@ class Grid():
         keys = self.map.keys()
         
         # Initialize min and max using the first key in the map
-        first_key = next(iter(keys))
+        try:
+            first_key = next(iter(keys))
+        except StopIteration:
+            return (0,0), (0,0)
         minimum = [first_key[X], first_key[Y]]
         maximum = [first_key[X], first_key[Y]]
         
@@ -362,17 +369,25 @@ class Grid():
             neighbors = valid_neighbors
         return neighbors
     
-    def get_point(self, point, default='.'):
+    def get_point(self, point, default='.', ob_default='%'):
         """
         Function to retrieve the value of a point
         """
+        #self.update()
         if point in self.overrides:
             return self.overrides.get(point, default)
         if point in self.tmp_overrides:
             return self.overrides.get(point, default)
-        if self.cfg["type"] == "infinite":
-            self.cfg['min'], self.cfg['max'] =  self.get_map_size()
+        if not self.in_bounds(point):
+            return ob_default
         return self.map.get(point, default)
+    
+    def in_bounds(self, point):
+        if not (self.cfg["min"][0] <= point[0] <= self.cfg["max"][0]):
+            return False
+        if not (self.cfg["min"][1] <= point[1] <= self.cfg["max"][1]):
+            return False
+        return True
     
     def set_point(self, point, value=None):
         """
