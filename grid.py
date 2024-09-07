@@ -133,6 +133,7 @@ class Grid():
         self.cfg['pos_type'] = kwargs.get('pos_type', 'tuple')
         if self.cfg['pos_type'] == 'complex':
             deprecated(f"pos_type {self.cfg['pos_type']} not supported")
+        self.cfg['use_overrides'] = kwargs.get('use_overrides', True)
         self.update()
         
     def update(self):
@@ -177,12 +178,12 @@ class Grid():
     def __str__(self):
         X=0
         Y=1
-        overrides = self.overrides
-        if not overrides:
-            overrides = {self.pos: '*'}
-        if self.tmp_overrides:
-            for key, value in self.tmp_overrides.items():
-                overrides[key] = value
+        # leaving this for backards compatibility
+        if not self.overrides:
+            self.overrides = {self.pos: '*'}
+        # if self.tmp_overrides:
+        #     for key, value in self.tmp_overrides.items():
+        #         overrides[key] = value
         my_string = ""
         if self.cfg['coordinate_system'] == 'matrix':
             last_x = 0
@@ -191,10 +192,10 @@ class Grid():
                 if point[0] != last_x:
                     last_x = point[0]
                     my_string += "\n"
-                if point in overrides:
-                    my_string += overrides[point]
-                else:
-                    my_string += self.map.get(point, self.cfg["default_value"])
+                # if point in overrides:
+                #     my_string += overrides[point]
+                # else:
+                my_string += self.get_point(point, self.cfg["default_value"])
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'screen':
             last_y = 0
@@ -203,10 +204,10 @@ class Grid():
                 if point[1] != last_y:
                     last_y = point[1]
                     my_string += "\n"
-                if point in overrides:
-                    my_string += overrides[point]
-                else:
-                    my_string += self.map.get(point, self.cfg["default_value"])
+                # if point in overrides:
+                #     my_string += overrides[point]
+                # else:
+                my_string += self.get_point(point, self.cfg["default_value"])
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'cartesian':
             last_y = 0
@@ -215,10 +216,10 @@ class Grid():
                 if point[1] != last_y:
                     last_y = point[1]
                     my_string += "\n"
-                if point in overrides:
-                    my_string += overrides[point]
-                else:
-                    my_string += self.map.get(point, self.cfg["default_value"])
+                # if point in overrides:
+                #     my_string += overrides[point]
+                # else:
+                my_string += self.get_point(point, self.cfg["default_value"])
             my_string += '\n'
         else:
             my_string = f"Unhandled coordinate_system: {self.cfg['coordinate_system']}"
@@ -374,10 +375,11 @@ class Grid():
         Function to retrieve the value of a point
         """
         #self.update()
-        if point in self.overrides:
-            return self.overrides.get(point, default)
-        if point in self.tmp_overrides:
-            return self.overrides.get(point, default)
+        if self.cfg['use_overrides']:
+            if point in self.overrides:
+                return self.overrides.get(point, default)
+            if point in self.tmp_overrides:
+                return self.overrides.get(point, default)
         if not self.in_bounds(point):
             return ob_default
         return self.map.get(point, default)

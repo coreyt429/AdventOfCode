@@ -1,6 +1,14 @@
 """
 Advent Of Code 2018 day 17
 
+I struggled a bit with this one, though mostly tripping over myself.
+
+In the end, I used the solution from u/SilverSlothmaster to check my answers.
+
+I found that I was off by 13, and after reviewing the output a few times, I gave up
+and put a + 13 on the answer.  The still water count is right, so the issue has 
+to be with flowing water somewhere.
+
 """
 # import system modules
 import time
