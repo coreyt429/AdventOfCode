@@ -291,7 +291,10 @@ class Grid():
         self.neighbor_offsets = {"tuple": {}}
 
         offsets = offset_collection[self.cfg.get('coordinate_system', 'screen')]
-        directions = kwargs.get('directions', offsets.keys())
+        # directions = kwargs.get('directions', offsets.keys())
+        # lets always return all offsets, to improve cache hits
+        directions = offsets.keys()
+        # print(f"get_neighbor_offsets(directions={directions})")
 
         # Calculate offsets:
         for direction in directions:
@@ -354,7 +357,7 @@ class Grid():
                 neighbors[direction] = tuple([point[X] + offset[X], point[Y] + offset[Y]])
             # process rule type:bounded
             if self.cfg["type"] == "bounded":
-                minimum, maximum = self.get_map_size()
+                # minimum, maximum = self.get_map_size()
                 valid_neighbors = {}
                 for direction, neighbor in neighbors.items():
                     if neighbor in self.map:
@@ -368,6 +371,9 @@ class Grid():
                 if not self.get_point(neighbor) in kwargs['invalid']:
                     valid_neighbors[direction] = neighbor
             neighbors = valid_neighbors
+        
+        if "directions" in kwargs:
+            neighbors = {key:value for key, value in neighbors.items() if key in kwargs['directions']}
         return neighbors
     
     def get_point(self, point, default='.', ob_default='%'):
@@ -398,8 +404,8 @@ class Grid():
         if not value:
             value = self.cfg["default_value"]
         self.map[point] = value
-        if self.cfg["type"] == "infinite":
-            self.cfg['min'], self.cfg['max'] =  self.get_map_size()
+        # if self.cfg["type"] == "infinite":
+        #     self.cfg['min'], self.cfg['max'] =  self.get_map_size()
         return True
 
     def move(self, direction, **kwargs):
@@ -414,6 +420,7 @@ class Grid():
             "r":     "e"
             
         }
+        self.overrides.pop(self.pos, None)
         # normalize to lowercase
         direction = direction.lower()
         # normalize to n, s, e, w
@@ -422,13 +429,15 @@ class Grid():
         neighbors = self.get_neighbors(directions=[direction], **kwargs)
         if direction in neighbors:
             if self.cfg["type"] == "infinite":
-                self.map[neighbors[direction]] = self.cfg["default_value"]
-                self.cfg['min'], self.cfg['max'] =  self.get_map_size()
+                value = self.get_point(neighbors[direction], self.cfg["default_value"])
+                self.set_point(neighbors[direction], value)
+                # self.cfg['min'], self.cfg['max'] =  self.get_map_size()
             self.pos = neighbors[direction]
+            self.overrides[self.pos] = '*'
             return True
         return False
 
-    def shortest_paths(self, start, goal, invalid=['#'], directions=['n','s','e','w'], max_paths=1,limit=None, **kwargs):
+    def shortest_paths(self, start, goal, invalid=['#'], directions=['n','s','e','w'], max_paths=1, limit=None, **kwargs):
         debug = kwargs.get('debug', False)
         #if debug: print(f"shortest_paths({start}, {goal}, {invalid}, {directions}, {max_paths}, {limit})")
         """
