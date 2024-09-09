@@ -22,10 +22,26 @@ If you go this route, I'm thinking kwargs for:
     h_score_callback - would need to pass grid, pos, and target at minimum
     neighbor_selection_callback - would need to pass grid, pos, target, and possible neighbors
 
+Instead of callbacks, I streamlined the shortest_paths function and Node() class so that
+shortest_paths uses methods of Node() to make decisions.  Then I can override those
+in a subclass to tweak them for each problem.  Also tweaked the way closed_set was working
+to hash the objects instead.  This could improve efficiency in the elf goblin battle if
+we revisit it later.
+
+This worked well for the test data, and the input data was just too big for this approach.
+
+Checking the solutions, I was reminded of the networkx library and its dijkstra implementation
+in the solution by u/korylprince
+
+I have seen this before, and was not quite ready to understand it.  having a better
+understanding now of graphs and the underlying algorithms, I decided to give this
+a try.  
+
 """
 # import system modules
 import time
 import functools
+import networkx
 
 # import my modules
 import aoc # pylint: disable=import-error
@@ -135,7 +151,7 @@ def get_risk_level(grid, start, goal):
             total += risk_level[grid.get_point(point)]
     return total
 
-def init_grid(depth, target):
+def init_grid(depth, target, scale_out=6):
     """
     Function to initialize grid and populate data:
     Args:
@@ -146,11 +162,53 @@ def init_grid(depth, target):
     """
     grid = Grid('M', type="infinite", coordinate_system='screen', use_overrides=False)
     # populate grid
-    for x_pos in range(target[0] + 6):
-        for y_pos in range(target[1] + 6):
+    for x_pos in range(target[0] + scale_out):
+        for y_pos in range(target[1] + scale_out):
             grid.set_point((x_pos, y_pos), get_area_type((x_pos, y_pos), depth, target))
     grid.update()
     return grid
+
+def dijkstra(grid, target):
+    """
+    Function to setup and run dijkstra search
+    
+    Args:
+        grid: Grid()
+        target: tuple(x, y)
+    Returns:
+        shortest_path_length: int()
+    """
+    # init graph
+    graph = networkx.Graph()
+    # start with torch at (0, 0)
+    terrain_equipment_map = {
+        '.': ['climbing_gear', 'torch'],
+        '=': ['climbing_gear', 'neither'],
+        '|': ['neither', 'torch']
+    }
+    for point in grid:
+        point_terrain = grid.get_point(point)
+        for eq_1 in terrain_equipment_map[point_terrain]:
+            for eq_2 in terrain_equipment_map[point_terrain]:
+                if  eq_1 == eq_2:
+                    continue
+                graph.add_edge((point[0], point[1], eq_1), (point[0], point[1], eq_2), weight=7)
+    for point in grid:
+        point_terrain = grid.get_point(point)
+        for direction, neighbor in grid.get_neighbors(
+                point=point, directions=['n','e','s','w']
+            ).items():
+            if direction not in ['n','e','s','w']:
+                continue
+            for equipped in terrain_equipment_map[point_terrain]:
+                if graph.has_node((neighbor[0], neighbor[1], equipped)):
+                    graph.add_edge(
+                        (point[0], point[1], equipped),
+                        (neighbor[0], neighbor[1], equipped),
+                        weight=1
+                    )
+    return networkx.dijkstra_path_length(graph, (0, 0, 'torch'), (target[0], target[1], 'torch'))
+
 
 def solve(input_value, part):
     """
@@ -158,11 +216,17 @@ def solve(input_value, part):
     """
     # load input data
     depth, target = parse_input(input_value)
+    scale_out = 1
+    if part == 2:
+        # part 2 needs a larger grid to cover the path
+        scale_out = 50
     # init grid
-    grid = init_grid(depth, target)
+    grid = init_grid(depth, target, scale_out)
+    # part 1 caculate risk level
     if part == 1:
         return get_risk_level(grid, (0,0), target)
-    return part
+    # part 2 calculate shortest path length
+    return dijkstra(grid, target)
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2018,22)

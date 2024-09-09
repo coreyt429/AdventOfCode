@@ -22,15 +22,37 @@ class Node:
     """
     Node class A* shortest path solution
     """
-    def __init__(self, position, g_score, h_score, parent=None):
+    def __init__(self, position, goal, parent=None, **kwargs):
         """
         Init node
         """
-        self.position = position
-        self.g_score = g_score
-        self.h_score = h_score
-        self.f_score = g_score + h_score
         self.parent = parent
+        self.position = position
+        self.goal = goal
+        self.grid = kwargs.get('grid', None)
+        if not kwargs.get('skip_scoring', False):
+            self.g_score = self.calc_g_score()
+            self.h_score = self.calc_h_score()
+            self.f_score = self.calc_f_score()
+    
+    def calc_h_score(self):
+        return manhattan_distance(self.position, self.goal)
+    
+    def calc_g_score(self):
+        if not self.parent:
+            return 0
+        return self.parent.g_score + 1
+    
+    def calc_f_score(self):
+        return self.g_score + self.h_score
+
+    def get_children(self, child_pos):
+        return  [self.__class__(
+                    child_pos,
+                    self.goal,
+                    self,
+                    grid=self.grid
+                )]
     
     def has_loop(self):
         path = list(self.path())
@@ -61,6 +83,21 @@ class Node:
         Node less than
         """
         return self.f_score < other.f_score
+    
+    def __eq__(self, other):
+        """
+        Node equal
+        """
+        try:
+            return self.position == other.position
+        except AttributeError:
+            return self.position == other
+    
+    def __hash__(self):
+        """
+        Node Hash
+        """
+        return hash(self.position)
 
 def deprecated(message):
     print(f"deprecated: {message} no longer supported!")
@@ -439,6 +476,8 @@ class Grid():
 
     def shortest_paths(self, start, goal, invalid=['#'], directions=['n','s','e','w'], max_paths=1, limit=None, **kwargs):
         debug = kwargs.get('debug', False)
+        node_class = kwargs.get('node_class', Node)
+        use_closed_set = kwargs.get('use_closed_set', True)
         #if debug: print(f"shortest_paths({start}, {goal}, {invalid}, {directions}, {max_paths}, {limit})")
         """
         Function to execute A* algorithm to detect shortest path between each pair
@@ -462,13 +501,12 @@ class Grid():
             h_score: int() heuristic manhattan_distance(position, goal)
             
         """
+        # init shortest_paths and shortest_length
         shortest_paths = []
-        if shortest_paths:
-            return shortest_paths
-
+        shortest_nodes = []
         shortest_length = float('infinity')
         # set start_node  (position, g_score, h_score)
-        start_node = Node(start, 0, manhattan_distance(start, goal))
+        start_node = node_class(start, goal, grid=self)
         # initialize PriorityQueue
         open_set = PriorityQueue()
         # add start_node to priority_queue (f_score, node)
@@ -480,13 +518,14 @@ class Grid():
         while not open_set.empty():
             # get current node
             current_node = open_set.get()[1]
-            #if debug: print(f"current_position: {current_node.position}")
-            if current_node.position in closed_set:
+            print(f"queue: {open_set.qsize()}, current: {current_node.g_score} {current_node.position}")
+            if use_closed_set and (current_node.parent, current_node) in closed_set:
                 #if debug: print(f"current_position already closed: {current_node.position}")
                 continue
             
             if limit and current_node.g_score > limit:
-                closed_set.add(current_node.position)
+                if current_node.parent:
+                    closed_set.add(current_node.parent, current_node)
                 #if debug: print(f"limit reached: {limit} < {current_node.g_score}")
                 continue
 
@@ -508,17 +547,22 @@ class Grid():
                 if current_node.g_score == shortest_length:
                     # add  path to shortest paths
                     shortest_paths.append(path)
+                    shortest_nodes.append(current_node)
                 elif current_node.g_score < shortest_length:
                     # set shortest paths to reverse path
                     shortest_paths = [path]
+                    shortest_nodes = [current_node]
                     shortest_length = current_node.g_score
                     if len(shortest_paths) == max_paths:
                         #if debug: print(f"max_paths {max_paths} reached {len(shortest_paths)}")
-                        return shortest_paths
+                        # return shortest_paths
+                        # break while loop instead
+                        break
                 continue
 
-            # add to closed set
-            closed_set.add(current_node.position)
+            # add to closed set movement from parent to current
+            if current_node.parent:
+                closed_set.add((current_node.parent.position, current_node.position))
             # get neighbors
             neighbors = self.get_neighbors(point=current_node.position, invalid=invalid, directions=directions)
             #if debug: print(f"neighbors of {current_node.position} are {neighbors}")
@@ -527,22 +571,27 @@ class Grid():
                 neighbor_pos = neighbors.get(direction, None)
                 if not neighbor_pos:
                     continue
-                # skip if already closed
-                if neighbor_pos in closed_set:
-                    #if debug: print(f"neighbor: {neighbor_pos} already closed")
-                    continue
                 # Set neighbor node
-                neighbor_node = Node(
-                    neighbor_pos,
-                    current_node.g_score + 1,
-                    manhattan_distance(neighbor_pos, goal),
-                    current_node
-                )
-                # if not already in open_set, add it
-                if (neighbor_node.f_score, neighbor_node) not in open_set.queue:
-                    open_set.put((neighbor_node.f_score, neighbor_node))
-                #else:
-                    #if debug: print(f"neighbor: {neighbor_node.position} f_score: {neighbor_node.f_score} already in open set")
+                neighbor_nodes = current_node.get_children(neighbor_pos)
+                if not neighbor_nodes:
+                    continue
+                for neighbor_node in neighbor_nodes:
+                    # print(f"neighbor_node: {neighbor_node}")
+                    # skip if already closed
+                    if use_closed_set and (current_node, neighbor_node) in closed_set:
+                        #if debug: print(f"neighbor: {neighbor_pos} already closed")
+                        continue
+                    # if not already in open_set, add it
+                    if (neighbor_node.f_score, neighbor_node) not in open_set.queue:
+                        open_set.put((neighbor_node.f_score, neighbor_node))
+                    #else:
+                        #if debug: print(f"neighbor: {neighbor_node.position} f_score: {neighbor_node.f_score} already in open set")
+        if kwargs.get('retval', 'path') == 'length':
+            return shortest_length
+        if kwargs.get('retval', 'path') == 'both':
+            return shortest_length, shortest_paths
+        if kwargs.get('retval', 'path') == 'nodes':
+            return shortest_nodes
         return shortest_paths
 
 manhattan_distance_cache = {}
