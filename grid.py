@@ -14,6 +14,8 @@ import sys
 from copy import deepcopy
 from queue import PriorityQueue
 import functools
+import numpy as np
+
 
 neighbor_cache = {
     "screen": {},
@@ -597,13 +599,17 @@ class Grid():
         return shortest_paths
 
 @functools.lru_cache(maxsize=None)
-def manhattan_distance(start, goal):
+def manhattan_distance_old(start, goal):
     """
     Function to calculate manhattan distance between two points
     in 2D (x,y) or 3D (x,y,z)
     """
     # handle 2d or 3d tuples
     return sum(abs(s - g) for s, g in zip(start, goal))
+
+@functools.lru_cache(maxsize=None)
+def manhattan_distance(p1, p2):
+    return np.sum(np.abs(np.array(p1) - np.array(p2)))
 
 if __name__ == "__main__":
     test_grid = "123\n456\n789"
