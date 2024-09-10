@@ -13,6 +13,8 @@ So stripping this down to just work with dict() keyed on tuple(x/y)
 import sys
 from copy import deepcopy
 from queue import PriorityQueue
+import functools
+
 neighbor_cache = {
     "screen": {},
     "cartesian": {},
@@ -518,14 +520,14 @@ class Grid():
         while not open_set.empty():
             # get current node
             current_node = open_set.get()[1]
-            print(f"queue: {open_set.qsize()}, current: {current_node.g_score} {current_node.position}")
+            # print(f"queue: {open_set.qsize()}, current: {current_node.g_score} {current_node.position}")
             if use_closed_set and (current_node.parent, current_node) in closed_set:
                 #if debug: print(f"current_position already closed: {current_node.position}")
                 continue
             
             if limit and current_node.g_score > limit:
                 if current_node.parent:
-                    closed_set.add(current_node.parent, current_node)
+                    closed_set.add((current_node.parent, current_node))
                 #if debug: print(f"limit reached: {limit} < {current_node.g_score}")
                 continue
 
@@ -594,20 +596,14 @@ class Grid():
             return shortest_nodes
         return shortest_paths
 
-manhattan_distance_cache = {}
+@functools.lru_cache(maxsize=None)
 def manhattan_distance(start, goal):
     """
     Function to calculate manhattan distance between two points
     in 2D (x,y) or 3D (x,y,z)
     """
-    cached_value = manhattan_distance_cache.get(start, {}).get(goal, None)
-    if cached_value:
-        return cached_value
     # handle 2d or 3d tuples
-    if start not in manhattan_distance_cache:
-        manhattan_distance_cache[start] = {}
-    manhattan_distance_cache[start][goal] = sum(abs(s - g) for s, g in zip(start, goal))
-    return manhattan_distance_cache[start][goal]
+    return sum(abs(s - g) for s, g in zip(start, goal))
 
 if __name__ == "__main__":
     test_grid = "123\n456\n789"

@@ -56,11 +56,28 @@ All of the test cases run perectly.
 the input data ends in the right number of turns, and the remaining hit_points are off
 by 15.  The difference appears to be in elves 8 and 19.  Try printing that round to compare.
 
+9/9/2023 update.
 
+I revisited this for a bit after updating the Grid().shortest_paths() function. I thought the
+modifications would have eliminated the need to walk the path back to find the possible first
+steps, and it seems to not work without that step.  This solution is still super slow, but letting
+it run to see if the part 2 answer is right after those changes.  Yeah, answers are off, will need
+to debug this one again.
+
+Updated to use networkx.DiGraph() with directional weights to try to force the "reading order" rules
+Something is still off, but at least it is fasster.
+
+After deep testing, I found and fixed a type (wrong variable in comparison).  So part1 is getting
+the right answer now.
+
+Debugging hasn't turned up anything else, and I'm not sure I'm following my original logic.
+My recommendation next time is to rebuild attempt_move from the ground up with careful attention
+to the rules.  We must be doing something wrong here.
 
 """
 # import system modules
 import time
+import networkx
 
 # import my modules
 import aoc # pylint: disable=import-error
@@ -151,7 +168,7 @@ class Players:
     def __str__(self):
         my_string = "Players:\n"
         for player in self:
-            print(f"  {player}")
+            my_string += f"  {player}\n"
         return my_string
     
 
@@ -167,6 +184,7 @@ class Player:
         self.hit_points = hit_points
         self.grid.map[pos] = '.'
         self.grid.overrides[pos] = self.team
+        self.graph = None
         self.container = container
         self.alive = True
     
@@ -208,55 +226,81 @@ class Player:
         opponents.sort(key=lambda opponent: manhattan_distance(self.pos, opponent.pos))
         return opponents
 
+    def open_squares(self):
+        empty = set()
+        for point in self.grid:
+            if self.grid.get_point(point=point) == '.':
+                empty.add(point)
+        return empty
+    
+
+    def build_graph(self):
+        weights = {
+            'n': .01,
+            'w': .02,
+            'e': .03,
+            's': .04
+        }
+        self.graph = networkx.DiGraph()
+        empty = self.open_squares()
+        for point in empty.union(set([self.pos])):
+            self.graph.add_node(point)
+        for point in empty.union(set([self.pos])):
+            for direction, neighbor in self.grid.get_neighbors(point=point, directions=self.directions, invalid=['#', 'G', 'E']).items():
+                if self.graph.has_node(neighbor):
+                    if point == self.pos:
+                        self.graph.add_edge(point, neighbor, weight=1+weights[direction]+.5)
+                    else:    
+                        # self.graph.add_edge(point, neighbor, weight=1+weights[direction])
+                        self.graph.add_edge(point, neighbor, weight=1)
+
     def find_open_squares(self, opponents):
         open_squares = []
         for other in opponents:
-                #if debug: print(f"checking opponent {other}")
                 # that are in range of each target; these are the squares which are adjacent
                 # (immediately up, down, left, or right) to any target
                 neighbors = self.grid.get_neighbors(point=other.pos, directions=self.directions, invalid=['#', 'G', 'E'])
-                #if debug: print(f"neighbors: {neighbors}")
                 for neighbor in neighbors.values():
-                    #if debug: print(f"{neighbor} not in {self.grid.overrides}: {neighbor not in self.grid.overrides}")
                     #  and which aren't already occupied by a wall or another unit.
-                    if neighbor not in self.grid.overrides:
-                        #if debug: print(f"add open_square: {neighbor}")
+                    if self.graph.has_node(neighbor):
                         open_squares.append(neighbor)
         return open_squares
+    # def find_shortest_paths(self, open_squares, limit=None, **kwargs):
+    #     debug = kwargs.get('debug', False)
 
-    def find_shortest_paths(self, open_squares, limit=None, **kwargs):
-        debug = kwargs.get('debug', False)
-        #if debug: print(f"find_shortest_paths({open_squares})")
-        if not open_squares:
-            return []
-        if isinstance(open_squares, set):
-            open_squares = list(open_squares)
-        if isinstance(open_squares[0], int):
-            open_squares = [open_squares]
-        #if debug: print(f"open_squares: {open_squares}")
-        shortest_paths = []
-        shortest_path_length = float('infinity')
-        open_squares.sort(key=lambda open_square: manhattan_distance(self.pos, open_square))
-        for open_square in open_squares:
-            #if debug: print(f"{self}:  trying open_square: {open_square}")
-            # I have a feeling that we are also going to need to pass self.grid.overrides.keys() to prevent
-            # moving through another player, but we'll see.  the shortest_path function will have to be updated to handle that.
-            # this may be resolved with modifications to get_neighbors
-            paths = self.grid.shortest_paths(self.pos, open_square, directions=self.directions, invalid=['#','G','E'], max_paths=10, limit=shortest_path_length, debug=debug)
-            #if debug: print(f"paths: {paths}")
-            # no path?
-            if not paths:
-                continue
-            for path in paths:
-                # first or tie?
-                if not shortest_paths or len(path) == shortest_path_length:
-                    shortest_paths.append(path)
-                    shortest_path_length = len(path)
-                # new shortest
-                if len(path) < shortest_path_length:
-                    shortest_paths = [path]
-                    shortest_path_length = len(path)
-        return shortest_paths
+    #     #if debug: print(f"find_shortest_paths({open_squares})")
+    #     if not open_squares:
+    #         return []
+    #     if isinstance(open_squares, set):
+    #         open_squares = list(open_squares)
+    #     if isinstance(open_squares[0], int):
+    #         open_squares = [open_squares]
+    #     #if debug: print(f"open_squares: {open_squares}")
+    #     shortest_paths = []
+    #     shortest_path_length = float('infinity')
+    #     open_squares.sort(key=lambda open_square: manhattan_distance(self.pos, open_square))
+    #     for open_square in open_squares:
+    #         #if debug: print(f"{self}:  trying open_square: {open_square}")
+    #         # I have a feeling that we are also going to need to pass self.grid.overrides.keys() to prevent
+    #         # moving through another player, but we'll see.  the shortest_path function will have to be updated to handle that.
+    #         # this may be resolved with modifications to get_neighbors
+    #         # paths = self.grid.shortest_paths(self.pos, open_square, directions=self.directions, invalid=['#','G','E'], max_paths=10, limit=shortest_path_length, debug=debug)
+    #         paths = self.grid.shortest_paths(self.pos, open_square, directions=self.directions, invalid=['#','G','E'], max_paths=10, limit=shortest_path_length)
+            
+    #         #if debug: print(f"paths: {paths}")
+    #         # no path?
+    #         if not paths:
+    #             continue
+    #         for path in paths:
+    #             # first or tie?
+    #             if not shortest_paths or len(path) == shortest_path_length:
+    #                 shortest_paths.append(path)
+    #                 shortest_path_length = len(path)
+    #             # new shortest
+    #             if len(path) < shortest_path_length:
+    #                 shortest_paths = [path]
+    #                 shortest_path_length = len(path)
+    #     return shortest_paths
     
     def move(self, pos):
         self.grid.overrides.pop(self.pos, None)
@@ -282,22 +326,32 @@ class Player:
                ##if debug: print(f"after point:{point}, choice: {choice}")
        ##if debug: print(f"return: {choice}")
         return choice
-    
+
     def attempt_move(self, opponents, debug=False):
         #if debug: print(self.grid)
         #if debug: print(f"attempt_move({self}{[opponent.pos for opponent in opponents]})")
         # Then, the unit identifies all of the open squares (.)   If the unit is not already in range of a target,
         # and there are no open squares which are in range of a target, the unit ends its turn.
-        open_squares = self.find_open_squares(opponents)
-        #if debug: print(f"open_squares: {open_squares}")
+        self.build_graph()
+        closest_distance = float('infinity')
         # find the path to the closest square
         # find shortests paths to any open_squares
-        shortest_paths = self.find_shortest_paths(open_squares)
-        #if debug: print(f"shortest_paths: {shortest_paths}")
+        shortest_paths = []
+        for open_square in self.find_open_squares(opponents):
+            try:
+                path = networkx.shortest_path(self.graph, source=self.pos, target=open_square, weight='weight')
+            except networkx.exception.NetworkXNoPath:
+                continue
+            if len(path) < closest_distance:
+                closest_distance = len(path)
+                shortest_paths = [path]
+            elif len(path) == closest_distance:
+                shortest_paths.append(path)    
         # not any, then we can't move, no problem, end turn
         if not shortest_paths:
             #if debug: print(f"{self}:\n    Can't move")
             return True
+        
         # identify nearest targets from shortest paths
         nearest_targets = [path[-1] for path in shortest_paths]
         #if debug: print(f"nearest_targets: {nearest_targets}")
@@ -322,19 +376,31 @@ class Player:
         #if debug: print(f"possible_targets: {possible_targets}")
         target = self.eval_points(possible_targets)
         #if debug: print(f"target: {target}")
-        shortest_paths = self.find_shortest_paths(target)
+        self.graph.add_node(target)
+        neighbors = self.grid.get_neighbors(point=target, directions=self.directions, invalid=['#', 'G', 'E'])
+        # invert weights, since direction is releative to target
+        for neighbor in neighbors.values():
+            self.graph.add_edge(neighbor, target, weight=1)
+        try:
+            path = networkx.shortest_path(self.graph, source=self.pos, target=target, weight='weight')
+        except networkx.exception.NetworkXNoPath:
+            print(f"No path from {self.pos} to {target}")
+            self.graph.remove_node(target)
+            return
+        self.graph.remove_node(target)
+        # shortest_paths = self.find_shortest_paths(target)
         #if debug: print(f"I see {len(shortest_paths)} paths to {target}")
-        while shortest_paths and len(shortest_paths[0]) > 2:
-            last_steps = set([path[-2] for path in shortest_paths])
-            #if debug: print(f"last_steps: {last_steps}")
-            shortest_paths = self.find_shortest_paths(last_steps)
-            #if debug: print(f"shortest_paths: {shortest_paths}")
+        # while shortest_paths and len(shortest_paths[0]) > 2:
+        #     last_steps = set([path[-2] for path in shortest_paths])
+        #     #if debug: print(f"last_steps: {last_steps}")
+        #     shortest_paths = self.find_shortest_paths(last_steps)
+        #     #if debug: print(f"shortest_paths: {shortest_paths}")
 
-        first_steps = set([path[1] for path in shortest_paths])
-        #if debug: print(f"first_steps: {first_steps}")
-        next_step = self.eval_points(first_steps)
-        #if debug: print(f"next_step: {next_step}")
-        self.move(next_step)
+        # first_steps = set([path[1] for path in shortest_paths])
+        # #if debug: print(f"first_steps: {first_steps}")
+        # next_step = self.eval_points(first_steps)
+        # #if debug: print(f"next_step: {next_step}")
+        self.move(path[1])
 
     def do_attack(self, targets):
         if isinstance(targets, set):
@@ -455,10 +521,10 @@ def play_game(game, elf_attack=3):
     winner = next(iter(players)).team
     remaining_hit_points = [player.hit_points for player in players]
     result = completed_turns * sum(remaining_hit_points)
-    print(f"Team {winner} wins!")
-    print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
-    for player in players.players:
-        print(f"player: {player}, alive: {player.alive}")
+    # print(f"Team {winner} wins!")
+    # print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
+    # for player in players.players:
+    #     print(f"player: {player}, alive: {player.alive}")
     elf_losses = len([player for player in players.players if player.team == 'E' and not player.alive])
     return result, winner, elf_losses
 
@@ -472,13 +538,13 @@ def solve(input_value, part):
         return score
 
     if part == 2:
-        elf_power = 33
+        elf_power = 34
         winner = ''
         elf_losses = -1
         while elf_losses != 0:
             elf_power += 1
             score, winner, elf_losses = play_game(input_value, elf_power)
-            print(f"Elf Power: {elf_power}, score: {score}, winner: {winner}, elf_losses: {elf_losses}")
+            # print(f"Elf Power: {elf_power}, score: {score}, winner: {winner}, elf_losses: {elf_losses}")
         return score
 
 if __name__ == "__main__":
@@ -493,6 +559,10 @@ if __name__ == "__main__":
     answer = {
         1: None,
         2: None
+    }
+    correct = {
+        1: 221754,
+        2: 41972
     }
     # dict to map functions
     funcs = {
@@ -509,3 +579,5 @@ if __name__ == "__main__":
         end_time = time.time()
         # print results
         print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        if answer[my_part] != correct[my_part]:
+            print(f"Incorrect answer {answer[my_part]} != {correct[my_part]}")
