@@ -1,6 +1,14 @@
 """
 Advent Of Code 2018 day 24
 
+Part 1 went pretty smoothly, but ran a bit slow. 
+
+I tripped up on the stalemates in part 2, and overlooked it for a while.
+
+If I started at the right boost I got the correct answer, but had issues detcting
+the right boost.
+
+minimized sorts to speed things up, and it runs pretty well now.
 """
 # import system modules
 import time
@@ -18,6 +26,7 @@ class Combatants():
         self.armies = set()
         # init phase
         self.phase = 'idle'
+        self.groups = {}
 
     def add_army(self, army):
         """add and army"""
@@ -26,32 +35,26 @@ class Combatants():
         # connect army back to Combants
         army.parent = self
 
-    def get_groups_gpt(self):
+    def update(self):
         """
-        get the groups from all armies
-        This was chat GPT's optimized version of my get_groups method
-        It didn't really save any time, and mine is easier to read
-        leaving here for educational purposes
+        Update group list caches
         """
-        return [
-            group for army in self.armies
-            for group in army.groups
-            if any(unit.alive for unit in group.units)
-        ]
-
-    def get_groups(self):
-        """get the groups from all armies"""
-        # init all_groups
-        all_groups = []
-        # walk armies
+        for key in ['all', 'alive', 'selection', 'attack', 'idle']:
+            self.groups[key] = []
         for army in self.armies:
             # walk groups
             for group in army.groups:
-                # if any units are alive
+                # add group
+                self.groups['all'].append(group)
                 if any((unit.alive for unit in group.units)):
-                    # add group
-                    all_groups.append(group)
-        return all_groups
+                    self.groups['alive'].append(group)
+                    self.groups['selection'].append(group)
+                    self.groups['attack'].append(group)
+        self.groups['selection'].sort(
+            key=lambda g: (g.stats['effective_power'], g.stats['initiative']),
+            reverse=True
+        )
+        self.groups['attack'].sort(key=lambda g: (g.stats['initiative']), reverse=True)
 
     def selection_phase(self):
         """run selection phase"""
@@ -77,10 +80,13 @@ class Combatants():
 
     def battle(self):
         """fight a battle"""
+        self.update()
         # run selections
         self.selection_phase()
+        # print()
         # run attacks
         self.attack_phase()
+        # print()
         # walk armies
         for army in self:
             # check for loser
@@ -90,17 +96,53 @@ class Combatants():
         # continue
         return True
 
+    def stalemate(self):
+        """
+        method to detect stalemates
+        """
+        # enumerate teams
+        teams = set()
+        for army in self.armies:
+            teams.add(army.team)
+        # init dicts
+        attacks = {}
+        immunities = {}
+        can_win = {}
+        # walk teams
+        for team in teams:
+            # init sets
+            attacks[team] = set()
+            immunities[team] = set()
+            can_win[team] = False
+        # walk groups
+        for group in self.groups['alive']:
+            # populate attacks and immunities
+            attacks[group.army.team].add(group.stats['attack_type'])
+            immunities[group.army.team].update(group.mods['immunities'])
+        # walk groups
+        for group in self.groups['alive']:
+            # get opposing team
+            opponent = [team for team in teams if team != group.army.team][0]
+            # walk attacks
+            for attack in attacks[group.army.team]:
+                # if attack is not blocked by an immunity
+                if attack not in immunities[opponent]:
+                    # group can win
+                    can_win[group.army.team] = True
+        return not any(can_win.values())
+
     def war(self):
         """fight a war"""
-        # counter = 0
+        counter = 0
         # print()
         # print('='*50)
         # print(f"Begin:\n{self}")
         # init previous_scores
         previous_scores = [army.units_remaining() for army in self]
         # do battle until there is a winner
+        idle_counter = 0
         while self.battle():
-            # counter += 1
+            counter += 1
             # print(f"{'-'*50}\nAfter battle {counter}:\n{self}")
             # if counter > 3500:
                 # print("Counter break")
@@ -110,12 +152,16 @@ class Combatants():
             # if there are only 3 scores between previous_scores and scores
             # then one team is no longer able to do damage and will lose
             if len(set(previous_scores + scores)) == 3:
-                # print("Only one team losing units")
-                for army in self:
-                    # print(f"{army.team}: {army.units_remaining()} in {previous_scores}")
-                    if army.units_remaining() in set(previous_scores) & set(scores):
-                        # return winner
-                        return army
+                idle_counter += 1
+                if idle_counter > 1:
+                    if self.stalemate():
+                        return Army(team='stalemate')
+                    # print("Only one team losing units")
+                    for army in self:
+                        # print(f"{army.team}: {army.units_remaining()} in {previous_scores}")
+                        if army.units_remaining() in set(previous_scores) & set(scores):
+                            # return winner
+                            return army
             # update previous_scores
             previous_scores = scores
         # print(f"{'-'*50}\nEnd:\n{self}\n")
@@ -136,27 +182,9 @@ class Combatants():
 
         We adjust the sorting rules based on phase.
         """
-        # idle phase
         if self.phase == 'idle':
-            # iterate through armies
-            # this is pretty much just for printing results in testing
             return iter(self.armies)
-        # get all groups
-        all_groups = self.get_groups()
-        # selection phase
-        if self.phase == 'selection':
-            # During the target selection phase, each group attempts to choose one target.
-            # Sort by effective power and then by initiative in reverse order
-            all_groups.sort(
-                key=lambda g: (g.stats['effective_power'], g.stats['initiative']),
-                reverse=True
-                )
-        if self.phase == 'attack':
-            # Groups attack in decreasing order of initiative
-            all_groups.sort(key=lambda g: (g.stats['initiative']), reverse=True)
-
-        # iterate over sorted groups
-        return iter(all_groups)
+        return iter(self.groups[self.phase])
 
     def __str__(self):
         """String"""
@@ -298,7 +326,9 @@ class Group():
         """find enemies"""
         # Filter out same team groups using filter
         enemy_groups = list(
-            filter(lambda group: group.army.team != self.army.team, self.army.parent.get_groups())
+            filter(
+                lambda group: group.army.team != self.army.team, self.army.parent.groups['alive']
+            )
         )
         return enemy_groups
 
@@ -344,7 +374,7 @@ class Group():
             # we can't attack if we will not do damage
             if effective_attack < 1:
                 continue
-            # print(f"{self} would deal {effective_attack} to {group}")
+            # print(f"{self} would deal defending group {group.g_id} {effective_attack} damage")
             # if new max, replace
             if effective_attack > max_attack:
                 max_attack = effective_attack
@@ -371,13 +401,17 @@ class Group():
         # nothing to do?
         if not self.attacking:
             return
-        # Infection group 2 attacks defending group 2, killing 84 units
         target = self.attacking
+        if self.stats['unit_count'] == 0:
+            self.attacking = None
+            target.defending = None
+            return
+        # Infection group 2 attacks defending group 2, killing 84 units
         effective_attack = self.calc_attack(target)
         # two versions of this, if you uncomment the print lines, swap to teh second version
         target.defend(effective_attack)
         # units_killed = target.defend(effective_attack)
-        # print(f"{self} attacks {target}, killing {units_killed} units")
+        # print(f"{self} attacks defending group {target.g_id}, killing {units_killed} units")
         # reset attacking and defending
         self.attacking = None
         target.defending = None
@@ -408,7 +442,7 @@ class Group():
 
     def __str__(self):
         """String"""
-        my_string = f"{self.army.team} Group {self.g_id}"
+        my_string = f"{self.army.team} group {self.g_id}"
         return my_string
 
 class Unit():
@@ -473,17 +507,43 @@ def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # parse data, and build armies
-    armies = parse_data(input_value)
     # Part 1
     if part == 1:
+        # parse data, and build armies
+        armies = parse_data(input_value)
+        armies.update()
         # get winner
         winner = armies.war()
         # print(winner)
         # return units remaining
-        return winner.units_remaining()
     # Part 2
-    return part
+    if part == 2:
+        # manual testing shows a range of 12 (Infection won) and 25 (Immune won)
+        # incremental testing indicated 16 is the appropriate boost
+        # narrowing range to minimize test time
+        # 3302 too low
+        # 36856 not the right answer
+        # okay, so 16 actually stated a series of stalemates that needed to be detected
+        # 35 is the answer
+        for boost in range(35, 36):
+            # parse data, and build armies
+            armies = parse_data(input_value)
+            armies.update()
+            for army in armies:
+                if army.team == 'Immune System':
+                    # print(f"Boosting {army.team} by {boost} with {army.units_remaining()} units")
+                    for group in army.groups:
+                        group.stats['attack_damage'] += boost
+                        group.update_effective_power()
+                        # print(f"{group}: {group.stats['attack_damage']}")
+                    # print()
+            # get winner
+            winner = armies.war()
+            # print(f"{winner.team} Wins")
+            if winner.team == "Immune System":
+                break
+    # print(armies)
+    return winner.units_remaining()
 
 
 if __name__ == "__main__":
