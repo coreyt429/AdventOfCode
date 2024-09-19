@@ -17,6 +17,8 @@ $global:aoc_day = $day
 
 # execute solution.py
 function global:run { 
+    $Env:PYTHONPATH = "C:\Users\corey\Dev\AdventOfCode\$global:aoc_year;C:\Users\corey\Dev\AdventOfCode\$global:aoc_year\$global:aoc.day"
+    echo $Env:PYTHONPATH
     python -m "$global:aoc_year.$global:aoc_day.solution" 
 }
 
@@ -31,7 +33,9 @@ function global:run_high {
 }
 
 # check solution.py
-function global:check { 
+function global:check {
+    $Env:PYTHONPATH = "C:\Users\corey\Dev\AdventOfCode\$global.aoc_year;C:\Users\corey\Dev\AdventOfCode\$global.aoc_year\$global.aoc.day"
+    echo $Env:PYTHONPATH
     pylint "$global:aoc_year/$global:aoc_day/solution.py" 
 }
 
