@@ -15,6 +15,7 @@ from copy import deepcopy
 from queue import PriorityQueue
 import functools
 import numpy as np
+import math
 
 
 neighbor_cache = {
@@ -610,6 +611,66 @@ def manhattan_distance_old(start, goal):
 @functools.lru_cache(maxsize=None)
 def manhattan_distance(p1, p2):
     return np.sum(np.abs(np.array(p1) - np.array(p2)))
+
+@functools.lru_cache(maxsize=None)
+def are_collinear(p1, p2, p3):
+    # Determine the number of dimensions
+    dim = len(p1)
+    
+    if dim == 2:
+        # 2D collinearity: Check using the determinant formula
+        return (p2[0] - p1[0]) * (p3[1] - p1[1]) == (p3[0] - p1[0]) * (p2[1] - p1[1])
+    
+    elif dim == 3:
+        # 3D collinearity: Check using the cross product
+        v1 = np.array([p2[i] - p1[i] for i in range(3)])
+        v2 = np.array([p3[i] - p1[i] for i in range(3)])
+        cross_product = np.cross(v1, v2)
+        return np.allclose(cross_product, [0, 0, 0])
+
+    else:
+        raise ValueError("This function only supports 2D or 3D points.")
+
+def linear_distance_numpy(p1, p2):
+    """Compute the Euclidean distance between two points."""
+    return np.linalg.norm(np.array(p1) - np.array(p2))
+
+def sort_collinear_points(points):
+    """Sort collinear points based on their order along the line."""
+    # Pick the first point as the reference
+    ref_point = points[0]
+
+    # Create a function to compute the projection distance along the line
+    def projection_distance(point):
+        # Vector from ref_point to the current point
+        vector = np.array(point) - np.array(ref_point)
+        
+        # Use a projection along the line to sort based on position
+        # Normalize the direction vector (direction between first and second point)
+        if len(points[0]) == 2:
+            # 2D: Pick second point as reference direction (if available)
+            direction = np.array(points[1]) - np.array(ref_point)
+        else:
+            # 3D: Same logic
+            direction = np.array(points[1]) - np.array(ref_point)
+
+        direction_normalized = direction / np.linalg.norm(direction)
+
+        # Project the vector onto the normalized direction
+        return np.dot(vector, direction_normalized)
+
+    # Sort points based on their projection distance from the ref_point
+    return sorted(points, key=projection_distance)
+    
+@functools.lru_cache(maxsize=None)
+def linear_distance(p1, p2):
+    """
+    Function to calculate linear distance between two points
+    """
+    total = 0
+    for idx in range(len(p1)):
+        total += (p1[idx] - p2[idx])**2
+    return math.sqrt(total)
 
 if __name__ == "__main__":
     test_grid = "123\n456\n789"
