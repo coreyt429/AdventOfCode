@@ -30,6 +30,11 @@ if __name__ == "__main__":
         1: None,
         2: None
     }
+    # correct answers once solved, to validate changes
+    correct = {
+        1: None,
+        2: None
+    }
     # dict to map functions
     funcs = {
         1: solve,
@@ -45,3 +50,5 @@ if __name__ == "__main__":
         end_time = time.time()
         # print results
         print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        if correct[my_part]:
+            assert correct[my_part] == answer[my_part]
