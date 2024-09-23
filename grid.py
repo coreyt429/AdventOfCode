@@ -167,6 +167,8 @@ class Grid():
             deprecated(f"datastore {self.cfg['datastore']} no longer supported")
         self.cfg['type'] = kwargs.get('type', 'bounded')
         self.cfg['default_value'] = kwargs.get('default_value', ' ')
+        self.cfg['ob_default_value'] = kwargs.get('ob_default_value', '%')
+        
         self.map = self.load_map(grid_map)
         self.overrides = kwargs.get('overrides', {})
         self.tmp_overrides = {}
@@ -418,10 +420,20 @@ class Grid():
             neighbors = {key:value for key, value in neighbors.items() if key in kwargs['directions']}
         return neighbors
     
-    def get_point(self, point, default='.', ob_default='%'):
+    def get_point(self, point, default='.', ob_default=None):
         """
         Function to retrieve the value of a point
         """
+        # if the point is defined, do don't really care if it is out of bounds
+        # so test to be sure it is defined
+        test = self.map.get(point, None)
+        # if defined
+        if not test is None:
+            # return the test value
+            return test
+        
+        if ob_default is None:
+            ob_default = self.cfg['ob_default_value']
         #self.update()
         if self.cfg['use_overrides']:
             if point in self.overrides:
