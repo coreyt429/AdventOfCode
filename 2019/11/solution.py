@@ -1,6 +1,23 @@
 """
 Advent Of Code 2019 day 11
 
+This one was fun.  For once I didn't have to tweak IntCodeComputer much.
+
+Robot() extends Grid(), and adds an IntCodeComputer() for logic
+
+I did need to tweak Grid() a bit.  get_point I added an early check to see
+if the point exists and has a value.  Without running frequent update() calls,
+the existing logic was letting OOB override the point actually existing. Previous
+puzzles have shown that update() is slow, and should only be run when needed (before
+iteration, or string functions (__str__ iterates the Grid)).  Otherwise, on an
+infinite grid, we should be able to just move freely, and set arbitrary points.
+Once a point is set, we should get its value, not a default_value or ob_default_value.
+Hopefully this fix doesn't break any old puzzles, but I still have todo item to check
+anything that uses Grid() to be sure it wasn't broken by previous updates.
+
+I grabbed the screen reading code from 2016.8, and modified it to "OCR" the part 2
+output.
+
 """
 # import system modules
 import time
@@ -12,13 +29,14 @@ from intcode import IntCodeComputer # pylint: disable=import-error,wrong-import-
 
 class Robot(Grid):
     """Class to represent a robot"""
-    # color map
+    # init color map
     colors = {
         '.': 0,
         0: '.',
         '#': 1,
         1: '#'
     }
+    # init directions
     directions = ['n', 'e', 's', 'w']
 
     def __init__(self, program):
