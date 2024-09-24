@@ -8,6 +8,8 @@ we don't break anything:
     python -m 2019.7.solution
     python -m 2019.9.solution
     python -m 2019.11.solution
+    python -m 2019.13.solution
+    
 
 Man, I wish I had understood what "It will perform a series of checks
 on each opcode, output any opcodes (and the associated parameter modes)
