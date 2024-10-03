@@ -35,6 +35,13 @@ class Node:
         self.position = position
         self.goal = goal
         self.grid = kwargs.get('grid', None)
+        self.visited = set()
+        if self.parent:
+            self.visited = set(parent.visited)
+        self.loop = False
+        if self.position in self.visited:
+            self.loop = True
+        self.visited.add(self.position)
         if not kwargs.get('skip_scoring', False):
             self.g_score = self.calc_g_score()
             self.h_score = self.calc_h_score()
@@ -59,11 +66,20 @@ class Node:
                     grid=self.grid
                 )]
     
-    def has_loop(self):
+    def has_loop_old_slow_method(self):
         path = list(self.path())
         for pos in path:
             if path.count(pos) > 1:
                 return True
+        return False
+    
+    def has_loop(self):
+        # return self.loop
+        visited = set()
+        for pos in self.path():
+            if pos in visited:
+                return True
+            visited.add(pos)
         return False
 
     def path(self):
@@ -178,6 +194,8 @@ class Grid():
         if self.cfg['pos_type'] == 'complex':
             deprecated(f"pos_type {self.cfg['pos_type']} not supported")
         self.cfg['use_overrides'] = kwargs.get('use_overrides', True)
+        self.cfg['pos_token'] = kwargs.get('pos_token', '*')
+        
         self.update()
         
     def update(self):
@@ -224,7 +242,7 @@ class Grid():
         Y=1
         # leaving this for backards compatibility
         if not self.overrides:
-            self.overrides = {self.pos: '*'}
+            self.overrides = {self.pos: self.cfg['pos_token']}
         # if self.tmp_overrides:
         #     for key, value in self.tmp_overrides.items():
         #         overrides[key] = value
@@ -239,7 +257,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point, self.cfg["default_value"])
+                my_string += self.get_point(point)
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'screen':
             last_y = 0
@@ -251,7 +269,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point, self.cfg["default_value"])
+                my_string += self.get_point(point)
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'cartesian':
             last_y = 0
@@ -263,7 +281,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point, self.cfg["default_value"])
+                my_string += self.get_point(point)
             my_string += '\n'
         else:
             my_string = f"Unhandled coordinate_system: {self.cfg['coordinate_system']}"
@@ -420,27 +438,34 @@ class Grid():
             neighbors = {key:value for key, value in neighbors.items() if key in kwargs['directions']}
         return neighbors
     
-    def get_point(self, point, default='.', ob_default=None):
+    def get_point(self, point, default=None, ob_default=None):
         """
         Function to retrieve the value of a point
         """
-        # if the point is defined, do don't really care if it is out of bounds
-        # so test to be sure it is defined
-        test = self.map.get(point, None)
-        # if defined
-        if not test is None:
-            # return the test value
-            return test
-        
+        # print(f"get_point({point}, {default}, {ob_default})")
+        if default is None:
+            default = self.cfg['default_value']
+
         if ob_default is None:
             ob_default = self.cfg['ob_default_value']
         #self.update()
+        # print(f"use_overrides: {self.cfg['use_overrides']}")
         if self.cfg['use_overrides']:
+            # print(f"Using overrides {self.overrides} - {self.tmp_overrides}")
             if point in self.overrides:
+                # print(f"{point} in overrides: {self.overrides[point]}")
                 return self.overrides.get(point, default)
             if point in self.tmp_overrides:
-                return self.overrides.get(point, default)
+                # print(f"{point} in tmp_overrides: {self.overrides[point]}")
+                return self.tmp_overrides.get(point, default)
         if not self.in_bounds(point):
+            # if the point is defined, do don't really care if it is out of bounds
+            # so test to be sure it is defined
+            test = self.map.get(point, None)
+            # if defined
+            if not test is None:
+                # return the test value
+                return test
             return ob_default
         return self.map.get(point, default)
     
@@ -487,7 +512,7 @@ class Grid():
                 self.set_point(neighbors[direction], value)
                 # self.cfg['min'], self.cfg['max'] =  self.get_map_size()
             self.pos = neighbors[direction]
-            self.overrides[self.pos] = '*'
+            self.overrides[self.pos] = self.cfg['pos_token']
             return True
         return False
 

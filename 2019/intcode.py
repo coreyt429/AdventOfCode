@@ -9,6 +9,8 @@ we don't break anything:
     python -m 2019.9.solution
     python -m 2019.11.solution
     python -m 2019.13.solution
+    python -m 2019.15.solution
+    
     
 
 Man, I wish I had understood what "It will perform a series of checks
