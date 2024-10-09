@@ -21,6 +21,11 @@ function global:run {
     python -m "$global:aoc_year.$global:aoc_day.solution" 
 }
 
+function global:profile { 
+    $Env:PYTHONPATH = "C:\Users\corey\Dev\AdventOfCode\$global:aoc_year;C:\Users\corey\Dev\AdventOfCode\$global:aoc_year\$global:aoc.day"
+    python -m cProfile -s time  -m "$global:aoc_year.$global:aoc_day.solution" 
+}
+
 function global:run_high { 
     $scriptPath = "$global:aoc_year.$global:aoc_day.solution"
     
