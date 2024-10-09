@@ -106,7 +106,7 @@ function global:check_all {
 }
 
 Write-Host "Functions 'run' and 'check' have been defined for year $global:aoc_year, day $global:aoc_day."
-Write-Host "Use 'run' to execute the solution,'check' to run pylint and 'push' to update github."
+Write-Host "Use 'run' to execute the solution,'check' to run pylint, 'profile' to run with profiling, and 'push' to update github."
 Write-Host "The variables 'aoc_year' and 'aoc_day' are now available globally."
 
 
