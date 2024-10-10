@@ -33,12 +33,17 @@ class Node:
         """
         self.parent = parent
         self.position = position
+        # self.history = self.position
+        # if self.parent:
+        #     self.history = self.parent.path + self.history
         self.goal = goal
         self.grid = kwargs.get('grid', None)
         self.visited = set()
         if self.parent:
             self.visited = set(parent.visited)
         self.loop = False
+        # print(f"self.position: {self.position}")
+        # print(f"self.visited: {self.visited}")
         if self.position in self.visited:
             self.loop = True
         self.visited.add(self.position)
@@ -74,15 +79,16 @@ class Node:
         return False
     
     def has_loop(self):
-        # return self.loop
+        return self.loop
         visited = set()
-        for pos in self.path():
+        for pos in self.history:
             if pos in visited:
                 return True
             visited.add(pos)
         return False
 
     def path(self):
+        # return tuple(self.history)
         trace_node = self
         # start at current node
         path = []
@@ -577,7 +583,7 @@ class Grid():
                     path = current_node.path()
                     #if debug: print(f"failed path of length({len(path)}): {path}")
                 continue
-            if current_node.has_loop():
+            if current_node.loop:
                 #if debug: print(f"Loop detected: {current_node.path()}")
                 continue
 
