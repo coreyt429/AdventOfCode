@@ -21,6 +21,7 @@ where the problem was.
 """
 
 import math
+from copy import deepcopy
 
 class OpCode():
     """
@@ -217,7 +218,7 @@ class IntCodeComputer():
         self.program = {
             key:int(value) for key, value in enumerate(program.split(','))
             }
-
+        self.program_backup = deepcopy(self.program)
         # init pointer
         self.ptr = 0
         #
@@ -244,6 +245,15 @@ class IntCodeComputer():
             self.operations[op_code] = OpCode(op_code, self)
         # init jump
         self.jump = None
+
+    def backup(self):
+        """Method to backup program state"""
+        self.program_backup = deepcopy(self.program)
+
+    def restore(self):
+        """Method to restore backup"""
+        self.program = deepcopy(self.program_backup)
+        self.ptr = 0
 
     def set_output(self, other):
         """Method to connect output to input"""
@@ -277,6 +287,14 @@ class IntCodeComputer():
                 last_output = output
         # return last output
         return last_output
+
+    def next_op_code(self):
+        """
+        Method to get the next op_code
+        """
+        instruction_text = str(self.program[self.ptr])
+        # the opcode is the rightmost two digits of the first value in an instruction.
+        return int(instruction_text[-2:])
 
     def step(self):
         """
