@@ -11,6 +11,8 @@ we don't break anything:
     python -m 2019.13.solution
     python -m 2019.15.solution
     python -m 2019.17.solution
+    python -m 2019.19.solution
+    python -m 2019.21.solution
 
 Man, I wish I had understood what "It will perform a series of checks
 on each opcode, output any opcodes (and the associated parameter modes)
