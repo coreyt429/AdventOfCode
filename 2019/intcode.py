@@ -13,6 +13,8 @@ we don't break anything:
     python -m 2019.17.solution
     python -m 2019.19.solution
     python -m 2019.21.solution
+    python -m 2019.23.solution
+    
 
 Man, I wish I had understood what "It will perform a series of checks
 on each opcode, output any opcodes (and the associated parameter modes)
@@ -24,6 +26,7 @@ where the problem was.
 
 import math
 from copy import deepcopy
+from collections import deque
 
 class OpCode():
     """
@@ -143,7 +146,7 @@ class OpCode():
         parent = self.parent
         parent.last_output = values[0]
         # check for connected output
-        if isinstance(parent.output, list):
+        if isinstance(parent.output, (list, deque)):
             parent.output.append(values[0])
         else:
             parent.output = values[0]
