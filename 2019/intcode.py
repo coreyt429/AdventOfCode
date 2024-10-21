@@ -14,13 +14,20 @@ we don't break anything:
     python -m 2019.19.solution
     python -m 2019.21.solution
     python -m 2019.23.solution
-    
+    python -m 2019.25.solution
 
 Man, I wish I had understood what "It will perform a series of checks
 on each opcode, output any opcodes (and the associated parameter modes)
 that seem to be functioning incorrectly" meant on the previous puzzles.
 It was much easier debugging once I realized the output was telling me
 where the problem was.
+
+If we do something like this in the future, maybe add methods for:
+  - ascii input/output
+    - send_command - converts ascii command and adds EOL if needed
+  - checking to see if we are waiting for input
+  - checking for output
+  - checking for end
 
 """
 
@@ -297,6 +304,8 @@ class IntCodeComputer():
         """
         Method to get the next op_code
         """
+        if 0 > self.ptr or self.ptr > len(self.program):
+            return None
         instruction_text = str(self.program[self.ptr])
         # the opcode is the rightmost two digits of the first value in an instruction.
         return int(instruction_text[-2:])
