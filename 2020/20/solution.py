@@ -6,14 +6,18 @@ different methods, then ended up starting over with an object based approach.
 
 Not the fastest solution I'm sure, but it finishes part 2 in 20-30 seconds
 minimizing Tiles().refresh to instead Tile.refresh_mates() and Tile.refresh()
-has trimmed it down to 13 seconds. 
+has trimmed it down to 13 seconds. Further minimizing refreshes has me down
+to 8 seconds
+
+find_matches was the biggest time consumer, and it only needs to do a full
+search once.  Added bypass for non matching tiles for subsequent runs, now
+runtime is down to 1.4 seconds
 
 """
 # import system modules
 import time
 import math
 import re
-from itertools import permutations
 from copy import deepcopy
 
 # import my modules
@@ -54,25 +58,40 @@ class Tiles:
         self.offsets = None
         self.positions = {}
         self.parse(input_data)
+        self.parent = []
 
     def parse(self, input_data):
         """method to parse input data"""
         for tile_text in input_data.split('\n\n'):
             lines = tile_text.splitlines()
             tile_id = int(lines[0].replace('Tile ','').replace(':',''))
-            self.add_tile(Tile(tile_id, '\n'.join(lines[1:])))
+            self.add_tile(Tile(tile_id, '\n'.join(lines[1:]), self))
 
     def add_tile(self, tile):
         """method to add a tile to the collection"""
         self.tiles[tile.tile_id] = tile
-        tile.parent = self
+        # tile.parent = self
         self.update_row_size()
-        if not tile.position:
+        if not tile.cfg['position']:
             last_position = -1
             if self.positions:
                 last_position = max(self.positions.keys())
-            tile.position = last_position + 1
-        self.positions[tile.position] = tile.tile_id
+            tile.cfg['position'] = last_position + 1
+        self.positions[tile.cfg['position']] = tile.tile_id
+
+    def organize(self):
+        """method to organize tile array by borders"""
+        corners = self.get_corners()
+        # start with a corner, it shouldn't matter which one
+        self.tile_by_id(corners[0]).swap(0)
+        # iterate over tiles to place them correctly
+        for _, tile in enumerate(self):
+            # if position % 12 == 0:
+            #     print(f"checking {position}")
+            # orient the tile
+            tile.orient_self()
+            # move and orient its neighbors
+            tile.orient_mates()
 
     def update_row_size(self):
         """method to calculate row_size"""
@@ -83,6 +102,16 @@ class Tiles:
             "top": -1 * self.row_size,
             "bottom": self.row_size,
         }
+
+    def get_corners(self):
+        """
+        method to get the tile_id's of the corner tiles
+        """
+        corners = []
+        for tile in self:
+            if tile.cfg['variety'] == 'corner':
+                corners.append(tile.tile_id)
+        return corners
 
     def tile_by_id(self, tile_id):
         """method to return a tile by tile_id"""
@@ -98,8 +127,8 @@ class Tiles:
         target = self.tile_by_position(target_pos)
         self.positions[source_pos] = target.tile_id
         self.positions[target_pos] = source.tile_id
-        source.position = target_pos
-        target.position = source_pos
+        source.cfg['position'] = target_pos
+        target.cfg['position'] = source_pos
 
     def refresh(self):
         """method to refresh a all tiles"""
@@ -137,8 +166,7 @@ class Tiles:
     def __str__(self):
         """str implemention"""
         my_str = ""
-        for tile in self:
-            my_str += f"{tile}\n"
+        my_str += '\n'.join((str(tile) for tile in self))
         return my_str
 
     def __len__(self):
@@ -154,23 +182,26 @@ class Tile:
         "right": "left"
     }
 
-    def __init__(self, tile_id, input_data):
+    def __init__(self, tile_id, input_data, parent):
         """init"""
-        self.parent = None
+        self.parent = parent
         self.tile_id = tile_id
         self.grid = []
         self.sides = {}
         self.mates = {}
-        self.position = None
+        self.cfg = {
+            'position': None,
+            'variety': '?',
+            'row_size': None
+        }
         self.parse(input_data)
         self.get_sides()
-        self.variety = '?'
 
     def parse(self, input_data):
         """method to parse input"""
         for line in input_data.splitlines():
             self.grid.append(list(line))
-            self.row_size = len(line)
+            self.cfg['row_size'] = len(line)
 
     def refresh(self):
         """method to refresh a tile"""
@@ -184,33 +215,45 @@ class Tile:
 
     def get_sides(self):
         """method to identify edges of a tile"""
+        row_size = self.cfg['row_size']
         self.sides = {
             "top": ''.join(self.grid[0]),
-            "bottom": ''.join(self.grid[self.row_size - 1]),
+            "bottom": ''.join(self.grid[row_size - 1]),
             "left": ''.join([self.grid[row][0] for row in range(len(self.grid))]),
-            "right": ''.join(self.grid[row][self.row_size - 1] for row in range(len(self.grid))),
+            "right": ''.join(self.grid[row][row_size - 1] for row in range(len(self.grid))),
         }
 
     def swap(self, position):
         """method to swap a tile to a new position"""
-        self.parent.swap(self.position, position)
+        self.parent.swap(self.cfg['position'], position)
 
     def find_matches(self):
         """method to find mates"""
-        self.mates = {}
+        # don't reinitialize, that breaks mate_data in loops
+        # self.mates = {}
+        bypass = False
+        # bypass full search if we have already found mates
+        if len(self.mates) > 0:
+            bypass = True
         for other in self.parent:
             if other.tile_id == self.tile_id:
                 continue
+            if bypass and other.tile_id not in self.mates:
+                continue
             for side, border in self.sides.items():
                 for other_side, other_border in other.sides.items():
-                    if other_border == border or other_border == border[::-1]:
-                        self.mates[other.tile_id] = {'this': side, 'other': other_side }
+                    if other_border in (border, border[::-1]):
+                        if other.tile_id not in self.mates:
+                            self.mates[other.tile_id] = {}
+                        self.mates[other.tile_id]['this'] = side
+                        self.mates[other.tile_id]['other'] = other_side
         if len(self.mates) == 2:
-            self.variety = 'corner'
+            self.cfg['variety'] = 'corner'
         elif len(self.mates) == 3:
-            self.variety = 'edge'
+            self.cfg['variety'] = 'edge'
         else:
-            self.variety = 'inner'
+            self.cfg['variety'] = 'inner'
+        return True
 
     def rotate(self):
         """method to rotate a tile"""
@@ -228,25 +271,25 @@ class Tile:
     def is_left_edge(self, position=None):
         """method to detect left edge"""
         if position is None:
-            position = self.position
+            position = self.cfg['position']
         return position % self.parent.row_size == 0
 
     def is_right_edge(self, position=None):
         """method to detect right edge"""
         if position is None:
-            position = self.position
+            position = self.cfg['position']
         return (position + 1) % self.parent.row_size == 0
 
     def is_top_edge(self, position=None):
         """method to detect top edge"""
         if position is None:
-            position = self.position
+            position = self.cfg['position']
         return position < self.parent.row_size
 
     def is_bottom_edge(self, position=None):
         """method to detect bottom edge"""
         if position is None:
-            position = self.position
+            position = self.cfg['position']
         return position > self.parent.row_size * (self.parent.row_size -1)
 
     def orient_self(self):
@@ -259,8 +302,8 @@ class Tile:
                 continue
             if self.is_left_edge() and offset == -1:
                 continue
-            if 0 <= self.position + offset < self.parent.row_size**2:
-                neighbor_positions.append(self.position + offset)
+            if 0 <= self.cfg['position'] + offset < self.parent.row_size**2:
+                neighbor_positions.append(self.cfg['position'] + offset)
                 valid_directions.append(direction)
         directions = [mate['this'] for mate in self.mates.values()]
         sentinel = 0
@@ -271,20 +314,18 @@ class Tile:
             self.rotate()
             self.refresh()
             directions = [mate['this'] for mate in self.mates.values()]
-        if self.position > 0:
-            for mate_id in self.mates:
+        if self.cfg['position'] > 0:
+            for mate_id, mate_data in self.mates.items():
                 mate = self.parent.tile_by_id(mate_id)
                 # not next to us, don't align
-                if mate.position not in neighbor_positions:
+                if mate.cfg['position'] not in neighbor_positions:
                     continue
-                if mate.position < self.position:
-                    while (
-                        self.mates[mate_id]['this'] != self.opposites[self.mates[mate_id]['other']]
-                    ):
+                if mate.cfg['position'] < self.cfg['position']:
+                    while mate_data['this'] != self.opposites[mate_data['other']]:
                         self.rotate()
                         self.refresh_mates()
                         self.refresh()
-                    edge = self.mates[mate_id]['this']
+                    edge = mate_data['this']
                     if self.sides[edge] == mate.sides[self.opposites[edge]][::-1]:
                         self.flip_edge(edge)
                         self.refresh_mates()
@@ -308,24 +349,24 @@ class Tile:
         #     print(f"  {self.parent.tile_by_id(mate_id)}")
         neighbor_positions = {}
         for direction, offset in self.parent.offsets.items():
-            if 0 <= self.position + offset < self.parent.row_size**2:
-                neighbor_positions[direction] = self.position + offset
-        for mate_id in self.mates:
+            if 0 <= self.cfg['position'] + offset < self.parent.row_size**2:
+                neighbor_positions[direction] = self.cfg['position'] + offset
+        for mate_id, mate_data in self.mates.items():
             mate = self.parent.tile_by_id(mate_id)
-            if mate.position < self.position:
+            if mate.cfg['position'] < self.cfg['position']:
                 continue
-            target = neighbor_positions.get(self.mates[mate_id]['this'], None)
+            target = neighbor_positions.get(mate_data['this'], None)
             if target is None:
                 mate.refresh()
                 self.refresh()
-                target = neighbor_positions.get(self.mates[mate_id]['this'], None)
+                target = neighbor_positions.get(mate_data['this'], None)
                 if target is None:
                     print("target is still none, skipping")
                     continue
             # don't swap over a neighbor that is set
-            if target < self.position:
+            if target < self.cfg['position']:
                 continue
-            if mate.position != target:
+            if mate.cfg['position'] != target:
                 mate.swap(target)
                 mate.refresh()
                 self.refresh()
@@ -341,7 +382,7 @@ class Tile:
 
     def __str__(self):
         """str implemention"""
-        my_str = f"{self.position}:{self.tile_id}"
+        my_str = f"{self.cfg['position']}:{self.tile_id}"
         # my_str += self.str_grid()
         # my_str += "\n"
         return my_str
@@ -427,108 +468,6 @@ def is_bottom_edge(position, row_size):
     """function to detect bottom edge"""
     return position > row_size * (row_size -1)
 
-def get_combinations(squares, corners):
-    """
-    Function to iterate over all possible combinations
-    This search space is too big, it examines way too many invalid
-    combinations
-    """
-    row_size = int(math.sqrt(len(squares)))
-    corner_positions = [
-            0,
-            row_size -1,
-            row_size * (row_size -1),
-            row_size * row_size -1
-        ]
-    combos = []
-    for combo in permutations(squares.keys()):
-        print(combo)
-        valid = True
-        for corner_position in corner_positions:
-            if combo[corner_position] not in corners:
-                valid = False
-                break
-        if not valid:
-            continue
-        for idx in range(len(squares)):
-            mate_count = len(squares[combo[idx]]['mates'])
-            if idx in corner_positions:
-                if mate_count != 2:
-                    valid = False
-            elif is_top_edge(idx, row_size):
-                if mate_count != 3:
-                    valid = False
-            elif is_bottom_edge(idx, row_size):
-                if mate_count != 3:
-                    valid = False
-            elif is_right_edge(idx, row_size):
-                if mate_count != 3:
-                    valid = False
-            elif is_left_edge(idx, row_size):
-                if mate_count != 3:
-                    valid = False
-            else:
-                if mate_count != 4:
-                    valid = False
-        if not valid:
-            continue
-        combos.append(combo)
-    return combos
-
-def orient_square(current_id, squares, first=False, neighbor=None):
-    """function to orient a square"""
-    current = squares[current_id]
-    mates = list(current['mates'].keys())
-    oriented = False
-    sentinel = 0
-    while not oriented:
-        sentinel += 1
-        if sentinel > 4:
-            # print(f"orient_square({current_id}): sentinel break")
-            return False
-        oriented = first
-        if first:
-            for mate in mates:
-                if current['mates'][mate]['this'] not in ["bottom", "right"]:
-                    oriented = False
-                    break
-        if neighbor:
-            other = squares[neighbor]
-            current_side = current['mates'][neighbor]['this']
-            other_side = other['mates'][current_id]['this']
-            if current_side == opposites[other_side]:
-                # check to see if we need to flip
-                if current['sides'][current_side] == other['sides'][other_side][::-1]:
-                    if current_side in ['top', 'bottom']:
-                        current['square'] = flip_vertical(current['square'])
-                    else:
-                        current['square'] = flip_horizontal(current['square'])
-                    current['sides'] = sides(current['square'])
-                    find_matches(current_id, squares)
-                oriented = True
-
-        if not oriented:
-            # print(f"rotating {current_id}")
-            current['square'] = rotate_clockwise(current['square'])
-            current['sides'] = sides(current['square'])
-            find_matches(current_id, squares)
-            for mate in mates:
-                find_matches(mate, squares)
-    # print(f"orient_square({current_id}): returning {oriented}")
-    return oriented
-
-def check_configuration(squares):
-    """function to check grid configuration"""
-    row_size = int(math.sqrt(len(squares)))
-    for current_id, current in squares.items():
-        # print(f"current: {current_id}: {current['position']} {current['mates']}")
-        for mate_id in current['mates']:
-            mate = squares[mate_id]
-            # print(f"mate: {mate_id} {mate['position']}")
-            if abs(current['position'] - mate['position']) not in [1, row_size]:
-                return False
-    return True
-
 def get_square_by_position(position, squares):
     """function to find a square by it position"""
     for current_id, current in squares.items():
@@ -558,6 +497,39 @@ def strip_borders(squares):
             line.pop(-1)
     return new_squares
 
+def monster_grid(grid, monster_points):
+    """function to build monster_grid"""
+    new_grid = []
+    for row, line in enumerate(grid):
+        new_row = []
+        for col, char in enumerate(line):
+            if (row, col) in monster_points:
+                new_row.append('O')
+            else:
+                new_row.append(char)
+        new_grid.append(new_row)
+    return new_grid
+
+def check_monster(grid, row, col, monster_index):
+    """Check if a monster can be found starting at the given coordinates."""
+    for row_offset, row_data in enumerate(monster_index):
+        for col_offset in row_data:
+            try:
+                if grid[row + row_offset][col + col_offset] != '#':
+                    return False
+            except IndexError:
+                return False
+    return True
+
+def get_monster_points(row, col, monster_index):
+    """Get the points that make up the monster from the starting coordinates."""
+    return [
+        (
+            row + row_offset,
+            col + col_offset
+        ) for row_offset, row_data in enumerate(monster_index) for col_offset in row_data
+    ]
+
 def find_monster(grid_text):
     """function to find the sea monster pattern"""
     grid = []
@@ -565,32 +537,25 @@ def find_monster(grid_text):
         grid.append(list(line))
     monster_index = [[18], [0, 5, 6, 11, 12, 17, 18, 19], [1, 4, 7, 10, 13, 16]]
     monster_points = []
-    for row in range(len(grid)):
-        for col in range(len(grid[row])):
-            found = True
-            possible_points = []
-            for row_offset, row_data in enumerate(monster_index):
-                for col_offset in row_data:
-                    try:
-                        if grid[row + row_offset][col + col_offset] != '#':
-                            found = False
-                        else:
-                            possible_points.append((row + row_offset, col + col_offset))
-                    except IndexError:
-                        found = False
-            if found:
-                monster_points.extend(possible_points)
+    for row, line in enumerate(grid):
+        for col, _ in enumerate(line):
+            # found = True
+            # possible_points = []
+            # for row_offset, row_data in enumerate(monster_index):
+            #     for col_offset in row_data:
+            #         try:
+            #             if grid[row + row_offset][col + col_offset] != '#':
+            #                 found = False
+            #                 continue
+            #             possible_points.append((row + row_offset, col + col_offset))
+            #         except IndexError:
+            #             found = False
+            # if found:
+            if check_monster(grid, row, col, monster_index):
+                monster_points.extend(get_monster_points(row, col, monster_index))
+                # monster_points.extend(possible_points)
     if monster_points:
-        new_grid = []
-        for row in range(len(grid)):
-            new_row = []
-            for col in range(len(grid[row])):
-                if (row, col) in monster_points:
-                    new_row.append('O')
-                else:
-                    new_row.append(grid[row][col])
-            new_grid.append(new_row)
-        return True, new_grid
+        return True, monster_grid(grid, monster_points)
     return False, []
 
 def text_to_grid(grid_text):
@@ -600,67 +565,80 @@ def text_to_grid(grid_text):
         grid.append(list(line))
     return grid
 
+def grid_to_text(grid):
+    """function to convert  list of lists to a text grid"""
+    grid_text=''
+    for row in grid:
+        grid_text += ''.join(row) + '\n'
+    return grid_text
+
+def find_potential_grids(combined_grid):
+    """
+    Method to calculate water roughness based on seamonster location
+    """
+    # get possible flip orientations of combined grid
+    flips = []
+    flips.append(combined_grid)
+    flips.append(flip_horizontal(combined_grid))
+    flips.append(flip_vertical(combined_grid))
+    flips.append(flip_horizontal(flip_vertical(combined_grid)))
+    potentials = set()
+    middle_row_regex = r'.*(\#....\#\#....\#\#....\#\#\#).*'
+    middle_row_pattern = re.compile(middle_row_regex)
+    bottom_row_regex = r'.*(.\#..\#..\#..\#..\#..\#...).*'
+    bottom_row_pattern = re.compile(bottom_row_regex)
+    # iterate over flipped orientations
+    for current_grid in flips:
+        # iterate through for rotations
+        for _ in range(1,5):
+            current_grid = rotate_clockwise(current_grid)
+            grid_text = grid_to_text(current_grid)
+            # to identify potentials, we look for the regex to match
+            # the middle row and the bottom row.
+            # the middle row is a more complex pattern, so theoretically
+            # it should filter more.
+            match = middle_row_pattern.search(grid_text)
+            if match:
+                match = bottom_row_pattern.search(grid_text)
+                if match:
+                    potentials.add(grid_text)
+    return potentials
+
+def calculate_water_roughness(combined_grid):
+    """
+    Method to calculate water roughness based on seamonster location
+    """
+    potentials = find_potential_grids(combined_grid)
+    # iterate over potential grids to find monster
+    for grid in potentials:
+        found, water_grid = find_monster(grid)
+        count = 0
+        if found:
+            for row in water_grid:
+                # print(''.join(row))
+                count += ''.join(row).count('#')
+            # print()
+            # How many # are not part of a sea monster?
+            return count
+    return -1
+
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    if part == 2:
-        # load data
-        tile_collection = Tiles(input_text)
-        tile_collection.refresh()
-        corners = []
-        for tile in tile_collection:
-            if tile.variety == 'corner':
-                corners.append(tile.tile_id)
-        tile_collection.tile_by_id(corners[0]).swap(0)
-
-        for position in range(len(tile_collection)):
-            print(f"checking {position}")
-            tile_collection.refresh()
-            tile = tile_collection.tile_by_position(position)
-            tile.orient_self()
-            tile.orient_mates()
-
-        combined_grid = text_to_grid(tile_collection.str_grid(spaces='', borders=False))
-        flips = []
-        flips.append(combined_grid)
-        flips.append(flip_horizontal(combined_grid))
-        flips.append(flip_vertical(combined_grid))
-        flips.append(flip_horizontal(flip_vertical(combined_grid)))
-        potentials = set()
-        middle_row_regex = r'.*(\#....\#\#....\#\#....\#\#\#).*'
-        middle_row_pattern = re.compile(middle_row_regex)
-        bottom_row_regex = r'.*(.\#..\#..\#..\#..\#..\#...).*'
-        bottom_row_pattern = re.compile(bottom_row_regex)
-        for combined_grid in flips:
-            for _ in range(1,5):
-                combined_grid = rotate_clockwise(combined_grid)
-                grid_text=''
-                for row in combined_grid:
-                    grid_text += ''.join(row) + '\n'
-                match = middle_row_pattern.search(grid_text)
-                if match:
-                    match = bottom_row_pattern.search(grid_text)
-                    if match:
-                        potentials.add(grid_text)
-
-        for grid in potentials:
-            found, monster_grid = find_monster(grid)
-            count = 0
-            if found:
-                for row in monster_grid:
-                    # print(''.join(row))
-                    count += ''.join(row).count('#')
-                # print()
-                return count
-        return -1
-    data = parse_input(input_value)
-    corners = []
-    for sq_id in data:
-        find_matches(sq_id, data)
-        if len(data[sq_id]['mates']) == 2:
-            corners.append(sq_id)
-    return math.prod(corners)
+    # load data
+    tile_collection = Tiles(input_value)
+    tile_collection.refresh()
+    corners = tile_collection.get_corners()
+    if part == 1:
+        # What do you get if you multiply together the IDs of the four corner tiles?
+        return math.prod(corners)
+    # iterate over tiles to place them correctly
+    tile_collection.organize()
+    combined_grid = text_to_grid(tile_collection.str_grid(spaces='', borders=False))
+    # How many # are not part of a sea monster?
+    return calculate_water_roughness(combined_grid)
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2020,20)
