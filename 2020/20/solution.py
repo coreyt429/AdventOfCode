@@ -388,7 +388,7 @@ class Tile:
         return my_str
 
 def rotate_clockwise(matrix):
-    """funciton to rotate a grid clockwise"""
+    """function to rotate a grid clockwise"""
     return [list(row) for row in zip(*matrix[::-1])]
 
 def flip_horizontal(matrix):

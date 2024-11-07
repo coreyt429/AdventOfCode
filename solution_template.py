@@ -16,10 +16,10 @@ def solve(input_value, part):
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(YEAR,DAY)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
-    input_lines = my_aoc.load_lines()
-    print(input_lines)
+    # input_data = my_aoc.load_text()
+    # print(input_text)
+    input_data = my_aoc.load_lines()
+    # print(input_lines)
     # parts dict to loop
     parts = {
         1: 1,
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         # log start time
         start_time = time.time()
         # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
+        answer[my_part] = funcs[my_part](input_data, my_part)
         # log end time
         end_time = time.time()
         # print results
