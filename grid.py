@@ -486,7 +486,7 @@ class Grid():
         """
         Function to set the value of a point
         """
-        if not value:
+        if value is None:
             value = self.cfg["default_value"]
         self.map[point] = value
         # if self.cfg["type"] == "infinite":
