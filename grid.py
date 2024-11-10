@@ -263,7 +263,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point)
+                my_string += str(self.get_point(point))
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'screen':
             last_y = 0
@@ -275,7 +275,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point)
+                my_string += str(self.get_point(point))
             my_string += '\n'
         elif self.cfg['coordinate_system'] == 'cartesian':
             last_y = 0
@@ -287,7 +287,7 @@ class Grid():
                 # if point in overrides:
                 #     my_string += overrides[point]
                 # else:
-                my_string += self.get_point(point)
+                my_string += str(self.get_point(point))
             my_string += '\n'
         else:
             my_string = f"Unhandled coordinate_system: {self.cfg['coordinate_system']}"
@@ -372,6 +372,7 @@ class Grid():
     
     
     def get_neighbors(self, **kwargs):
+        # print(f"get_neighbors(self, **{kwargs})")
         """
         Function to get neighbors of a point on a map or maze
         This function assumes screen coordinates.  If using another coordinate system,
@@ -416,6 +417,8 @@ class Grid():
         neighbors = []
         if point in neighbor_cache[self.cfg["coordinate_system"]]:
             neighbors =  neighbor_cache[self.cfg["coordinate_system"]][point]
+            # if point == (4, 1):
+            #     print(f"returning cached neighbors: {neighbors}")
         if not neighbors:
             # define offsets
             offsets = self.get_neighbor_offsets(**kwargs)
