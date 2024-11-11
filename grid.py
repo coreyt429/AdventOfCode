@@ -23,6 +23,8 @@ neighbor_cache = {
     "cartesian": {},
     "matrix": {}
 }
+
+
 class Node:
     """
     Node class A* shortest path solution
@@ -239,6 +241,16 @@ class Grid():
                     tmp_dict[(row, col)] = char
             return tmp_dict
     
+    def clear_neighbor_cache(self):
+        for coord in ['screen', 'matrix', 'cartesian']:
+            neighbor_cache[coord] = {}
+
+    def convert_to_ints(self):
+        """convert character digits to integers for mathing"""
+        for point in self:
+            value = self.get_point(point)
+            self.set_point(point, int(value))
+
     def __iter__(self):
         #self.update()
         return GridIterator(self.map, self.cfg)
