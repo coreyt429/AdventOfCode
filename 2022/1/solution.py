@@ -1,6 +1,8 @@
 """
 Advent Of Code 2022 day 1
 
+Easy start.  This was fun.
+
 """
 # import system modules
 import time
