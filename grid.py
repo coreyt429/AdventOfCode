@@ -207,11 +207,14 @@ class Grid():
         self.update()
         
     def update(self):
+        self.in_bounds.cache_clear()
         self.cfg['min'], self.cfg['max'] =  self.get_map_size()
 
     def load_map(self, grid_map):
         X=0
         Y=1
+        if isinstance(grid_map, dict):
+            return grid_map
         if isinstance(grid_map, str):
             grid_map = grid_map.strip('\n').split('\n')
         if self.cfg['coordinate_system'] == 'screen':
@@ -430,72 +433,67 @@ class Grid():
         if point in neighbor_cache[self.cfg["coordinate_system"]]:
             neighbors =  neighbor_cache[self.cfg["coordinate_system"]][point]
             # if point == (4, 1):
-            #     print(f"returning cached neighbors: {neighbors}")
+            # print(f"returning cached neighbors: {neighbors}")
         if not neighbors:
             # define offsets
             offsets = self.get_neighbor_offsets(**kwargs)
+            # print(f"offsets: {offsets}")
             # empty list of neighbors
             neighbors = {}
             for direction, offset in offsets["tuple"].items():
+                # print(f"direction: {direction}, offset: {offset}")
                 neighbors[direction] = tuple([point[X] + offset[X], point[Y] + offset[Y]])
             # process rule type:bounded
             if self.cfg["type"] == "bounded":
                 # minimum, maximum = self.get_map_size()
                 valid_neighbors = {}
                 for direction, neighbor in neighbors.items():
-                    if neighbor in self.map:
+                    if all([self.cfg['min'][X] <= neighbor[X] <= self.cfg['max'][X], self.cfg['min'][Y] <= neighbor[Y] <= self.cfg['max'][Y]]):
                         valid_neighbors[direction] = neighbor
                 neighbors = valid_neighbors
             neighbor_cache[self.cfg["coordinate_system"]][point] = neighbors
         # are there invalid character rules, note, this will probably break in type:infinite
+        # print(f"neighbors: {neighbors}")
         if "invalid" in kwargs:
             valid_neighbors = {}
             for direction, neighbor in neighbors.items():
                 if not self.get_point(neighbor) in kwargs['invalid']:
                     valid_neighbors[direction] = neighbor
             neighbors = valid_neighbors
-        
+        # print(f"after invalid: neighbors: {neighbors}")
         if "directions" in kwargs:
             neighbors = {key:value for key, value in neighbors.items() if key in kwargs['directions']}
+        # print(f"after directions: neighbors: {neighbors}")
         return neighbors
     
     def get_point(self, point, default=None, ob_default=None):
         """
-        Function to retrieve the value of a point
+        Retrieve the value of a point with optional defaults.
         """
-        # print(f"get_point({point}, {default}, {ob_default})")
-        if default is None:
-            default = self.cfg['default_value']
+        default = default if default is not None else self.cfg['default_value']
+        ob_default = ob_default if ob_default is not None else self.cfg['ob_default_value']
 
-        if ob_default is None:
-            ob_default = self.cfg['ob_default_value']
-        #self.update()
-        # print(f"use_overrides: {self.cfg['use_overrides']}")
         if self.cfg['use_overrides']:
-            # print(f"Using overrides {self.overrides} - {self.tmp_overrides}")
-            if point in self.overrides:
-                # print(f"{point} in overrides: {self.overrides[point]}")
-                return self.overrides.get(point, default)
-            if point in self.tmp_overrides:
-                # print(f"{point} in tmp_overrides: {self.overrides[point]}")
-                return self.tmp_overrides.get(point, default)
+            # Check overrides first
+            return self.overrides.get(point, self.tmp_overrides.get(point, default))
+
+        # short circuit, if it exists
+        if point in self.map:
+            return self.map[point]
+        
+        # Check if the point is out of bounds
         if not self.in_bounds(point):
-            # if the point is defined, do don't really care if it is out of bounds
-            # so test to be sure it is defined
-            test = self.map.get(point, None)
-            # if defined
-            if not test is None:
-                # return the test value
-                return test
-            return ob_default
+            return self.map.get(point, ob_default)
+
+        # Default case for in-bounds points
         return self.map.get(point, default)
     
+    @functools.lru_cache(maxsize=None)
     def in_bounds(self, point):
-        if not (self.cfg["min"][0] <= point[0] <= self.cfg["max"][0]):
-            return False
-        if not (self.cfg["min"][1] <= point[1] <= self.cfg["max"][1]):
-            return False
-        return True
+        return (
+            self.cfg["min"][0] <= point[0] <= self.cfg["max"][0]
+            and self.cfg["min"][1] <= point[1] <= self.cfg["max"][1]
+        )
     
     def set_point(self, point, value=None):
         """
