@@ -313,6 +313,27 @@ class Grid():
         Function to get min(X,Y), max(X,Y) for map
         """
         X, Y = 0, 1
+
+        # Combine all keys from self.map, self.overrides, and self.tmp_overrides
+        all_keys = list(self.map.keys()) + list(self.overrides.keys()) + list(self.tmp_overrides.keys())
+
+        # If there are no keys, return (0,0), (0,0)
+        if not all_keys:
+            return (0, 0), (0, 0)
+
+        # Use zip to find min and max in one pass
+        min_x = min(key[X] for key in all_keys)
+        max_x = max(key[X] for key in all_keys)
+        min_y = min(key[Y] for key in all_keys)
+        max_y = max(key[Y] for key in all_keys)
+
+        return [min_x, min_y], [max_x, max_y]
+
+    def get_map_size_old(self):
+        """
+        Function to get min(X,Y), max(X,Y) for map
+        """
+        X, Y = 0, 1
         keys = self.map.keys()
         
         # Initialize min and max using the first key in the map
