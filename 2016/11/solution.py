@@ -37,9 +37,6 @@ okay, that caused wrong answers to be found first. reverting.
 
 I'm happy with this for now.  It passes pylint, and runs consistently every time.  I wish part 2
 was faster, maybe I'll revisit another day:
-(base) PS C:\Users\corey\Dev\AdventOfCode> run
-Part 1: 47, took 0.7337863445281982 seconds
-Part 2: 71, took 214.9637167453766 seconds 
 """
 import time
 import logging
