@@ -1,6 +1,10 @@
 """
 Advent Of Code 2024 day 2
 
+A bit of simple iteration and recursion makes part 2 work.
+
+This technique runs in 0.01 seconds, so not really looking for a faster method.
+
 """
 # import system modules
 import time
@@ -30,7 +34,6 @@ def dampen_report(report, dampener):
         if is_safe(tuple(my_list), dampener -1):
             return True
     return False
-
 
 def is_safe(report, dampener=1):
     """Function to determine if a report is safe"""
