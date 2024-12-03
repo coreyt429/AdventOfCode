@@ -37,6 +37,12 @@ okay, that caused wrong answers to be found first. reverting.
 
 I'm happy with this for now.  It passes pylint, and runs consistently every time.  I wish part 2
 was faster, maybe I'll revisit another day:
+
+12/3/2024 revisit.  Profiled the run, and see that memoizing is_valid and anonymize might help.
+  part 1: 0.53 seconds
+  part 2: 261 seconds
+
+
 """
 import time
 import logging
@@ -44,7 +50,7 @@ import re
 from queue import PriorityQueue
 import itertools
 import sys
-
+from functools import lru_cache
 import aoc #pylint: disable=import-error
 
 class Node:
@@ -243,7 +249,38 @@ def parse_notes(input_string):
             else:
                 pass
 
+@lru_cache(maxsize=None)
 def anonymize(floors):
+    """
+    Function to anonymize items so symmetrical states are equal.
+    """
+    # Find the unique elements in the building from the top down
+    elements_seen = {}
+    next_index = 0
+
+    for floor_num in range(3, -1, -1):
+        for item in floors[floor_num]:
+            element = item[:-1]
+            if element not in elements_seen:
+                elements_seen[element] = str(next_index)
+                next_index += 1
+
+    # Create a new list for modified floors
+    anonymized_floors = []
+
+    for floor in floors:
+        anonymized_floor = []
+        for item in floor:
+            element = item[:-1]
+            if element in elements_seen:
+                anonymized_floor.append(item.replace(element, elements_seen[element]))
+        anonymized_floors.append(anonymized_floor)
+
+    # Convert back to tuples before returning
+    return tuple(tuple(floor) for floor in anonymized_floors)
+
+
+def anonymize_old(floors):
     """
     Function to anonymize items so symmetrical states are equal
     """
@@ -268,6 +305,7 @@ def anonymize(floors):
                     floor[item] = label.replace(element, str(idx))
     return tuple(tuple(list(floor)) for floor in list_floors)
 
+@lru_cache(maxsize=None)
 def is_valid(floor):
     """
     Function to test validity of a floor configuration
@@ -291,17 +329,18 @@ def is_valid(floor):
                 return False
     return True
 
-def is_solved(current):
+@lru_cache(maxsize=None)
+def is_solved(current_floor, floors):
     """
     Function to test for solved puzzles
     """
     # If we aren't on the top floor, it is not solved
-    if current['floor'] != 3:
+    if current_floor != 3:
         return False
     # walk lower floors
-    for floor in range(current['floor']-1,-1,-1):
+    for floor in range(current_floor - 1,-1,-1):
         # if lower floor is not empty, it is not solved
-        if len(current['floors'][floor]) > 0:
+        if len(floors[floor]) > 0:
             return False
     # nothing ruled out, must be solved
     return True
@@ -333,6 +372,7 @@ def next_floors(current):
     """
     Function to return next floors to try
     """
+    print(f"current: {current}")
     next_floor_list = []
     for floor in [current['floor']+1, current['floor']-1]:
         # check that floor exists
@@ -352,40 +392,38 @@ def next_floors(current):
         next_floor_list.append(floor)
     return next_floor_list
 
-def try_move(current_node, items, new):
+@lru_cache(maxsize=None)
+def try_move(current_node, items, new_floor):
     """
     Function to try moves and return new heap entries
     """
     # lets try not going up with an empty slot
     # this cut part 1 time in half :)
-    if None in items:
-        if new['floor'] > current_node.floor:
-            return []
+    if None in items and new_floor > current_node.floor:
+        return []
     new_nodes=[]
     # clone current['floors']
-    new['floors'] = []
+    new_floors = []
     for floor in current_node.floors:
-        new['floors'].append(list(floor))
+        new_floors.append(list(floor))
     # move items from current['floor'] to new['floor']
-    for item in items:
-        # ignore if None
-        if item:
-            new['floors'][current_node.floor].pop(new['floors'][current_node.floor].index(item))
-            new['floors'][new['floor']].append(item)
+    filtered_items = [item for item in items if item is not None]
+
+    for item in filtered_items:
+        new_floors[current_node.floor].remove(item)
+        new_floors[new_floor].append(item)
+    floors_tuple = tuple(tuple(floor) for floor in new_floors)
     # if both floors are still valid
-    if (is_valid(new['floors'][current_node.floor]) and
-        is_valid(new['floors'][new['floor']])):
+    if is_valid(floors_tuple[current_node.floor]) and is_valid(floors_tuple[new_floor]):
         # add to new_nodes
         # def __init__(self, floor, floors, g_score, h_score):
         new_nodes.append(
             Node(
-                new['floor'],
-                tuple(tuple(list(floor)) for floor in new['floors']),
+                new_floor,
+                floors_tuple,
                 current_node.g_score + 1,
                 calc_h_score(
-                    tuple(
-                        tuple(list(floor)) for floor in new['floors']
-                    ), current_node.g_score, current_node.threshold
+                    floors_tuple, current_node.g_score, current_node.threshold
                 )
             )
         )
@@ -425,6 +463,7 @@ def h_score_simple(floors, stops, threshold):
         score += (3 - idx) * len(floor)
     return score
 
+@lru_cache(maxsize=None)
 def calc_h_score(floors, stops, threshold):
     """
     Function to calculate hscore
@@ -450,6 +489,7 @@ def calc_h_score(floors, stops, threshold):
                 score -= 3000
     return score
 
+@lru_cache(maxsize=None)
 def min_stops_remaining(floors):
     """
     Calculate the stops needed to get all elements to the top
@@ -479,6 +519,7 @@ def h_score_percentage(floors, stops, threshold):
             score -= 1
     return score
 
+@lru_cache(maxsize=None)
 def init_goal(floors):
     """
     Function to initialize goal
@@ -506,9 +547,10 @@ def a_star_next_nodes(current_node):
             2
         ):
             # ignore matches
-            if items[0] != items[1]:
-                for new_node in try_move(current_node, items, new):
-                    new_nodes.append(new_node)
+            if items[0] == items[1]:
+                continue
+            for new_node in try_move(current_node, items, new['floor']):
+                new_nodes.append(new_node)
     return new_nodes
 
 def solve_a_star(floors):
@@ -516,7 +558,9 @@ def solve_a_star(floors):
     Function to solve puzzle using A* algorithm
     """
     # multiply by floor 3
-    min_solved = float('infinity')
+    # min_solved = float('infinity')
+    # educated guess
+    min_solved = 100
     start_node = Node(
         0, tuple(tuple(list(floor)) for floor in floors), 0,
         calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved)
@@ -534,8 +578,17 @@ def solve_a_star(floors):
         counter += 1
         # get current node
         current_node = open_set.get()[1]
+        # useless check for min_solved that isn't gettign updated
+        if current_node.g_score >= min_solved:
+            continue
+        # is this state in closed_set?
+        # update closed set if we re in closed set, but fewer steps we'll process
+        # otherwise continue
+        if current_node.g_score > closed_set.get(current_node.anonymized, float('infinity')):
+            continue
+        closed_set[current_node.anonymized] = current_node.g_score
         # check for solution first
-        if is_solved({'floor': current_node.floor, 'floors': current_node.floors}):
+        if is_solved(current_node.floor, current_node.floors):
             return current_node.g_score
             #if current_node.g_score < min_solved:
             #    print(f"Took {counter} tries {current_node.g_score}")
@@ -547,15 +600,6 @@ def solve_a_star(floors):
             #    # we were solving for general solutions
             #    return min_solved
             #continue
-        # is this state in closed_set?
-        # update closed set if we re in closed set, but fewer steps we'll process
-        # otherwise continue
-        if (current_node.anonymized in closed_set and
-            current_node.g_score > closed_set.get(current_node.anonymized, float('infinity'))):
-            continue
-        closed_set[current_node.anonymized] = current_node.g_score
-        if current_node.g_score >= min_solved:
-            continue
         # is it possible to beat current score?
         if min_stops_remaining(current_node.floors) + current_node.g_score > min_solved:
             continue
@@ -563,10 +607,9 @@ def solve_a_star(floors):
         current_node.threshold = min_solved
         for new_node in a_star_next_nodes(current_node):
             # skip if already seen, unless it is a lower step count.
-            if (new_node.anonymized not in closed_set or
-                new_node.g_score < closed_set[new_node.anonymized]):
+            if new_node.g_score < closed_set.get(new_node.anonymized, float('infinity')):
                 open_set.put((new_node.f_score, new_node))
-    return min_solved
+    return None
 
 if __name__ == "__main__":
     # sample data
@@ -601,6 +644,11 @@ if __name__ == "__main__":
         1: None,
         2: None
     }
+    # correct answers for validation
+    correct = {
+        1: 47,
+        2: 71
+    }
     # dict to map functions
     funcs = {
         1: solve_a_star,
@@ -620,3 +668,5 @@ if __name__ == "__main__":
         end_time = time.time()
         # print results
         print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        if correct[my_part]:
+            assert correct[my_part] == answer[my_part]
