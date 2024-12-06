@@ -24,6 +24,9 @@ neighbor_cache = {
     "matrix": {}
 }
 
+all_directions = ('n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw')
+cardinal_directions = ('n', 's', 'e' , 'w')
+diagonal_directions = ('ne', 'se', 'sw', 'nw')
 
 class Node:
     """
@@ -257,6 +260,12 @@ class Grid():
     def __iter__(self):
         #self.update()
         return GridIterator(self.map, self.cfg)
+
+    def items(self):
+            """items function for grid to iterate grid yielding position and value"""
+            for point in self:
+                yield point, self.get_point(point)
+
 
     def __str__(self):
         X=0
@@ -676,6 +685,7 @@ class Grid():
             return shortest_nodes
         return shortest_paths
 
+        
 @functools.lru_cache(maxsize=None)
 def manhattan_distance_old(start, goal):
     """
