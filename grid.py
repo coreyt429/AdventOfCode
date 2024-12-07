@@ -124,7 +124,7 @@ class Node:
             return self.position == other.position
         except AttributeError:
             return self.position == other
-    
+
     def __hash__(self):
         """
         Node Hash
@@ -257,6 +257,9 @@ class Grid():
             value = self.get_point(point)
             self.set_point(point, int(value))
 
+    def __len__(self):
+        return(len(self.map))
+    
     def __iter__(self):
         #self.update()
         return GridIterator(self.map, self.cfg)
@@ -505,7 +508,9 @@ class Grid():
 
         if self.cfg['use_overrides']:
             # Check overrides first
-            return self.overrides.get(point, self.tmp_overrides.get(point, default))
+            override = self.overrides.get(point, self.tmp_overrides.get(point, None))
+            if override is not None:
+                return override
 
         # short circuit, if it exists
         if point in self.map:
@@ -536,6 +541,11 @@ class Grid():
         #     self.cfg['min'], self.cfg['max'] =  self.get_map_size()
         return True
 
+    def teleport(self, point, **kwargs):
+        self.overrides.pop(self.pos, None)
+        self.pos = point
+        self.overrides[self.pos] = self.cfg['pos_token']
+    
     def move(self, direction, **kwargs):
         translation_table = {
             "up":    "n",
