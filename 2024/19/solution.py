@@ -15,11 +15,10 @@ pickup the towel list from solve().  This was much faster and used less memory.
 
 """
 # import system modules
-import time
 from functools import lru_cache
 # import my modules
 from heapq import heappush, heappop
-import aoc # pylint: disable=import-error
+from aoc import AdventOfCode # pylint: disable=import-error
 
 def parse_input(input_text):
     """Function to parse input"""
@@ -62,7 +61,6 @@ def find_towel_heap(towels, design, part):
                 heappush(heap, (len(design) - len(new_selected_string), new_selected))
 
     return selection
-
 
 def find_towel_recursive(towels, design, current=None):
     """
@@ -107,37 +105,12 @@ def solve(input_value, part):
     return count
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,19)
-    input_data = my_aoc.load_text()
-    # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    aoc = AdventOfCode(2024,19)
+    aoc.load_text()
+    # my_aoc.load_list()
     # correct answers once solved, to validate changes
-    correct = {
-        1: 220,
-        2: 565600047715343
-    }
-    # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    aoc.correct[1] = 220
+    aoc.correct[2] = 565600047715343
+    aoc.funcs[1] = solve
+    aoc.funcs[2] = solve
+    aoc.run()

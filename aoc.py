@@ -8,16 +8,38 @@ import json
 from datetime import datetime
 import requests
 import os
+import time
 from getpass import getpass
 
 class AdventOfCode:
+    """
+    Advent of Code class to handle common functions for solving puzzles"""
     def __init__(self, year=None, day=None):
         today = datetime.today()
-
         self.year = year if year is not None else today.year
         self.day = day if day is not None else today.day
         # define, but don't calculate yet, we may not need them
         self.neighbor_offsets = {}
+        self.start_time = time.time()
+        self.parts = {
+            1: 1,
+            2: 2
+        }
+        # dict to store answers
+        self.answer = {
+            1: None,
+            2: None
+        }
+        # correct answers once solved, to validate changes
+        self.correct = {
+            1: 0,
+            2: 0
+        }
+        # dict to map functions
+        self.funcs = {
+            1: None,
+            2: None
+        }
         matches = re.match(r'(.*AdventOfCode).*',os.getcwd())
         if matches:
             base_dir = matches.group(1)
@@ -40,6 +62,18 @@ class AdventOfCode:
     def test_session(self):
         response = self.session.get('https://adventofcode.com')
         return 'Advent of Code' in response.text
+
+    def run(self):
+        # loop parts
+        for my_part in self.parts:
+            # get answer
+            self.answer[my_part] = self.funcs[my_part](self.input_data, my_part)
+            # log end time
+            end_time = time.time()
+            # print results
+            print(f"Part {my_part}: {self.answer[my_part]}, took {end_time-self.start_time} seconds")
+            if self.correct[my_part]:
+                assert self.correct[my_part] == self.answer[my_part]
 
     def get_input(self):
         self.init_session()
@@ -123,7 +157,8 @@ class AdventOfCode:
         Returns:
             - list of lines from the file
         """
-        return self.load_text(file_name).rstrip().split('\n')
+        self.input_data = self.load_text(file_name).rstrip().split('\n')
+        return self.input_data
         
     def load_text(self, file_name=None):
         """
@@ -136,7 +171,8 @@ class AdventOfCode:
             - text content of the file
         """
         with self.get_file(file_name) as file:
-            return file.read().rstrip()
+            self.input_data = file.read().rstrip()
+            return self.input_data
 
     def load_integers(self, file_name=None):
         """
@@ -148,7 +184,8 @@ class AdventOfCode:
         Returns:
             - list of ints from file
         """
-        return [int(x) for x in self.load_lines(file_name)]
+        self.input_data = [int(x) for x in self.load_lines(file_name)]
+        return self.input_data
 
     def load_grid(self, file_name=None):
         """
@@ -160,12 +197,14 @@ class AdventOfCode:
         Returns:
             - list of lists from file
         """
-        return [list(line) for line in self.load_lines(file_name)]
+        self.input_data =  [list(line) for line in self.load_lines(file_name)]
+        return self.input_data
     
     def get_neighbor_offsets(self, **kwargs):
         """
         Function to calculate neighbor offsets, and store them
         """
+        print(f"deprecated: get_neighbor_offsets: {kwargs}")
         offset_collection = {}
         offset_collection['cartesian'] = {
             'n': (0, 1),    # Move up
