@@ -66,6 +66,8 @@ class AdventOfCode:
     def run(self):
         # loop parts
         for my_part in self.parts:
+            # log start time
+            self.start_time = time.time()
             # get answer
             self.answer[my_part] = self.funcs[my_part](self.input_data, my_part)
             # log end time
