@@ -9,68 +9,52 @@ calculate the difference between the positions of two nodes in the path.
 Part 2, saving for another day
 
 """
+
 # import system modules
 from collections import defaultdict
 from functools import lru_cache
 
 # import my modules
-from aoc import AdventOfCode # pylint: disable=import-error
-from grid import Grid, manhattan_distance # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+from grid import Grid, manhattan_distance  # pylint: disable=import-error
+
 
 def path_to_linked_list(path):
     """Function to convert a path list to linked node list"""
     linked_list = {}
     for i in range(len(path) - 1):
         linked_list[path[i]] = {
-            'next': path[i+1],
-            'point': path[i],
-            'position': i,
-            'cheat': None
+            "next": path[i + 1],
+            "point": path[i],
+            "position": i,
         }
     linked_list[path[-1]] = {
-        'next': None,
-        'point': path[-1],
-        'position': len(path) - 1,
-        'cheat': None
+        "next": None,
+        "point": path[-1],
+        "position": len(path) - 1,
     }
     return linked_list
 
-def path_length(start, linked_list):
-    """Function to calculate the length of a path starting at a given node"""
-    # print(f"path_length({start}, linked_list)")
-    length = -1 # start is not counted
-    current = start
-    while current is not None:
-        # print(f"here current: {current}, next: {linked_list[current]['next']}")
-        if linked_list[current]['cheat'] is not None:
-            length += manhattan_distance(current, linked_list[current]['cheat'])
-            current = linked_list[current]['cheat']
-        else:
-            length += 1
-            current = linked_list[current]['next'] if current in linked_list else None
-    return length
 
-def apply_cheat(begin, end, linked_list):
-    """Function to apply a cheat to a linked list"""
-    linked_list[begin]['cheat'] = end
-
-def clear_cheats(linked_list):
-    """Function to clear all cheats from a linked list"""
-    for node in linked_list.values():
-        node['cheat'] = None
-
-def find_cheats(position, target, linked_list, grid):
+def find_cheats(position, target, linked_list, grid, **kwargs):
     """Function to find all possible cheats from a given position"""
-    # print(f"find_cheats({position}, linked_list)")
+    distance = kwargs.get("distance", 3)
+    part = kwargs.get("part", 1)
     cheats = []
-    for current in points_within_distance(position, distance=3):
+    for current in points_within_distance(position, distance):
         if current not in linked_list:
             continue
-        if linked_list[current]['position'] - linked_list[position]['position'] > target:
-            if is_valid_cheat(position, current, grid):
+        if (
+            linked_list[current]["position"]
+            - linked_list[position]["position"]
+            - manhattan_distance(position, current)
+            > target
+        ):
+            if part == 2 or is_valid_cheat(position, current, grid):
                 cheats.append(current)
-        current = linked_list[current]['next']
+        # current = linked_list[current]["next"]
     return cheats
+
 
 @lru_cache(maxsize=None)
 def is_valid_cheat(point, cheat, grid):
@@ -86,24 +70,31 @@ def is_valid_cheat(point, cheat, grid):
 
     if x_1 == x_2:  # Same row
         for y_val in range(min(y_1, y_2) + 1, max(y_1, y_2)):
-            if grid.get_point((x_1, y_val)) != '#':
+            if grid.get_point((x_1, y_val)) != "#":
                 return False
     elif y_1 == y_2:  # Same column
         for x_val in range(min(x_1, x_2) + 1, max(x_1, x_2)):
-            if grid.get_point((x_val, y_1)) != '#':
+            if grid.get_point((x_val, y_1)) != "#":
                 return False
     else:  # Diagonal
         if distance == 2:
-            if grid.get_point((x_1, y_2)) != '#' or grid.get_point((x_2, y_1)) != '#':
+            if grid.get_point((x_1, y_2)) != "#" or grid.get_point((x_2, y_1)) != "#":
                 return False
         elif distance == 3:
             if abs(x_1 - x_2) == 1:
-                if grid.get_point((x_1, y_2)) != '#' or grid.get_point((x_2, y_1)) != '#':
+                if (
+                    grid.get_point((x_1, y_2)) != "#"
+                    or grid.get_point((x_2, y_1)) != "#"
+                ):
                     return False
             else:
-                if grid.get_point((x_1, y_2)) != '#' or grid.get_point((x_2, y_1)) != '#':
+                if (
+                    grid.get_point((x_1, y_2)) != "#"
+                    or grid.get_point((x_2, y_1)) != "#"
+                ):
                     return False
     return True
+
 
 @lru_cache(maxsize=None)
 def points_within_distance(point, distance=3):
@@ -116,48 +107,68 @@ def points_within_distance(point, distance=3):
                 points.append((x_val + i, y_val + j))
     return points
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
+    distance = 3
     if part == 2:
-        return part
+        distance = 20
+        # return part
     target = 99
     grid = Grid(input_value, use_overrides=False)
-    start, goal = None, None
-    start = next(point for point, value in grid.items() if value == 'S')
-    goal = next(point for point, value in grid.items() if value == 'E')
-    initial_path = grid.shortest_paths(start, goal)[0]
-    path_linked_list = path_to_linked_list(initial_path)
-    cheat_stats = defaultdict(set)
+    # start, goal = None, None
+    start = next(point for point, value in grid.items() if value == "S")
+    goal = next(point for point, value in grid.items() if value == "E")
+    path_linked_list = path_to_linked_list(grid.shortest_paths(start, goal)[0])
+    cheat_stats = {1: defaultdict(set), 2: {}}
     for point, node in path_linked_list.items():
-        for cheat in find_cheats(point, target, path_linked_list, grid):
-            if not is_valid_cheat(point, cheat, grid):
+        # print(f"\r{point=}, position={node['position']}, of {len(path_linked_list)},", end="")
+        for cheat in find_cheats(
+            point, target, path_linked_list, grid, distance=distance, part=part
+        ):
+            if not part == 2 and not is_valid_cheat(point, cheat, grid):
                 continue
-            # apply_cheat(point, cheat, path_linked_list)
-            # length = path_length(start, path_linked_list)
-            savings = path_linked_list[cheat]['position']
-            savings -= node['position']
-            savings -= manhattan_distance(point, cheat)
+            savings = (
+                path_linked_list[cheat]["position"]
+                - node["position"]
+                - manhattan_distance(point, cheat)
+            )
             if savings > target:
-                cheat_stats[savings].add((point, cheat))
-            # clear_cheats(path_linked_list)
+                cheat_stats[1][savings].add((point, cheat))
+                cheat_stats[2][(point, cheat)] = max(
+                    cheat_stats[2].get((point, cheat), 0), savings
+                )
     count = 0
-    for size in sorted(cheat_stats.keys()):
+    if part == 2:
+        for size in cheat_stats[2].values():
+            if size >= 100:
+                count += 1
+        return count
+    for size, cheat in cheat_stats[1].items():
         if size < 100:
             continue
-        count += len(cheat_stats[size])
+        count += len(cheat)
+
     # 1415 is too high
     # I wasn't subtracting the manhattan distance between the points from the savings
+    # part 2
+    # 904905 is too low
+    # 916903 is too low - dijkstra for cheat - really slow
+    # 1010981 - bingo
+    # 1029553 is too high - manhattan distance for cheat
+    # 1141785 is too high
     return count
 
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(2024,20)
+    aoc = AdventOfCode(2024, 20)
     aoc.load_text()
     # aoc.load_list()
     # correct answers once solved, to validate changes
     aoc.correct[1] = 1404
-    aoc.correct[2] = None
+    aoc.correct[2] = 1010981
     aoc.funcs[1] = solve
     aoc.funcs[2] = solve
     aoc.run()

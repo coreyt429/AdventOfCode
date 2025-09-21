@@ -1,12 +1,25 @@
-# Ignore Python cache directories
+# Compiled Python files
 __pycache__/
 *.pyc
+*.pyo
 .ipynb_checkpoints/
+
 # Ignore other files and directories as needed
 node_modules/
+
+# uv / Python virtual environment
+.venv/
+.uv/
 .env
 *.log
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
 # ignore session file
 .aoc.session
 .aoc.*
 .reminder
+input.txt
