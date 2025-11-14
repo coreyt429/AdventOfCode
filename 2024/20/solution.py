@@ -6,7 +6,8 @@ in the scratch pad if your curious.  After taking a break, I came back to it and
 a linked list was the answer.  By converting the path to a linked list, I could easily
 calculate the difference between the positions of two nodes in the path.
 
-Part 2, saving for another day
+Part 2, saving for another day. 9 months later, it is another day. all good now
+
 
 """
 
