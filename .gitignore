@@ -2,7 +2,9 @@
 __pycache__/
 *.pyc
 *.pyo
+# Jupyter autosave / metadata
 .ipynb_checkpoints/
+.jupyter/
 
 # Ignore other files and directories as needed
 node_modules/
@@ -23,3 +25,25 @@ build/
 .aoc.*
 .reminder
 input.txt
+
+# Lint/test caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.cache/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+coverage.xml
+htmlcov/
+.coverage*
+
+coverage.xml
+htmlcov/
+.coverage*
+
+share/jupyter/kernels/
