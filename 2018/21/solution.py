@@ -72,58 +72,57 @@ print(run_activation_system(magic_number, True))
 print(run_activation_system(magic_number, False))
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 registers = [0, 0, 0, 0, 0, 0]
 ops_map = {}
 ops = {
-    'addr': lambda a, b : registers[a] + registers[b],
-    'addi': lambda a, b : registers[a] + b,
-    'mulr': lambda a, b : registers[a] * registers[b],
-    'muli': lambda a, b : registers[a] * b,
-    'banr': lambda a, b : registers[a] & registers[b],
-    'bani': lambda a, b : registers[a] & b,
-    'borr': lambda a, b : registers[a] | registers[b],
-    'bori': lambda a, b : registers[a] | b,
-    'setr': lambda a, b : registers[a],
-    'seti': lambda a, b : a,
-    'gtir': lambda a, b : 1 if a > registers[b] else 0,
-    'gtri': lambda a, b : 1 if registers[a] > b else 0,
-    'gtrr': lambda a, b : 1 if registers[a] > registers[b] else 0,
-    'eqir': lambda a, b : 1 if a == registers[b] else 0,
-    'eqri': lambda a, b : 1 if registers[a] == b else 0,
-    'eqrr': lambda a, b : 1 if registers[a] == registers[b] else 0
+    "addr": lambda a, b: registers[a] + registers[b],
+    "addi": lambda a, b: registers[a] + b,
+    "mulr": lambda a, b: registers[a] * registers[b],
+    "muli": lambda a, b: registers[a] * b,
+    "banr": lambda a, b: registers[a] & registers[b],
+    "bani": lambda a, b: registers[a] & b,
+    "borr": lambda a, b: registers[a] | registers[b],
+    "bori": lambda a, b: registers[a] | b,
+    "setr": lambda a, b: registers[a],
+    "seti": lambda a, b: a,
+    "gtir": lambda a, b: 1 if a > registers[b] else 0,
+    "gtri": lambda a, b: 1 if registers[a] > b else 0,
+    "gtrr": lambda a, b: 1 if registers[a] > registers[b] else 0,
+    "eqir": lambda a, b: 1 if a == registers[b] else 0,
+    "eqri": lambda a, b: 1 if registers[a] == b else 0,
+    "eqrr": lambda a, b: 1 if registers[a] == registers[b] else 0,
 }
+
 
 def parse_input(lines):
     ip = 0
     instructions = []
     for line in lines:
         if "#ip" in line:
-            _, ip = line.split(' ')
+            _, ip = line.split(" ")
             ip = int(ip)
             continue
-        cmd, val_a, val_b, val_c = line.split(' ')
+        cmd, val_a, val_b, val_c = line.split(" ")
         instructions.append(
-            {
-                "op": cmd,
-                "a": int(val_a),
-                "b": int(val_b),
-                "c": int(val_c)
-            }
+            {"op": cmd, "a": int(val_a), "b": int(val_b), "c": int(val_c)}
         )
     return ip, instructions
-        
+
 
 def execute(ip, instructions):
     instruction = instructions[registers[ip]]
     output = f"ip={registers[ip]} {registers} {instruction['op']}"
     output += f" {instruction['a']} {instruction['b']} {instruction['c']}"
-    registers[instruction['c']] = ops[instruction['op']](instruction['a'], instruction['b'])
+    registers[instruction["c"]] = ops[instruction["op"]](
+        instruction["a"], instruction["b"]
+    )
     output += f" {registers}"
     # if registers[ip] == 28:
     #     print(output)
@@ -131,12 +130,13 @@ def execute(ip, instructions):
     # even if the value in the instruction pointer was just updated by an instruction.
     registers[ip] += 1
 
+
 def detect_loop_old(sequence_generator):
     seen = []
     for i, num in enumerate(sequence_generator):
         seen.append(str(num))
-        last_5 = ','.join(seen[-5:])
-        all_seen = ','.join(seen)
+        last_5 = ",".join(seen[-5:])
+        all_seen = ",".join(seen)
         print(last_5, all_seen.count(last_5))
         if all_seen.count(last_5) > 10:
             return "Loop detected"
@@ -144,36 +144,39 @@ def detect_loop_old(sequence_generator):
             return "Breaking"
     return "No loop detected"
 
+
 def detect_loop(sequence_generator):
     seen = []
     loop_size = 0  # Variable to store the size of the loop
-    
+
     for i, num in enumerate(sequence_generator):
         seen.append(str(num))
-        all_seen = ','.join(seen)
+        all_seen = ",".join(seen)
         # Check for repeating patterns of various sizes
         for window_size in range(2, min(100, len(seen) // 2)):
-            pattern = ','.join(seen[-window_size:])
+            pattern = ",".join(seen[-window_size:])
             count = all_seen.count(pattern)
             if count > 1:  # Pattern repeats
                 if window_size > loop_size:
                     loop_size = window_size
-                
+
             # Stop searching if we find a pattern repeating more than 10 times
             if count > 1000:
-                return True, int(pattern.split(',')[0])
-        
+                return True, int(pattern.split(",")[0])
+
         if i > 100000:
             return True, -1
-    
+
     return False, i
+
 
 def run_program(ip, instructions):
     while True:
         if registers[ip] < 0 or registers[ip] >= len(instructions):
-            return 
+            return
         execute(ip, instructions)
-        yield(registers[ip])
+        yield (registers[ip])
+
 
 def solve(input_value, part):
     """
@@ -195,27 +198,19 @@ def solve(input_value, part):
         loop, retval = detect_loop(run_program(ptr, program))
     return counter
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,21)
+    my_aoc = aoc.AdventOfCode(2018, 21)
     input_text = my_aoc.load_text()
     # print(input_text)
     # input_lines = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -225,4 +220,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

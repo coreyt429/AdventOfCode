@@ -2,14 +2,18 @@
 Advent Of Code 2017 day 14
 
 """
+
 # import system modules
 import time
 from collections import deque
 from functools import reduce
 from heapq import heappop, heappush
+import grid
 
+# FIXME: this is broken now, need to be converted to use grid.py
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def hash_list(some_list, queue, skip, total_rotate=0):
     """
@@ -38,6 +42,7 @@ def hash_list(some_list, queue, skip, total_rotate=0):
     # return 1, skp, and total_rotate to be passed back next pass
     return queue, skip, total_rotate
 
+
 def knot_hash(input_value):
     """
     Function to solve puzzle
@@ -57,22 +62,24 @@ def knot_hash(input_value):
     # split into groups of 16
     sparse_hash = list(queue)
     sparse_hashes = []
-    for idx in range(0,256,16):
-        sparse_hashes.append(sparse_hash[idx:idx+16])
+    for idx in range(0, 256, 16):
+        sparse_hashes.append(sparse_hash[idx : idx + 16])
     # use bitwise XOR to create dense_hash values
     dense_hash = []
     for sparse_hash in sparse_hashes:
         dense_hash.append(reduce(lambda x, y: x ^ y, sparse_hash))
     # get hex values of dense_hash for hex hash
-    my_hash = ''
+    my_hash = ""
     for num in dense_hash:
-        my_hash += str(hex(num))[-2:].replace('x','0')
+        my_hash += str(hex(num))[-2:].replace("x", "0")
     # return hex hash
     return my_hash
 
+
 def hex_to_bits(hex_string):
     """convert hex to bit string"""
-    return ''.join(format(int(c, 16), '04b') for c in hex_string)
+    return "".join(format(int(c, 16), "04b") for c in hex_string)
+
 
 def map_region(grid, position):
     """
@@ -93,13 +100,16 @@ def map_region(grid, position):
         # add to region
         region.add(current)
         # get n, e, s, and w neighbors (diagonals not allowed!)
-        for neighbor in my_aoc.get_neighbors(grid, current, directions=['n','s','e','w']):
+        for neighbor in my_aoc.get_neighbors(
+            grid, current, directions=["n", "s", "e", "w"]
+        ):
             # if neighbor is filled
-            if grid[neighbor[0]][neighbor[1]] == '#':
+            if grid[neighbor[0]][neighbor[1]] == "#":
                 # add neighbor to heap
                 heappush(heap, neighbor)
     # return region when all possibilities have been exhausted
     return region
+
 
 def find_regions(grid):
     """
@@ -110,13 +120,13 @@ def find_regions(grid):
     already_seen = set()
     # counter was used as part of a visiual when I was getting a wrong answer
     # see note above to not include diagonals
-    #counter = 0
+    # counter = 0
     # walk rows
     for idx, row in enumerate(grid):
         # walk columns (chars)
         for idx2, char in enumerate(row):
             # if slot is filled
-            if char == '#':
+            if char == "#":
                 # init position
                 position = (idx, idx2)
                 # if not already seen, lets check it out
@@ -129,24 +139,26 @@ def find_regions(grid):
                     already_seen.update(new_region)
                     # This commented section was to update the individual regions
                     # to different characters to see how they were mapped
-                    #for position in new_region:
+                    # for position in new_region:
                     #    grid[position[0]][position[1]] = chr(counter + 32)
-                    #counter += 1
+                    # counter += 1
     # return the count of regions
     return len(regions)
 
-def print_grid(grid, text='Grid'):
+
+def print_grid(grid, text="Grid"):
     """
     Function to print grid
     """
     # label
-    print(f'{text}:')
+    print(f"{text}:")
     # walk rows
     for row in grid:
         # print row
-        print(''.join(row))
+        print("".join(row))
     # new line
     print()
+
 
 def solve(input_value, part):
     """
@@ -160,31 +172,22 @@ def solve(input_value, part):
     drive = []
     for idx in range(128):
         data = hex_to_bits(knot_hash(f"{input_value}-{idx}"))
-        data = data.replace('1', '#').replace('0', '.')
-        total += data.count('#')
+        data = data.replace("1", "#").replace("0", ".")
+        total += data.count("#")
         drive.append(list(data))
     answer[2] = find_regions(drive)
     return total
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,14)
+    my_aoc = aoc.AdventOfCode(2017, 14)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -194,4 +197,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

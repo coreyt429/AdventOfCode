@@ -2,16 +2,20 @@
 Advent Of Code 2015 day 14
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-#Dancer can fly 27 km/s for 5 seconds, but then must rest for 132 seconds.
+# Dancer can fly 27 km/s for 5 seconds, but then must rest for 132 seconds.
 
-pattern_input = re.compile(r'(\w+) .* (\d+) km.*for (\d+) seconds.* rest for (\d+) seconds.')
+pattern_input = re.compile(
+    r"(\w+) .* (\d+) km.*for (\d+) seconds.* rest for (\d+) seconds."
+)
+
 
 def parse_input(lines):
     """
@@ -28,33 +32,34 @@ def parse_input(lines):
             name, speed, duration, rest = match.groups()
             # store data
             reindeer[name] = {
-                'speed': int(speed),
-                'duration': int(duration),
-                'rest': int(rest)
+                "speed": int(speed),
+                "duration": int(duration),
+                "rest": int(rest),
             }
     return reindeer
+
 
 def distance_traveled(reindeer, seconds):
     """
     Function to calculate distance traveled
     """
     # Distance each reindeer travels per interval is the product of its speed and duration
-    distance_per_interval = reindeer['speed'] * reindeer['duration']
+    distance_per_interval = reindeer["speed"] * reindeer["duration"]
     # Cycle lendth is the sum of the reindeer's travel duration and rest period
-    cycle = reindeer['rest'] + reindeer['duration']
+    cycle = reindeer["rest"] + reindeer["duration"]
     # the number of intervals is the quotient of total seconds divided by cycle length
     intervals = int(seconds / cycle)
     # remainder is the remainder of total seconds divided by cycle length
-    remainder  = seconds % cycle
+    remainder = seconds % cycle
     # initialize distance
     distance = 0
     # if remainder time would be a full speed burst
-    if remainder >= reindeer['duration']:
+    if remainder >= reindeer["duration"]:
         # increment intervals
         intervals += 1
     else:
         # increment distance by product of remainder and speed
-        distance = remainder * reindeer['speed']
+        distance = remainder * reindeer["speed"]
     # increment distance by the distance traveled in inetervals
     return distance + (intervals * distance_per_interval)
 
@@ -69,9 +74,9 @@ def part1(parsed_data):
     seconds = 2503
     for stats in parsed_data.values():
         distance = distance_traveled(stats, seconds)
-        if distance > max_distance:
-            max_distance = distance
+        max_distance = max(max_distance, distance)
     return max_distance
+
 
 def part2(parsed_data):
     """
@@ -111,26 +116,18 @@ def part2(parsed_data):
     # return highest score
     return max(scores.values())
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,14)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2015, 14)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: part1,
-        2: part2
-    }
+    funcs = {1: part1, 2: part2}
     # loop parts
     for my_part in parts:
         # log start time
@@ -140,4 +137,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -5,13 +5,19 @@ This was another one that was already fast, and clean. Just changed
 it to read the input file and use current structure.
 
 """
+
 # import system modules
 import time
 import re
 
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
+START_CODE = 20151125
+MULTIPLIER = 252533
+DIVISOR = 33554393
+TARGET_ROW, TARGET_COL = None, None
 
 def solve(part):
     """
@@ -23,7 +29,7 @@ def solve(part):
     row = 1
     col = 1
     next_row = 2
-    #print(current_code,row,col)
+    # print(current_code,row,col)
     previous_code = current_code
     while True:
         row -= 1
@@ -37,28 +43,17 @@ def solve(part):
             return current_code
         previous_code = current_code
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,25)
+    my_aoc = aoc.AdventOfCode(2015, 25)
     input_text = my_aoc.load_text()
-    TARGET_ROW, TARGET_COL = (int(input) for input in re.findall(r'(\d+)', input_text))
-    START_CODE=20151125
-    MULTIPLIER=252533
-    DIVISOR=33554393
+    TARGET_ROW, TARGET_COL = (int(input) for input in re.findall(r"(\d+)", input_text))
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -68,4 +63,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

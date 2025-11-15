@@ -2,25 +2,30 @@
 Advent Of Code 2017 day 20
 
 """
+
 # import system modules
 import time
 import re
 from heapq import heappop, heappush
+
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import manhattan_distance  # pylint: disable=import-error
 
 # regex to find numbers
-pattern_nums = re.compile(r'(\-*\d+)')
+pattern_nums = re.compile(r"(\-*\d+)")
 
-class Particle():
+
+class Particle:
     """
     Class to represent particle
     """
+
     # x, y, z constants
-    X=0
-    Y=1
-    Z=2
+    X = 0
+    Y = 1
+    Z = 2
+
     def __init__(self, p_id, position, velocity, acceleration):
         """
         init particle
@@ -61,7 +66,7 @@ class Particle():
         function to set self.distance
         """
         # get manhattan_distance using grid.manhattan_distance
-        self.distance =  manhattan_distance((0,0,0), self.position)
+        self.distance = manhattan_distance((0, 0, 0), self.position)
         # return self.distance
         return self.distance
 
@@ -72,7 +77,7 @@ class Particle():
         s_p = self.position
         s_v = self.velocity
         s_a = self.acceleration
-        my_string  = f"p=<{s_p[self.X]},{s_p[self.Y]},{s_p[self.Z]}>, "
+        my_string = f"p=<{s_p[self.X]},{s_p[self.Y]},{s_p[self.Z]}>, "
         my_string += f"v=<{s_v[self.X]},{s_v[self.Y]},{s_v[self.Z]}>, "
         my_string += f"a=<{s_a[self.X]},{s_a[self.Y]},{s_a[self.Z]}> "
         my_string += f"{self.distance}"
@@ -84,6 +89,7 @@ class Particle():
         """
         return self.distance < other.distance
 
+
 def parse_input(lines):
     """
     Function to parse input
@@ -91,12 +97,15 @@ def parse_input(lines):
     # init collection
     collection = []
     # enumerate lines
-    for idx,  line in enumerate(lines):
+    for idx, line in enumerate(lines):
         # find all numbers and store as ints
         nums = [int(string) for string in pattern_nums.findall(line)]
         # add particle to collection
-        collection.append(Particle(idx, tuple(nums[:3]), tuple(nums[3:6]), tuple(nums[6:9])))
+        collection.append(
+            Particle(idx, tuple(nums[:3]), tuple(nums[3:6]), tuple(nums[6:9]))
+        )
     return collection
+
 
 def run_simulation(particles):
     """
@@ -121,7 +130,7 @@ def run_simulation(particles):
         ticks, _, _, last_closest, particle = heappop(heap)
         # if there isn't a closest for this tick, then it is you!
         if ticks not in closest:
-            closest[ticks] = float('infinity')
+            closest[ticks] = float("infinity")
         # if not 0, move it
         if ticks > 0:
             particle.move()
@@ -139,14 +148,24 @@ def run_simulation(particles):
             closest[ticks] = particle.distance
             # set last_closest
             last_closest = ticks
-            #print(f"{ticks}: Particle {closest_p.p_id} is closest at {closest_p.distance}")
+            # print(f"{ticks}: Particle {closest_p.p_id} is closest at {closest_p.distance}")
         # if closest hasn't changed since limit, we may have our answer,
         # if not, we need to increase limit
         if ticks_since_change > limit:
             # return closest_packet
             return closest_p
         # push packet back on heap, incrementing ticks
-        heappush(heap, (ticks + 1, ticks - last_closest, particle.distance, last_closest, particle))
+        heappush(
+            heap,
+            (
+                ticks + 1,
+                ticks - last_closest,
+                particle.distance,
+                last_closest,
+                particle,
+            ),
+        )
+
 
 def find_collisions(particles):
     """
@@ -193,6 +212,7 @@ def find_collisions(particles):
             # return length of particles
             return len(particles)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -206,25 +226,17 @@ def solve(input_value, part):
     # part 2, find count of particles after collisions
     return find_collisions(my_particles)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,20)
+    my_aoc = aoc.AdventOfCode(2017, 20)
     # grab input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -234,4 +246,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

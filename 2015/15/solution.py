@@ -4,13 +4,15 @@ Advent Of Code 2015 day 15
 FIXME:  this one needs review
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-#Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+
+# Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 def parse_input(lines):
     """
     Funciton to parse input
@@ -20,29 +22,31 @@ def parse_input(lines):
     # walk lines
     for line in lines:
         # get ingredient and properties
-        ingredient, properties = line.split(': ')
+        ingredient, properties = line.split(": ")
         # init ingredient
-        ingredients[ingredient]={}
+        ingredients[ingredient] = {}
         # walk properties
-        for prop in properties.split(', '):
+        for prop in properties.split(", "):
             # split property and value
-            prop, value = prop.split(' ')
+            prop, value = prop.split(" ")
             # store property and value
             ingredients[ingredient][prop] = int(value)
     return ingredients
+
 
 # global sets for scores
 scores = set()
 scores2 = set()
 
-def score_recipe(properties,ingredients,qty):
+
+def score_recipe(properties, ingredients, qty):
     """
     Funciton to score recipe
     """
     # init retva, props and values
     retval = 1
     props = set()
-    values= {}
+    values = {}
     # add properties from ingredients from poperties to props
     for ingredient in properties.values():
         for prop in ingredient:
@@ -50,7 +54,7 @@ def score_recipe(properties,ingredients,qty):
     # calculate values for properties
     for prop in props:
         # skip calories
-        if prop == 'calories':
+        if prop == "calories":
             continue
         # init to 0
         values[prop] = 0
@@ -66,14 +70,15 @@ def score_recipe(properties,ingredients,qty):
     calories = 0
     # calculate calories for recipe
     for i, ingredient in enumerate(ingredients):
-        calories += properties[ingredient]['calories'] * qty[i]
+        calories += properties[ingredient]["calories"] * qty[i]
     # if calories == 500, save in scores2 for part2
     if calories == 500:
         scores2.add(retval)
     # return part 1 score
     return retval
 
-def find_recipe(properties,ingredients=(),qty=()):
+
+def find_recipe(properties, ingredients=(), qty=()):
     """
     Function to find recipe
     """
@@ -99,6 +104,7 @@ def find_recipe(properties,ingredients=(),qty=()):
         return score
     return 0
 
+
 def solve(lines, part):
     """
     Function to solve puzzle
@@ -109,29 +115,21 @@ def solve(lines, part):
         parsed_data = parse_input(lines)
         # recurse find_recipe
         find_recipe(parsed_data)
-        #return max scores
+        # return max scores
         return max(scores)
     # part 2 return max scores2
     return max(scores2)
+
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2015, 15)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -141,4 +139,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

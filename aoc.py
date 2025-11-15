@@ -48,7 +48,8 @@ class AdventOfCodeSession:
                 self.prompt_for_session_id()
 
             session = self.login()
-            if session.test():
+            self.session = session
+            if self.test():
                 return session  # success
 
             # If we get here, the session was invalid

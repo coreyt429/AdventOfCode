@@ -2,15 +2,17 @@
 Advent Of Code 2018 day 3
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # input regex match
-pattern_input = re.compile(r'#(\d+)\s+@\s+(\d+),(\d+): (\d+)x(\d+)')
+pattern_input = re.compile(r"#(\d+)\s+@\s+(\d+),(\d+): (\d+)x(\d+)")
+
 
 def parse_input(lines):
     """
@@ -24,14 +26,17 @@ def parse_input(lines):
         match = pattern_input.match(line)
         if match:
             # add square
-            squares.append({
-               "id": int(match.group(1)),
-               "col": int(match.group(2)),
-               "row": int(match.group(3)),
-               "width": int(match.group(4)),
-               "height": int(match.group(5)),
-            })
+            squares.append(
+                {
+                    "id": int(match.group(1)),
+                    "col": int(match.group(2)),
+                    "row": int(match.group(3)),
+                    "width": int(match.group(4)),
+                    "height": int(match.group(5)),
+                }
+            )
     return squares
+
 
 def find_overlaps(squares):
     """
@@ -42,9 +47,9 @@ def find_overlaps(squares):
     # walk squares
     for square in squares:
         # walk rows
-        for row in range(square['row'], square['row'] + square['height']):
+        for row in range(square["row"], square["row"] + square["height"]):
             # walk cols
-            for col in range(square['col'], square['col'] + square['width']):
+            for col in range(square["col"], square["col"] + square["width"]):
                 # init position
                 position = tuple([row, col])
                 # init occupied if needed
@@ -61,30 +66,32 @@ def find_overlaps(squares):
     # return duplicate square count
     return len(duplicates)
 
+
 def squares_overlap_failed(sq_1, sq_2):
     """
     First attempt to find overlaps by corners.
 
     This doesn't take into account rectangles that overlap
     in the middle
-         11  
+         11
          11
     22222XX22222
     22222XX22222
          11
          11
     """
-    #sq_2: [(13, 146), (13, 170), (37, 170), (37, 146)]
+    # sq_2: [(13, 146), (13, 170), (37, 170), (37, 146)]
     min_row = min((point[0] for point in sq_2))
     max_row = max((point[0] for point in sq_2))
     min_col = min((point[1] for point in sq_2))
     max_col = max((point[1] for point in sq_2))
-    sq_overlap= False
+    sq_overlap = False
     for point in sq_1:
         row, col = point
         if min_row <= row <= max_row and min_col <= col <= max_col:
             sq_overlap = True
     return sq_overlap
+
 
 def squares_overlap(sq_1, sq_2):
     """
@@ -94,29 +101,34 @@ def squares_overlap(sq_1, sq_2):
     rows = {}
     cols = {}
     # Unpack the rectangle coordinates
-    rows['sq_1'] = [point[0] for point in sq_1]
-    cols['sq_1'] = [point[1] for point in sq_1]
-    rows['sq_2'] = [point[0] for point in sq_2]
-    cols['sq_2'] = [point[1] for point in sq_2]
+    rows["sq_1"] = [point[0] for point in sq_1]
+    cols["sq_1"] = [point[1] for point in sq_1]
+    rows["sq_2"] = [point[0] for point in sq_2]
+    cols["sq_2"] = [point[1] for point in sq_2]
 
-     # init min_row, max_row and min_col max_col
+    # init min_row, max_row and min_col max_col
     min_row = {}
     max_row = {}
     min_col = {}
     max_col = {}
 
     # Determine the boundaries of both squares
-    min_row['sq_1'], max_row['sq_1'] = min(rows['sq_1']), max(rows['sq_1'])
-    min_col['sq_1'], max_col['sq_1'] = min(cols['sq_1']), max(cols['sq_1'])
-    min_row['sq_2'], max_row['sq_2'] = min(rows['sq_2']), max(rows['sq_2'])
-    min_col['sq_2'], max_col['sq_2'] = min(cols['sq_2']), max(cols['sq_2'])
+    min_row["sq_1"], max_row["sq_1"] = min(rows["sq_1"]), max(rows["sq_1"])
+    min_col["sq_1"], max_col["sq_1"] = min(cols["sq_1"]), max(cols["sq_1"])
+    min_row["sq_2"], max_row["sq_2"] = min(rows["sq_2"]), max(rows["sq_2"])
+    min_col["sq_2"], max_col["sq_2"] = min(cols["sq_2"]), max(cols["sq_2"])
 
     # Check for overlap
     overlap = {}
-    overlap['row'] = (min_row['sq_1'] <= max_row['sq_2'] and max_row['sq_1'] >= min_row['sq_2'])
-    overlap['col'] = (min_col['sq_1'] <= max_col['sq_2'] and max_col['sq_1'] >= min_col['sq_2'])
+    overlap["row"] = (
+        min_row["sq_1"] <= max_row["sq_2"] and max_row["sq_1"] >= min_row["sq_2"]
+    )
+    overlap["col"] = (
+        min_col["sq_1"] <= max_col["sq_2"] and max_col["sq_1"] >= min_col["sq_2"]
+    )
 
-    return overlap['row'] and overlap['col']
+    return overlap["row"] and overlap["col"]
+
 
 def find_non_overlap(squares):
     """
@@ -128,14 +140,14 @@ def find_non_overlap(squares):
     # walk squares
     for square in squares:
         # get corners
-        upper_left = tuple([square['row'], square['col']])
-        upper_right = tuple([square['row'], square['col'] + square['width'] - 1])
-        lower_left = tuple([square['row'] + square['height'] - 1, square['col']])
+        upper_left = tuple([square["row"], square["col"]])
+        upper_right = tuple([square["row"], square["col"] + square["width"] - 1])
+        lower_left = tuple([square["row"] + square["height"] - 1, square["col"]])
         lower_right = tuple(
-            [square['row'] + square['height'] - 1, square['col'] + square['width'] - 1]
+            [square["row"] + square["height"] - 1, square["col"] + square["width"] - 1]
         )
         # store corners by id in new_squares
-        new_squares[square['id']] = [upper_left, upper_right, lower_right, lower_left]
+        new_squares[square["id"]] = [upper_left, upper_right, lower_right, lower_left]
     # init overlaps
     overlaps = set()
     # for each square in new_squares
@@ -164,6 +176,7 @@ def find_non_overlap(squares):
     # we shouldn't get here
     return "not possible"
 
+
 def find_non_overlap_failed(squares):
     """
     With this function, I wqs able to narrow it down to 58 rectangles
@@ -176,19 +189,19 @@ def find_non_overlap_failed(squares):
     """
     occupied = {}
     for square in squares:
-        #print(f"{square['width']}x{square['height']}")
-        for row in range(square['row'], square['row'] + square['height']):
-            for col in range(square['col'], square['col'] + square['width']):
-                #print("#",end="")
+        # print(f"{square['width']}x{square['height']}")
+        for row in range(square["row"], square["row"] + square["height"]):
+            for col in range(square["col"], square["col"] + square["width"]):
+                # print("#",end="")
                 position = tuple([row, col])
                 if position not in occupied:
                     occupied[position] = 0
                 occupied[position] += 1
-            #print()
-        #print()
-    min_row = float('infinity')
+            # print()
+        # print()
+    min_row = float("infinity")
     max_row = 0
-    min_col = float('infinity')
+    min_col = float("infinity")
     max_col = 0
     for position, _ in occupied.items():
         row, col = position
@@ -197,29 +210,35 @@ def find_non_overlap_failed(squares):
         min_col = min(col, min_col)
         max_col = max(col, max_col)
     # visualization
-    #for row in range(min_row, max_row + 1):
+    # for row in range(min_row, max_row + 1):
     #    for col in range(min_col, max_col + 1):
     #        print(f"{occupied.get((row, col), 0)} ", end="")
     #    print()
     potential = []
     for square in squares:
         corners = [
-            tuple([square['row'], square['col']]),
-            tuple([square['row'], square['col'] + square['width'] - 1]),
-            tuple([square['row'] + square['height'] - 1, square['col']]),
-            tuple([square['row'] + square['height'] - 1, square['col'] + square['width'] - 1]),
+            tuple([square["row"], square["col"]]),
+            tuple([square["row"], square["col"] + square["width"] - 1]),
+            tuple([square["row"] + square["height"] - 1, square["col"]]),
+            tuple(
+                [
+                    square["row"] + square["height"] - 1,
+                    square["col"] + square["width"] - 1,
+                ]
+            ),
         ]
         for corner in corners:
             if occupied[corner] > 1:
                 continue
-        for col in range(square['col'], square['col'] + square['width']):
-            for row in range(square['row'], square['row'] + square['height']):
+        for col in range(square["col"], square["col"] + square["width"]):
+            for row in range(square["row"], square["row"] + square["height"]):
                 position = tuple([row, col])
                 if occupied[position] > 1:
                     continue
         potential.append(square)
     print(f"{len(potential)} of {len(squares)} might be the one")
     return len(potential)
+
 
 def solve(input_value, part):
     """
@@ -232,25 +251,17 @@ def solve(input_value, part):
     overlap = find_overlaps(squares)
     return overlap
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,3)
+    my_aoc = aoc.AdventOfCode(2018, 3)
     input_lines = my_aoc.load_lines()
-    #print(input_lines)
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -260,4 +271,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

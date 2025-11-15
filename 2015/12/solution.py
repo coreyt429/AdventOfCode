@@ -2,13 +2,15 @@
 Advent Of Code 2015 day 12
 
 """
+
 # import system modules
 import time
 import re
 import json
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def sum_json_vals(current_object):
     """
@@ -29,34 +31,27 @@ def sum_json_vals(current_object):
     # return recursed values
     return sum_json_vals(list(current_object.values()))
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     if part == 1:
-        pattern = r'-*\d+'
+        pattern = r"-*\d+"
         return sum(int(num) for num in re.findall(pattern, input_value))
     # part 2
     return sum_json_vals(json.loads(input_value))
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,12)
+    my_aoc = aoc.AdventOfCode(2015, 12)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -66,4 +61,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

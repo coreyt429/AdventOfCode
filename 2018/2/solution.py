@@ -2,27 +2,27 @@
 Advent Of Code 2018 day 2
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def check_sum(box_ids):
     """
     checksum box_ids
     """
-    matches = {
-        2: set(),
-        3: set()
-    }
+    matches = {2: set(), 3: set()}
     for box_id in box_ids:
         for char in set(list(box_id)):
             count = box_id.count(char)
             if count in matches:
                 matches[count].add(box_id)
-    #print(matches)
-    return len(matches[2]) *  len(matches[3])
+    # print(matches)
+    return len(matches[2]) * len(matches[3])
+
 
 def is_match(id_1, id_2):
     """
@@ -37,11 +37,12 @@ def is_match(id_1, id_2):
             count += 1
         else:
             mismatch = idx
-    #print(f"{target}: {count}: {id_1} {id_2}")
+    # print(f"{target}: {count}: {id_1} {id_2}")
     if not count == target:
         return False, None
     # note this will fail if the mismatch is at 0, but I don't think it is
     return True, mismatch
+
 
 def find_matches(box_ids):
     """
@@ -59,8 +60,9 @@ def find_matches(box_ids):
         mismatch, box_id, _ = potentials.pop()
         box_id = list(box_id)
         box_id.pop(mismatch)
-        return ''.join(box_id)
-    return 'somethin bad happened'
+        return "".join(box_id)
+    return "somethin bad happened"
+
 
 def solve(input_value, part):
     """
@@ -72,27 +74,19 @@ def solve(input_value, part):
     # part 1
     return check_sum(input_value)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,2)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2018, 2)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
-    #print(input_lines)
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -102,4 +96,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

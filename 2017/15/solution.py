@@ -2,13 +2,15 @@
 Advent Of Code 2017 day 15
 
 """
+
 # import system modules
 import time
 import itertools
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def generator_func(seed, factor, divisor=None):
     """
@@ -31,6 +33,7 @@ def generator_func(seed, factor, divisor=None):
             # we have a number, cough it up
             yield current
 
+
 def parse_input(lines):
     """
     Function to parse input
@@ -45,12 +48,13 @@ def parse_input(lines):
     # walk lines
     for line in lines:
         # regex match
-        match = re.match(r'Generator (\w) starts with (\d+)', line)
+        match = re.match(r"Generator (\w) starts with (\d+)", line)
         if match:
             # store int value
             results[match.group(1)] = int(match.group(2))
     # return seed_a, seed_b
-    return results['A'], results['B']
+    return results["A"], results["B"]
+
 
 def solve(input_value, part):
     """
@@ -83,25 +87,17 @@ def solve(input_value, part):
     # yay! and answer :)
     return counter
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,15)
+    my_aoc = aoc.AdventOfCode(2017, 15)
     # fetch input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -111,4 +107,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

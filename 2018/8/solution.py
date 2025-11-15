@@ -2,20 +2,22 @@
 Advent Of Code 2018 day 8
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-def parse_nodes(in_data, nodes=None, node_id='0'):
+
+def parse_nodes(in_data, nodes=None, node_id="0"):
     """
     Function to parse data
     Args:
         in_data: list(int()) puzzle input
         nodes: current node dict(), default: None
         node_id: current node_id str(), default: '0'
-    
+
     Returns:
         data: list(int()) copy of in_data minus items used
         nodes: dict() updated node data
@@ -28,27 +30,25 @@ def parse_nodes(in_data, nodes=None, node_id='0'):
     # get header children=int(), metadata=int()
     children = data.pop(0)
     metadata = data.pop(0)
-    #init new node
-    nodes[node_id] = {
-        "children": [],
-        "metadata": []
-    }
+    # init new node
+    nodes[node_id] = {"children": [], "metadata": []}
     # for idx in 1 to children
     for idx in range(1, children + 1):
         # new child_id
-        child_id = f'{node_id}.{idx}'
+        child_id = f"{node_id}.{idx}"
         # add child_id to children
-        nodes[node_id]['children'].append(child_id)
+        nodes[node_id]["children"].append(child_id)
         # parse child recursively
         data, nodes = parse_nodes(data, nodes, child_id)
     # after we have all the children, lets get the metadata
     for _ in range(metadata):
         # pop(0) to for each metadata item
-        nodes[node_id]['metadata'].append(data.pop(0))
+        nodes[node_id]["metadata"].append(data.pop(0))
     # return data, and nodes
     return data, nodes
 
-def sum_metadata(nodes, node_id='0'):
+
+def sum_metadata(nodes, node_id="0"):
     """
     Function to tally metadata count
     Args:
@@ -63,10 +63,11 @@ def sum_metadata(nodes, node_id='0'):
     for child_id in node["children"]:
         # add child metadata
         metadata += sum_metadata(nodes, child_id)
-    #return
+    # return
     return metadata
 
-def score(nodes, node_id='0'):
+
+def score(nodes, node_id="0"):
     """
     Function to score node
     Args:
@@ -87,26 +88,27 @@ def score(nodes, node_id='0'):
     refer to any child node.
     """
     node = nodes[node_id]
-    if len(node['children']) == 0:
+    if len(node["children"]) == 0:
         # return sum of metadata
-        return sum(node['metadata'])
+        return sum(node["metadata"])
 
     # walk metadata
     value = 0
-    for child_ref in node['metadata']:
+    for child_ref in node["metadata"]:
         # skip invalid children
-        if 0 < child_ref <=len(node['children']):
+        if 0 < child_ref <= len(node["children"]):
             # child_ref 1, is first child node['children'][0]
-            child_id = node['children'][child_ref - 1]
+            child_id = node["children"][child_ref - 1]
             value += score(nodes, child_id)
     return value
+
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     # convert into dat to list of ints
-    my_data = [int(num) for num in input_value.strip().split(' ')]
+    my_data = [int(num) for num in input_value.strip().split(" ")]
     # parse input data into node data
     my_data, my_nodes = parse_nodes(my_data)
     # Part 1: What is the sum of all metadata entries?
@@ -116,24 +118,16 @@ def solve(input_value, part):
     # Part 2: What is the value of the root node?
     return score(my_nodes)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,8)
+    my_aoc = aoc.AdventOfCode(2018, 8)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -143,4 +137,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

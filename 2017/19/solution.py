@@ -8,7 +8,7 @@ position identifiers.  It worked well for another puzzle, and was not fully test
 So I spent more time rewriting that and testing it thoroughly  before working on
 this puzzle.
 
-I'm happy with the new Grid() class.  It worked well.  
+I'm happy with the new Grid() class.  It worked well.
 
 I'm a bit slow on this puzzle, I think it could be dramatically sped up by just noting
 the position of all of the + and letters as well as the directions you can travel from
@@ -16,17 +16,20 @@ them.  Then we would just need to find the next one on the same line, and get th
 manhattan distance between the points to count steps.  Maybe I can work on that later.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
 
-class Packet():
+
+class Packet:
     """
     Class to represent our packet
     """
+
     def __init__(self, grid, pos, direction, **kwargs):
         """
         init function
@@ -41,11 +44,7 @@ class Packet():
         # need to test dict vs list for performance.  I think get_square would have to update
         # for list though
         self.grid = Grid(
-            grid,
-            start_pos=pos,
-            coordinate_system="screen",
-            datastore="dict",
-            **kwargs
+            grid, start_pos=pos, coordinate_system="screen", datastore="dict", **kwargs
         )
         # reset self.pos (needed if changing the pos_type)
         self.pos = self.grid.pos
@@ -72,7 +71,7 @@ class Packet():
             # add to letters
             self.letters.append(current)
         # is it not a +?
-        if current != '+':
+        if current != "+":
             # try moving forward
             if self.grid.move(self.direction, invalid=" "):
                 # increment steps, and update position
@@ -88,12 +87,12 @@ class Packet():
             "s": {"directions": ["e", "w"], "invalid": " |"},
             "n": {"directions": ["e", "w"], "invalid": " |"},
             "e": {"directions": ["n", "s"], "invalid": " -"},
-            "w": {"directions": ["n", "s"], "invalid": " -"}
+            "w": {"directions": ["n", "s"], "invalid": " -"},
         }
         # get neighbors from grid
         neighbors = self.grid.get_neighbors(
             directions=options[self.direction]["directions"],
-            invalid=options[self.direction]["invalid"]
+            invalid=options[self.direction]["invalid"],
         )
         # if only one option, take it
         if len(neighbors) == 1:
@@ -109,13 +108,14 @@ class Packet():
                     self.pos = self.grid.pos
                     return True
         # if no neighbors, then end of the line
-        if  len(neighbors) == 0:
+        if len(neighbors) == 0:
             print(f"end of the line: {self.pos}")
             return False
         # else, too many options, and we need code to try multiple paths
         # this doesn't seem to be the case with our input
         print(f"too many options: {self.pos}")
         return False
+
 
 def solve(input_value, part):
     """
@@ -127,15 +127,15 @@ def solve(input_value, part):
     # init my_map
     my_map = input_value
     # find start location
-    start = (my_map[0].index('|'), 0)
+    start = (my_map[0].index("|"), 0)
     # init packet
-    pack = Packet(my_map, start, 's')
-    #init sentinel
+    pack = Packet(my_map, start, "s")
+    # init sentinel
     sentinel = 0
     # step forward until we can't
     while pack.step_forward():
         # increment sentinel
-        sentinel+=1
+        sentinel += 1
         # check sentinel
         if sentinel > 100000:
             print("Breaking loop")
@@ -144,26 +144,18 @@ def solve(input_value, part):
     # I'm not sure why I'm off by one here, maybe revisit
     answer[2] = pack.steps + 1
     # return part1 answer
-    return ''.join(pack.letters)
+    return "".join(pack.letters)
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,19)
+    my_aoc = aoc.AdventOfCode(2017, 19)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -173,4 +165,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

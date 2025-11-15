@@ -1,25 +1,28 @@
 """
 Advent Of Code 2017 day 9
 
-Oh boy, regex fun. 
+Oh boy, regex fun.
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def prep_string(in_string):
     """
     Function to prep string
     """
     # remove cancelled characters
-    out_string = re.sub(r'!.', '', in_string)
+    out_string = re.sub(r"!.", "", in_string)
     # remove garbage
-    out_string = re.sub(r'<[^>]*>', '', out_string)
+    out_string = re.sub(r"<[^>]*>", "", out_string)
     return out_string
+
 
 def score_string(in_string):
     """
@@ -31,13 +34,14 @@ def score_string(in_string):
     # walk string
     for char in in_string:
         # start a group, so increment points
-        if char == '{':
+        if char == "{":
             points += 1
         # end a group, so give out the points
-        if char == '}':
-            total +=  points
+        if char == "}":
+            total += points
             points -= 1
     return total
+
 
 def solve(input_value, part):
     """
@@ -46,9 +50,9 @@ def solve(input_value, part):
     # part 2, simpler processing, so just do it here
     if part == 2:
         # strip cancelled characters
-        out_string = re.sub(r'!.', '', input_value)
+        out_string = re.sub(r"!.", "", input_value)
         # match characters inside garbage
-        matches = re.findall(r'<([^>]*)>', out_string)
+        matches = re.findall(r"<([^>]*)>", out_string)
         # find any?
         if matches:
             # add up the lengths of garbage groups, and return
@@ -60,24 +64,16 @@ def solve(input_value, part):
     score = score_string(new_string)
     return score
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,9)
+    my_aoc = aoc.AdventOfCode(2017, 9)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -87,4 +83,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

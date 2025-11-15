@@ -2,12 +2,14 @@
 Advent Of Code 2017 day 21
 
 """
+
 # import system modules
 import time
 import math
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_rules(lines):
     """
@@ -15,39 +17,43 @@ def parse_rules(lines):
     """
     rules = {}
     for line in lines:
-        key, value = line.split(' => ')
+        key, value = line.split(" => ")
         # storing with \n instead of / to reduce conversions later
-        rules[key.replace('/', '\n')] = value.replace('/', '\n')
+        rules[key.replace("/", "\n")] = value.replace("/", "\n")
     return rules
+
 
 def rotate_90_degress(in_string):
     """
     Function to rotate grid 90 degrees
     """
-    lines = in_string.split('\n')
+    lines = in_string.split("\n")
     matrix = []
     for line in lines:
         matrix.append(list(char for char in line))
     matrix = [list(row) for row in zip(*matrix[::-1])]
-    return '\n'.join([''.join(row) for row in matrix])
+    return "\n".join(["".join(row) for row in matrix])
+
 
 def flip_horizontal(in_string):
     """
     Function to flip grid horizontally
     """
-    lines = in_string.split('\n')
+    lines = in_string.split("\n")
     matrix = [list(line) for line in lines]
     flipped_matrix = [row[::-1] for row in matrix]
-    return '\n'.join([''.join(row) for row in flipped_matrix])
+    return "\n".join(["".join(row) for row in flipped_matrix])
+
 
 def flip_vertical(in_string):
     """
     Function to flip grid veritcally
     """
-    lines = in_string.split('\n')
+    lines = in_string.split("\n")
     matrix = [list(line) for line in lines]
     flipped_matrix = matrix[::-1]
-    return '\n'.join([''.join(row) for row in flipped_matrix])
+    return "\n".join(["".join(row) for row in flipped_matrix])
+
 
 def iterations(in_string):
     """
@@ -62,8 +68,9 @@ def iterations(in_string):
         # tests indicated flipping vertically as well didn't
         # produce more results than just flipping horizontally
         # this shaved 8 seconds off of my time with no change
-        #possibilities.add(flip_vertical(text))
+        # possibilities.add(flip_vertical(text))
     return possibilities
+
 
 def join_strings(in_strings):
     """
@@ -78,26 +85,29 @@ def join_strings(in_strings):
         work_list.append(in_string.split("\n"))
 
     # Adjust the work_list to fit into a perfect square by adding empty strings if necessary
-    while len(work_list) < square_size ** 2:
-        work_list.append([''] * len(work_list[0]))
+    while len(work_list) < square_size**2:
+        work_list.append([""] * len(work_list[0]))
 
-    result = ''
+    result = ""
 
     # Combine the strings into the square
     for row_block in range(0, square_size):
         for line_idx in range(len(work_list[0])):
-            combined_line = ''
+            combined_line = ""
             for col_block in range(0, square_size):
-                combined_line += work_list[row_block * square_size + col_block][line_idx]
-            result += combined_line + '\n'
+                combined_line += work_list[row_block * square_size + col_block][
+                    line_idx
+                ]
+            result += combined_line + "\n"
 
     return result.rstrip()
+
 
 def split_string(in_string):
     """
     Function to split grid into smaller grids
     """
-    lines = in_string.strip().split('\n')
+    lines = in_string.strip().split("\n")
     num_lines = len(lines)
     if num_lines % 2 == 0:
         # Split into 2x2 squares
@@ -110,9 +120,10 @@ def split_string(in_string):
         for j in range(0, len(lines[i]), square_size):
             square = []
             for k in range(square_size):
-                square.append(lines[i + k][j:j + square_size])
+                square.append(lines[i + k][j : j + square_size])
             squares.append(square)
-    return ['\n'.join(square) for square in squares]
+    return ["\n".join(square) for square in squares]
+
 
 def process_string(input_string, rules):
     """
@@ -133,11 +144,12 @@ def process_string(input_string, rules):
                 expanded_strings.append(rules[my_string])
     return join_strings(expanded_strings)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    my_string=""".#.
+    my_string = """.#.
 ..#
 ###"""
     rules = parse_rules(input_value)
@@ -147,26 +159,18 @@ def solve(input_value, part):
         counter = 18
     for _ in range(counter):
         my_string = process_string(my_string, rules)
-    return my_string.count('#')
+    return my_string.count("#")
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,21)
+    my_aoc = aoc.AdventOfCode(2017, 21)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -176,4 +180,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

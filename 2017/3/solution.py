@@ -1,21 +1,23 @@
 """
 Advent Of Code 2017 day 3
 
-This one was a bit more fun.  I went with a more mathematical solution for part 1, 
+This one was a bit more fun.  I went with a more mathematical solution for part 1,
 and that didn't work well for part 2. So I tried building a traversal routine to
 make the grid, but that was too slow for part 1.  So taking different approaches
 for each part.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # x/y constants
 X = 0
 Y = 1
+
 
 def get_target_coordinates(target):
     """
@@ -30,7 +32,7 @@ def get_target_coordinates(target):
         # step n up by 2
         counter += 2
         # count of items for this layer
-        new =  (counter - 1) * 4
+        new = (counter - 1) * 4
         # total count
         total += new
     # find lower right hand corner
@@ -60,22 +62,18 @@ def get_target_coordinates(target):
     # return target point
     return tuple(point)
 
+
 def traverse(target):
     """
     Part 2 solultions, builds out grid so we can evaluate neighbors
     """
     # directions to identify position in neighbors
-    directions = {
-        "up": 4,
-        "left": 1,
-        "right": 6,
-        "down": 3
-    }
+    directions = {"up": 4, "left": 1, "right": 6, "down": 3}
     # init start and mem_map
-    start = complex(0,0)
+    start = complex(0, 0)
     mem_map = {start: 1}
     # get neighbors of start
-    neighbors = my_aoc.get_neighbors(mem_map, start, type='infinite')
+    neighbors = my_aoc.get_neighbors(mem_map, start, type="infinite")
     # init counter
     counter = 1
     # loop indefinitely
@@ -85,13 +83,13 @@ def traverse(target):
         # move current to the right
         current = neighbors[directions["right"]]
         # get neighbors of current
-        neighbors = my_aoc.get_neighbors(mem_map, current, type='infinite')
+        neighbors = my_aoc.get_neighbors(mem_map, current, type="infinite")
         # initialize entry for current
         mem_map[current] = 0
         # add preexisting neighbor values to current
         for neighbor in neighbors:
             if neighbor in mem_map:
-                mem_map[current] +=  mem_map[neighbor]
+                mem_map[current] += mem_map[neighbor]
         # if current > target, return current value
         if mem_map[current] > target:
             return mem_map[current]
@@ -109,14 +107,15 @@ def traverse(target):
                 # init new current
                 mem_map[current] = 0
                 # get new neighbors
-                neighbors = my_aoc.get_neighbors(mem_map, current, type='infinite')
+                neighbors = my_aoc.get_neighbors(mem_map, current, type="infinite")
                 # add existing neighbor values
                 for neighbor in neighbors:
                     if neighbor in mem_map:
-                        mem_map[current] +=  mem_map[neighbor]
+                        mem_map[current] += mem_map[neighbor]
                 # if we current > target return value
                 if mem_map[current] > target:
                     return mem_map[current]
+
 
 def solve(input_value, part):
     """
@@ -126,28 +125,20 @@ def solve(input_value, part):
         # get target point
         point = get_target_coordinates(int(input_value))
         # return manhattan distance to the center
-        return my_aoc.manhattan_distance(point,(0,0))
+        return my_aoc.manhattan_distance(point, (0, 0))
     # return mem_map traversal
     return traverse(int(input_value))
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,3)
+    my_aoc = aoc.AdventOfCode(2017, 3)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -157,4 +148,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

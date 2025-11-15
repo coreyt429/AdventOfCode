@@ -2,12 +2,14 @@
 Advent Of Code 2017 day 13
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """
@@ -18,10 +20,11 @@ def parse_input(lines):
     # walk lines
     for line in lines:
         # get nums from line as int()
-        pos, scan_range = [int(num) for num in re.findall(r'(\d+)', line)]
+        pos, scan_range = [int(num) for num in re.findall(r"(\d+)", line)]
         # store data
         data[pos] = scan_range
     return data
+
 
 def position(scanner_range, picosecond):
     """
@@ -42,6 +45,7 @@ def position(scanner_range, picosecond):
     # return max(index) - 1 - picoseconds in this direction
     return (scanner_range - 2) - (picosecond - scanner_range)
 
+
 def severity(scanners):
     """
     function to calculate severity
@@ -59,10 +63,11 @@ def severity(scanners):
             # get the scanners position
             pos = position(scanners[layer], picosecond)
             # did we get caught
-            if pos == 0: # caught
+            if pos == 0:  # caught
                 # oh no!  add layer severity to total
                 total += layer * scanners[layer]
     return total
+
 
 def success(scanners, delay):
     """
@@ -77,11 +82,12 @@ def success(scanners, delay):
             # what is the scanners position
             pos = position(scanners[layer], picosecond)
             # did the packet get caught?
-            if pos == 0: # caught
+            if pos == 0:  # caught
                 # not a success
                 return False
     # wait we got through all the layers, Yay!
     return True
+
 
 def solve(input_value, part):
     """
@@ -106,24 +112,16 @@ def solve(input_value, part):
         # otherwise, increment and keep going
         delay += 1
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,13)
+    my_aoc = aoc.AdventOfCode(2017, 13)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -133,4 +131,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

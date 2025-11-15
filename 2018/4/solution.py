@@ -2,11 +2,13 @@
 Advent Of Code 2018 day 4
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """
@@ -15,7 +17,7 @@ def parse_input(lines):
     Each entry is three (or more sleep/wake can repeat) lines like:
     [1518-11-01 00:00] Guard #10 begins shift
     [1518-11-01 00:05] falls asleep
-    [1518-11-01 00:25] wakes up 
+    [1518-11-01 00:25] wakes up
     """
     # init guards, and guard_id
     guards = {}
@@ -23,32 +25,35 @@ def parse_input(lines):
     # walk lines
     for line in lines:
         # split data by spaces, no need for a regex here
-        data = line.split(' ')
+        data = line.split(" ")
         # if length is 6, we have a new guard on duty
         if len(data) == 6:
             # fetch guard_id
-            guard_id = int(data[3].replace('#',''))
+            guard_id = int(data[3].replace("#", ""))
             # if we haven't seen this guard, init the guard
             if guard_id not in guards:
                 guards[guard_id] = {"log": [], "minutes": 0}
         # falling asleep
-        elif data[2] == 'falls':
+        elif data[2] == "falls":
             # store sleep time
-            sleep = (data[0].replace('[]',''),data[1].replace(']',''))
+            sleep = (data[0].replace("[]", ""), data[1].replace("]", ""))
         # waking up
-        elif data[2] == 'wakes':
+        elif data[2] == "wakes":
             # store wakt time
-            wake = (data[0].replace('[]',''),data[1].replace(']',''))
+            wake = (data[0].replace("[]", ""), data[1].replace("]", ""))
             # append to guards log
-            guards[guard_id]['log'].append((wake, sleep))
+            guards[guard_id]["log"].append((wake, sleep))
             # add to sleep minutes for guard
-            guards[guard_id]['minutes'] += int(wake[1].split(':')[1])-int(sleep[1].split(':')[1])
+            guards[guard_id]["minutes"] += int(wake[1].split(":")[1]) - int(
+                sleep[1].split(":")[1]
+            )
             # I thought about getting the most frequent minute here,
             # but we would be calculating multiple times, so instead
             # we just calculate twice for each guard in solve()
         else:
             print(f"Unhandled: {line}")
     return guards
+
 
 def sleepiest(guards):
     """
@@ -57,14 +62,15 @@ def sleepiest(guards):
     # init sleepy
     sleepy = None
     # get the max of minutes
-    max_minutes = max(guard['minutes'] for guard in guards.values())
+    max_minutes = max(guard["minutes"] for guard in guards.values())
     # find the guard that had the max
     for guard_id, guard in guards.items():
-        if guard['minutes'] == max_minutes:
+        if guard["minutes"] == max_minutes:
             sleepy = guard_id
             # go ahead and return to cut the loop short
             return sleepy
     return sleepy
+
 
 def most_frequent_minute(guard):
     """
@@ -73,16 +79,16 @@ def most_frequent_minute(guard):
     # init minutes
     minutes = {}
     # pull log
-    log = guard['log']
+    log = guard["log"]
     # important check, there is a guard that doesn't sleep, which
     # will throw an exception when we pass an empty list to max
     if log:
         # walk log entries
         for data in log:
-            #(('[1518-11-01', '00:25'), ('[1518-11-01', '00:05'))
+            # (('[1518-11-01', '00:25'), ('[1518-11-01', '00:05'))
             # pull sleep and wake minutes from log entry
-            sleep = int(data[1][1].split(':')[1])
-            wake = int(data[0][1].split(':')[1])
+            sleep = int(data[1][1].split(":")[1])
+            wake = int(data[0][1].split(":")[1])
             # for each minute from sleep to wake
             for minute in range(sleep, wake):
                 # init if needed
@@ -93,7 +99,7 @@ def most_frequent_minute(guard):
         # get max
         max_count = max(minutes.values())
         # find the minute that matches max
-        for minute, count  in minutes.items():
+        for minute, count in minutes.items():
             if count == max_count:
                 return minute, count
     return 0, 0
@@ -136,28 +142,20 @@ def solve(input_value, part):
     result = max_guard_id * max_minute
     return result
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,4)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2018, 4)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = sorted(my_aoc.load_lines())
-    #for line in input_lines:
+    # for line in input_lines:
     #    print(line)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -167,4 +165,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

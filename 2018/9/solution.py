@@ -4,7 +4,7 @@ Advent Of Code 2018 day 9
 deque makes this one pretty easy,  I really like it for circle problems.
 It is really easy to rotate the circle clockwise or counter clockwise.
 
-I also used deque for the players to rotate through the players.  A 
+I also used deque for the players to rotate through the players.  A
 current player pointer to a list position might have been more efficient,
 but part 2 runs in 1.3 seconds, so not optimizing further.
 
@@ -14,13 +14,15 @@ in range(marble_value + 1)", which also might have been more efficient.
 
 I was just having fun with deque today though :)
 """
+
 # import system modules
 import time
 import re
 from collections import deque
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """
@@ -34,7 +36,7 @@ def parse_input(lines):
     # init games
     games = []
     # regex to match input nums
-    pattern_input = re.compile(r'(\d+)')
+    pattern_input = re.compile(r"(\d+)")
     # walk lines
     for line in lines:
         # extract values
@@ -44,6 +46,7 @@ def parse_input(lines):
     # return
     return games
 
+
 def play_game(game):
     """
     Function to simulate marble game
@@ -51,7 +54,7 @@ def play_game(game):
     Args:
         game: tuple(int(player_count), int(marble_value))
 
-    Returns: 
+    Returns:
         scores: dict() keys=int(player), values=int(score)
     """
     # init scores
@@ -96,6 +99,7 @@ def play_game(game):
         circle.appendleft(current_marble)
     return scores
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -115,24 +119,16 @@ def solve(input_value, part):
     # return high score
     return max(scores.values())
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,9)
+    my_aoc = aoc.AdventOfCode(2018, 9)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -142,4 +138,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

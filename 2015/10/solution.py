@@ -5,17 +5,19 @@ Part1: 252594
 Part2: 3579328
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def look_and_say_mine(sequence):
     """
     Function to perform look and say conversion
     """
-    result = ''
+    result = ""
     current_digit = sequence[0]
     count = 1
 
@@ -26,8 +28,9 @@ def look_and_say_mine(sequence):
             result += str(count) + current_digit
             current_digit = digit
             count = 1
-    result += str(count)+current_digit
+    result += str(count) + current_digit
     return result
+
 
 def look_and_say(sequence):
     """
@@ -48,7 +51,8 @@ def look_and_say(sequence):
             count = 1
 
     result.extend([str(count), current_digit])
-    return ''.join(result)
+    return "".join(result)
+
 
 def solve(input_string, num_iters):
     """
@@ -59,24 +63,16 @@ def solve(input_string, num_iters):
         new_string = look_and_say(new_string)
     return len(new_string)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,10)
+    my_aoc = aoc.AdventOfCode(2015, 10)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 40,
-        2: 50
-    }
+    parts = {1: 40, 2: 50}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part, start_string in parts.items():
         # log start time
@@ -86,4 +82,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

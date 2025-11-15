@@ -6,11 +6,13 @@ immediately into the solve function.  I'll go through and document, but nothing
 interesting here.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(input_string, part):
     """
@@ -18,7 +20,7 @@ def solve(input_string, part):
     """
     # set index offset, this is the diffrentiator between part 1 and part 2
     idx_offset = 1
-    #convert input_string into a list of integers
+    # convert input_string into a list of integers
     int_list = [int(char) for char in input_string]
     # save list length so we don't keep calculating it
     int_list_length = len(int_list)
@@ -35,24 +37,16 @@ def solve(input_string, part):
             total += num
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,1)
+    my_aoc = aoc.AdventOfCode(2017, 1)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -62,4 +56,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -2,11 +2,13 @@
 Advent Of Code 2018 day 1
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(input_value, part):
     """
@@ -17,7 +19,7 @@ def solve(input_value, part):
     if part == 1:
         # what is the resulting frequency after all of the changes in frequency have been applied?
         for change in input_value:
-            frequency +=  change
+            frequency += change
         return frequency
     # part 2:
     # What is the first frequency your device reaches twice?
@@ -29,7 +31,7 @@ def solve(input_value, part):
         # run changes
         for change in input_value:
             # add change to frequency
-            frequency +=  change
+            frequency += change
             # have we seen this frequency?
             if frequency in already_seen:
                 # return it
@@ -37,27 +39,19 @@ def solve(input_value, part):
             # add to already seen
             already_seen.add(frequency)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,1)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2018, 1)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_integers()
-    #print(input_lines)
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -67,4 +61,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

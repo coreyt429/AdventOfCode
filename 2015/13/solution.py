@@ -2,17 +2,19 @@
 Advent Of Code 2015 day 13
 
 """
+
 # import system modules
 import time
 import itertools
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # Regex pattern for input
 # Alice would gain 2 happiness units by sitting next to Bob.
-pattern_input = re.compile(r'(\w+) would (gain|lose) (\d+) .* to (\w+).')
+pattern_input = re.compile(r"(\w+) would (gain|lose) (\d+) .* to (\w+).")
+
 
 def parse_input(lines):
     """
@@ -33,23 +35,24 @@ def parse_input(lines):
             # get integer value for happiness
             happiness = int(happiness)
             # if lose, negate hapiness
-            if gain_lose == 'lose':
+            if gain_lose == "lose":
                 happiness *= -1
             # store score
             scores[peep][neighbor] = happiness
     return scores
+
 
 def score(my_map, my_peeps):
     """
     function to score seating arrangement
     """
     happiness = {}
-    #print(my_map)
+    # print(my_map)
     for idx, current_peep in enumerate(my_peeps):
         if not current_peep in happiness:
             # initialize score
             happiness[current_peep] = 0
-        #if first
+        # if first
         # get next peep
         next_peep = my_peeps[(idx + 1) % len(my_peeps)]
         # get previous peep
@@ -70,12 +73,12 @@ def solve(parsed_data, part):
     # part 2
     if part == 2:
         # add Me
-        parsed_data['Me'] = {}
+        parsed_data["Me"] = {}
         # for add peep relations to me
         for peep in parsed_data.keys():
-            if not peep == 'Me':
-                parsed_data['Me'][peep] = 0
-                parsed_data[peep]['Me'] = 0
+            if not peep == "Me":
+                parsed_data["Me"][peep] = 0
+                parsed_data[peep]["Me"] = 0
     # initialize max_happiness
     max_happiness = 0
     # get people
@@ -87,30 +90,20 @@ def solve(parsed_data, part):
         # get score
         my_score = score(parsed_data, option)
         # if greater happiness
-        if my_score > max_happiness:
-            # update max_happiness
-            max_happiness = my_score
+        max_happiness = max(max_happiness, my_score)
     # return results
     return max_happiness
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,13)
+    my_aoc = aoc.AdventOfCode(2015, 13)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -120,4 +113,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

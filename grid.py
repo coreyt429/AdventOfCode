@@ -14,6 +14,8 @@ So stripping this down to just work with dict() keyed on tuple(x/y)
 import sys
 import math
 import logging
+from dataclasses import dataclass
+from typing import Sequence, Type, Literal
 from queue import PriorityQueue
 import functools
 import numpy as np
@@ -183,6 +185,57 @@ class GridIterator:
             if self.iter_pos[1] < self.cfg["min"][1]:
                 raise StopIteration
         return tuple(self.iter_pos)
+
+
+@dataclass(slots=True)
+class AStarConfig:
+    """Configuration for A* pathfinding."""
+
+    invalid: Sequence[str] = ("#",)
+    directions: Sequence[str] = ("n", "s", "e", "w")
+    node_class: Type[Node] = Node
+    use_closed_set: bool = True
+    retval: Literal["path", "length", "both", "nodes"] = "path"
+    limit: int | None = None
+    max_paths: int = 1
+
+    @classmethod
+    def from_args(
+        cls,
+        **kwargs,
+    ) -> "AStarConfig":
+        """
+        AStarConfig from keyword arguments.
+        Args:
+            invalid: Invalid characters. defaults to ["#"].
+            directions: Directions to move. Defaults to ["n", "s", "e", "w"].
+            node_class: Node class to use. Defaults to Node.
+            use_closed_set: Whether to use a closed set. Defaults to True.
+            retval: Return value type. Defaults to "path".
+            limit: Limit of paths. Defaults to None.
+            max_paths: Maximum number of paths. Defaults to 1.
+        """
+        return cls(
+            invalid=kwargs.get("invalid", ["#"]),
+            directions=kwargs.get("directions", ["n", "s", "e", "w"]),
+            node_class=kwargs.get("node_class", Node),
+            use_closed_set=kwargs.get("use_closed_set", True),
+            retval=kwargs.get("retval", "path"),
+            limit=kwargs.get("limit", None),
+            max_paths=kwargs.get("max_paths", 1),
+        )
+
+
+@dataclass
+class AStarState:
+    """State for A* pathfinding."""
+
+    open_set: PriorityQueue
+    closed_set: set
+    shortest_length: float
+    shortest_paths: list
+    shortest_nodes: list
+    done: bool
 
 
 class Grid:
@@ -483,7 +536,7 @@ class Grid:
             neighbors = neighbor_cache[self.cfg["coordinate_system"]][point]
         if not neighbors:
             # define offsets
-            offsets = self.get_neighbor_offsets(**kwargs)
+            offsets = self.get_neighbor_offsets()
             # empty list of neighbors
             neighbors = {}
             for direction, offset in offsets["tuple"].items():
@@ -608,53 +661,34 @@ class Grid:
             return True
         return False
 
-    def _format_astar_result(
-        self, retval, shortest_length, shortest_paths, shortest_nodes
-    ):
-        if retval == "length":
-            return shortest_length
-        if retval == "both":
-            return shortest_length, shortest_paths
-        if retval == "nodes":
-            return shortest_nodes
-        return shortest_paths
+    def _format_a_star_result(self, a_star_config, a_star_state):
+        if a_star_config.retval == "length":
+            return a_star_state.shortest_length
+        if a_star_config.retval == "both":
+            return a_star_state.shortest_length, a_star_state.shortest_paths
+        if a_star_config.retval == "nodes":
+            return a_star_state.shortest_nodes
+        return a_star_state.shortest_paths
 
-    def _normalize_astar_args(self, invalid, directions, kwargs):
-        if invalid is None:
-            invalid = ["#"]
-        if directions is None:
-            directions = ["n", "s", "e", "w"]
-
-        node_class = kwargs.get("node_class", Node)
-        use_closed_set = kwargs.get("use_closed_set", True)
-        retval = kwargs.get("retval", "path")
-
-        return invalid, directions, node_class, use_closed_set, retval
-
-    def _should_skip_node(
-        self,
-        current_node,
-        goal,
-        shortest_length,
-        closed_set,
-        use_closed_set,
-        limit,
-    ):
+    def _should_skip_node(self, current_node, a_star_config, a_star_state):
         # already processed edge?
-        if use_closed_set and (current_node.parent, current_node) in closed_set:
+        if (
+            a_star_config.use_closed_set
+            and (current_node.parent, current_node) in a_star_state.closed_set
+        ):
             return True
 
         # over limit
-        if limit and current_node.g_score > limit:
+        if a_star_config.limit and current_node.g_score > a_star_config.limit:
             if current_node.parent:
-                closed_set.add((current_node.parent, current_node))
+                a_star_state.closed_set.add((current_node.parent, current_node))
             return True
 
         # longer than known shortest
-        if current_node.g_score > shortest_length:
+        if current_node.g_score > a_star_state.shortest_length:
             # this block seems odd – you compute a path but don’t use it
             # leaving behavior unchanged:
-            if current_node.position == goal:
+            if current_node.position == a_star_config.goal:
                 _ = current_node.path()
             return True
 
@@ -664,52 +698,41 @@ class Grid:
 
         return False
 
-    def _handle_goal_node(
-        self,
-        current_node,
-        goal,
-        shortest_paths,
-        shortest_nodes,
-        shortest_length,
-        max_paths,
-    ):
-        if current_node.position != goal:
-            return shortest_length, False
+    def _handle_goal_node(self, current_node, a_star_config, a_star_state):
+        a_star_state.done = False
+        if current_node.position != a_star_config.goal:
+            a_star_state.done = True
+            return a_star_state
 
         path = current_node.path()
-        if current_node.g_score == shortest_length:
-            shortest_paths.append(path)
-            shortest_nodes.append(current_node)
-        elif current_node.g_score < shortest_length:
-            shortest_paths.clear()
-            shortest_nodes.clear()
-            shortest_paths.append(path)
-            shortest_nodes.append(current_node)
-            shortest_length = current_node.g_score
-            if len(shortest_paths) == max_paths:
-                return shortest_length, True  # signal to break
+        if current_node.g_score == a_star_state.shortest_length:
+            a_star_state.shortest_paths.append(path)
+            a_star_state.shortest_nodes.append(current_node)
+        elif current_node.g_score < a_star_state.shortest_length:
+            a_star_state.shortest_paths.clear()
+            a_star_state.shortest_nodes.clear()
+            a_star_state.shortest_paths.append(path)
+            a_star_state.shortest_nodes.append(current_node)
+            a_star_state.shortest_length = current_node.g_score
+            if len(a_star_state.shortest_paths) == a_star_config.max_paths:
+                a_star_state.done = True
+                return a_star_state
 
-        return shortest_length, False
+        return a_star_state
 
-    def _expand_neighbors(
-        self,
-        current_node,
-        invalid,
-        directions,
-        open_set,
-        closed_set,
-        use_closed_set,
-    ):
+    def _expand_neighbors(self, current_node, a_star_config, a_star_state):
         if current_node.parent:
-            closed_set.add((current_node.parent.position, current_node.position))
+            a_star_state.closed_set.add(
+                (current_node.parent.position, current_node.position)
+            )
 
         neighbors = self.get_neighbors(
             point=current_node.position,
-            invalid=invalid,
-            directions=directions,
+            invalid=a_star_config.invalid,
+            directions=a_star_config.directions,
         )
 
-        for direction in directions:
+        for direction in a_star_config.directions:
             neighbor_pos = neighbors.get(direction)
             if not neighbor_pos:
                 continue
@@ -719,19 +742,21 @@ class Grid:
                 continue
 
             for neighbor_node in neighbor_nodes:
-                if use_closed_set and (current_node, neighbor_node) in closed_set:
+                if (
+                    a_star_config.use_closed_set
+                    and (current_node, neighbor_node) in a_star_state.closed_set
+                ):
                     continue
-                if (neighbor_node.f_score, neighbor_node) not in open_set.queue:
-                    open_set.put((neighbor_node.f_score, neighbor_node))
+                if (
+                    neighbor_node.f_score,
+                    neighbor_node,
+                ) not in a_star_state.open_set.queue:
+                    a_star_state.open_set.put((neighbor_node.f_score, neighbor_node))
 
     def shortest_paths(
         self,
         start,
         goal,
-        invalid=None,
-        directions=None,
-        max_paths=1,
-        limit=None,
         **kwargs,
     ):
         """
@@ -743,7 +768,7 @@ class Grid:
             start: tuple() x/y coordinate
             goal: tuple() x/y coordinate
             invalid: list(str()) characters to exlude from path
-            directions: list(str) directions to include in lookups
+            directions: list(str()) directions to include in lookups
             max_paths: int() max number of paths to return, default 1
             limit: int() max number of steps
 
@@ -756,62 +781,40 @@ class Grid:
             h_score: int() heuristic manhattan_distance(position, goal)
 
         """
-        invalid, directions, node_class, use_closed_set, retval = (
-            self._normalize_astar_args(invalid, directions, kwargs)
+        a_star_config = AStarConfig.from_args(**kwargs)
+        a_star_state = AStarState(
+            open_set=PriorityQueue(),
+            closed_set=set(),
+            shortest_length=float("inf"),
+            shortest_paths=[],
+            shortest_nodes=[],
+            done=False,
         )
 
-        shortest_paths = []
-        shortest_nodes = []
-        shortest_length = float("inf")
-
-        start_node = node_class(start, goal, grid=self)
-        open_set = PriorityQueue()
-        open_set.put((start_node.f_score, start_node))
-        closed_set = set()
+        start_node = a_star_config.node_class(start, goal, grid=self)
+        a_star_state.open_set.put((start_node.f_score, start_node))
 
         # process open set
-        while not open_set.empty():
+        while not a_star_state.open_set.empty():
             # get current node
-            current_node = open_set.get()[1]
-            if self._should_skip_node(
-                current_node,
-                goal,
-                shortest_length,
-                closed_set,
-                use_closed_set,
-                limit,
-            ):
+            current_node = a_star_state.open_set.get()[1]
+            if self._should_skip_node(current_node, a_star_config, a_star_state):
                 continue
 
             # are we at the goal?
-            shortest_length, done = self._handle_goal_node(
+            self._handle_goal_node(
                 current_node,
-                goal,
-                shortest_paths,
-                shortest_nodes,
-                shortest_length,
-                max_paths,
+                a_star_config,
+                a_star_state,
             )
-            if done:
+            if a_star_state.done:
                 break
             if current_node.position == goal:
                 continue
 
-        self._expand_neighbors(
-            current_node,
-            invalid,
-            directions,
-            open_set,
-            closed_set,
-            use_closed_set,
-        )
+        self._expand_neighbors(current_node, a_star_config, a_star_state)
 
-        return self._format_astar_result(
-            retval,
-            shortest_length,
-            shortest_paths,
-            shortest_nodes,
-        )
+        return self._format_a_star_result(a_star_config, a_star_state)
 
 
 @functools.lru_cache(maxsize=None)

@@ -2,12 +2,14 @@
 Advent Of Code 2017 day 24
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """
@@ -16,7 +18,7 @@ def parse_input(lines):
     # init components
     components = []
     # regex to extract numbers
-    pattern = re.compile(r'(\d+)')
+    pattern = re.compile(r"(\d+)")
     # walk lines
     for line in lines:
         # get int values from line for ports
@@ -25,11 +27,12 @@ def parse_input(lines):
         components.append(tuple(ports))
     return components
 
+
 def build_bridges(bridge, components):
     """
     recursively build possible bridges
     """
-    #print(f"build_bridges({bridge}, {components})")
+    # print(f"build_bridges({bridge}, {components})")
     bridges = []
     # copy bridge and components
     bridge = list(bridge)
@@ -57,10 +60,10 @@ def build_bridges(bridge, components):
             next_port = component_b[1]
         else:
             next_port = component_b[0]
-    #print(f"next_port: {next_port}")
+    # print(f"next_port: {next_port}")
     # walk components
     for component in components:
-        #print(f"{next_port} in {component}: {next_port in component}")
+        # print(f"{next_port} in {component}: {next_port in component}")
         # does it have the right port?
         if next_port in component:
             # clone bridge and components
@@ -70,9 +73,10 @@ def build_bridges(bridge, components):
             new_bridge.append(new_components.pop(new_components.index(component)))
             # add results of recursive build
             bridges.extend(build_bridges(new_bridge, new_components))
-    #print(f"bridges: {bridges}")
+    # print(f"bridges: {bridges}")
     # return results
     return bridges
+
 
 def bridge_strength(bridge):
     """
@@ -100,7 +104,7 @@ def solve(input_value, part):
     bridges = build_bridges((), components)
     # init max and longest
     max_strength = 0
-    #max_bridge = None
+    # max_bridge = None
     longest_bridge = []
     longest_strength = 0
     # walk bridges
@@ -109,40 +113,33 @@ def solve(input_value, part):
         strength = bridge_strength(bridge)
         # new max?
         if strength > max_strength:
-            #max_bridge = bridge
+            # max_bridge = bridge
             max_strength = strength
         # new longest?
-        if (len(bridge) > len(longest_bridge) or
-            (len(bridge) == len(longest_bridge) and strength > longest_strength)):
+        if len(bridge) > len(longest_bridge) or (
+            len(bridge) == len(longest_bridge) and strength > longest_strength
+        ):
             longest_bridge = bridge
             longest_strength = strength
-        #print(f"{strength, bridge}")
-    #print(f"{max_strength, max_bridge}")
+        # print(f"{strength, bridge}")
+    # print(f"{max_strength, max_bridge}")
     # store part 2 answer for next pass
     answer[2] = longest_strength
     # return part 1 answer
     return max_strength
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,24)
+    my_aoc = aoc.AdventOfCode(2017, 24)
     # fetch input
     input_lines = my_aoc.load_lines()
-    #print(input_lines)
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -152,4 +149,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -4,6 +4,7 @@ Advent Of Code 2015 day 24
 This was already pretty fast and clean on this one, just needed to refactor into current format.
 
 """
+
 # import system modules
 import time
 from heapq import heappop, heappush
@@ -11,7 +12,8 @@ import math
 from itertools import combinations
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def find_shortest_combinations(big_list, splits):
     """
@@ -32,6 +34,7 @@ def find_shortest_combinations(big_list, splits):
             break
     return equal_weight_combinations
 
+
 def solve(presents, part):
     """
     Function to solve puzzle
@@ -40,9 +43,9 @@ def solve(presents, part):
         shortest_combos = find_shortest_combinations(presents, 3)
         heap = []
         for list1 in shortest_combos:
-            quantum_entanglement=math.prod(list1)
-            leg_room=len(list1)
-            heappush(heap,(leg_room, quantum_entanglement, list1))
+            quantum_entanglement = math.prod(list1)
+            leg_room = len(list1)
+            heappush(heap, (leg_room, quantum_entanglement, list1))
         return heappop(heap)[1]
     # part 2
     shortest_combos = find_shortest_combinations(presents, 4)
@@ -53,24 +56,16 @@ def solve(presents, part):
         heappush(heap, (leg_room, quantum_entanglement, list1))
     return heappop(heap)[1]
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,24)
+    my_aoc = aoc.AdventOfCode(2015, 24)
     input_lines = my_aoc.load_integers()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -80,4 +75,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -6,18 +6,20 @@ ran out of time.  Looked at solutions, and implemented one.  I want to
 revisit this at some point, and use that logic to fix my short circuits instead.
 
 """
+
 # import system modules
 import time
 import sympy
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 
-class Computer():
+class Computer:
     """
-    Class to represent a computer 
+    Class to represent a computer
     """
+
     # cmd handler function table
 
     def __init__(self, program=None, comp_id=0):
@@ -29,7 +31,7 @@ class Computer():
             "set": self.do_set,
             "sub": self.do_sub,
             "mul": self.do_mul,
-            "jnz": self.do_jnz
+            "jnz": self.do_jnz,
         }
         # init register with pointer for position in the program
         self.registers = {"pointer": 0}
@@ -37,7 +39,7 @@ class Computer():
             # set registers for instructions to server as counters
             for instruction in self.handlers:
                 self.registers[instruction] = 0
-        for register in 'abcdefgh':
+        for register in "abcdefgh":
             self.registers[register] = 0
         self.program = []
         self.partner = None
@@ -57,20 +59,20 @@ class Computer():
         parse program instructions
         """
         if isinstance(program, str):
-            program = program.split('\n')
+            program = program.split("\n")
         self.program = []
         for line in program:
-            inputs = line.split(' ')
+            inputs = line.split(" ")
             instruction = {"instruction": inputs[0]}
             try:
-                instruction['x'] = int(inputs[1])
+                instruction["x"] = int(inputs[1])
             except ValueError:
-                instruction['x'] = inputs[1]
+                instruction["x"] = inputs[1]
                 self.registers[inputs[1]] = 0
             try:
-                instruction['y'] = int(inputs[2])
+                instruction["y"] = int(inputs[2])
             except ValueError:
-                instruction['y'] = inputs[2]
+                instruction["y"] = inputs[2]
                 self.registers[inputs[2]] = 0
             except IndexError:
                 pass
@@ -88,16 +90,16 @@ class Computer():
         """
         is the program still running?
         """
-        return 0 <= self.registers['pointer'] < len(self.program)
+        return 0 <= self.registers["pointer"] < len(self.program)
 
     def run_next_instruction(self):
         """
         execute instruction
         """
         if self.running():
-            current = self.program[self.registers['pointer']]
-            #print(self.comp_id, current)
-            instruction = current['instruction']
+            current = self.program[self.registers["pointer"]]
+            # print(self.comp_id, current)
+            instruction = current["instruction"]
             if self.comp_id == 1:
                 self.registers[instruction] += 1
             return self.handlers[instruction](current)
@@ -109,7 +111,7 @@ class Computer():
         """
         sentinel = 0
         while self.run_next_instruction():
-            #print(self)
+            # print(self)
             sentinel += 1
             if sentinel == 5000000:
                 print("Breaking Loop")
@@ -121,8 +123,8 @@ class Computer():
         handler for instruction sub
         decreases register X by the value of Y.
         """
-        self.registers[instruction['x']] -= self.value(instruction['y'])
-        self.registers['pointer'] += 1
+        self.registers[instruction["x"]] -= self.value(instruction["y"])
+        self.registers["pointer"] += 1
         return True
 
     def do_set(self, instruction):
@@ -130,8 +132,8 @@ class Computer():
         handler for instruction set
         sets register X to the value of Y
         """
-        self.registers[instruction['x']] = self.value(instruction['y'])
-        self.registers['pointer'] += 1
+        self.registers[instruction["x"]] = self.value(instruction["y"])
+        self.registers["pointer"] += 1
         return True
 
     def do_mul(self, instruction):
@@ -140,8 +142,8 @@ class Computer():
         sets register X to the result of multiplying the value contained in register X
         by the value of Y
         """
-        self.registers[instruction['x']] *= self.value(instruction['y'])
-        self.registers['pointer'] += 1
+        self.registers[instruction["x"]] *= self.value(instruction["y"])
+        self.registers["pointer"] += 1
         return True
 
     def do_jnz(self, instruction):
@@ -153,56 +155,45 @@ class Computer():
         """
         # hmm, here lies the bug that tripped be up.  I was this to be non-zero
         # it needs to be non-zero and positive
-        if self.value(instruction['x']) != 0:
-            self.registers['pointer'] += self.value(instruction['y'])
+        if self.value(instruction["x"]) != 0:
+            self.registers["pointer"] += self.value(instruction["y"])
         else:
-            self.registers['pointer'] += 1
+            self.registers["pointer"] += 1
         return True
+
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     if part == 2:
-        registers = {
-            "b": 109900,
-            "c": 126900,
-            "h": 0
-        }
+        registers = {"b": 109900, "c": 126900, "h": 0}
         # borrowed logic, thanks u/dario_p1
-        for test_b in range(registers['b'], registers['c'] + 1, 17):
+        for test_b in range(registers["b"], registers["c"] + 1, 17):
             if not sympy.isprime(test_b):
-                registers['h'] += 1
-        return registers['h']
+                registers["h"] += 1
+        return registers["h"]
     computer = Computer(input_value, part)
     if part == 2:
         # wishlist: use the part 2 logic above to create short circuits
         # to actually fix the program
-        computer.registers['a'] = 1
+        computer.registers["a"] = 1
     computer.run_program()
     if part == 2:
-        return computer.registers['h']
-    return computer.registers['mul']
+        return computer.registers["h"]
+    return computer.registers["mul"]
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,23)
+    my_aoc = aoc.AdventOfCode(2017, 23)
     # fetch input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -212,4 +203,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

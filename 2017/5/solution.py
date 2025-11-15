@@ -2,11 +2,13 @@
 Advent Of Code 2017 day 5
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def follow_jumps(offsets, part=1):
     """
@@ -22,7 +24,7 @@ def follow_jumps(offsets, part=1):
         # part 2 decrement if >=3
         if part == 2 and offsets[idx] >= 3:
             offsets[idx] -= 1
-        else: # part 1 or part 2 < 3 increment
+        else:  # part 1 or part 2 < 3 increment
             offsets[idx] += 1
         # increment counter
         counter += 1
@@ -31,6 +33,7 @@ def follow_jumps(offsets, part=1):
     # return step counter
     return counter
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -38,24 +41,16 @@ def solve(input_value, part):
     # run follow jumps with a copy of input_value so input_value doesn't change
     return follow_jumps(list(tuple(input_value)), part)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,5)
+    my_aoc = aoc.AdventOfCode(2017, 5)
     input_lines = my_aoc.load_integers()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -65,4 +60,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

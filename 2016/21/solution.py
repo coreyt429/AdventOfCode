@@ -1,7 +1,7 @@
 """
 Advent Of Code 2016 day 21
 
-More regex parsing fun.  Pulled out deque for lazy list rotation. 
+More regex parsing fun.  Pulled out deque for lazy list rotation.
 
 Scrambling was pretty straight forward.  I over thought unscrambling
 and tried to reverse the rules.  That didn't work very well
@@ -12,23 +12,25 @@ over the permutations of possible passwords, and test until one
 scrambled to the target.
 
 """
+
 import time
 import re
 import collections
 from itertools import permutations
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # regex patterns to parse instructions
 patterns = {
-    'swap_position': re.compile(r'swap position (\d+) with position (\d+)'),
-    'swap_letter': re.compile(r'swap letter (\w+) with letter (\w+)'),
-    'rotate_steps': re.compile(r'rotate (\w+) ([\d]+) steps*'),
-    'rotate_letter': re.compile(r'rotate based on position of letter (\w)'),
-    'move': re.compile(r'move position (\d+) to position (\d)'),
-    'reverse': re.compile(r'reverse positions (\d+) through (\d+)')
+    "swap_position": re.compile(r"swap position (\d+) with position (\d+)"),
+    "swap_letter": re.compile(r"swap letter (\w+) with letter (\w+)"),
+    "rotate_steps": re.compile(r"rotate (\w+) ([\d]+) steps*"),
+    "rotate_letter": re.compile(r"rotate based on position of letter (\w)"),
+    "move": re.compile(r"move position (\d+) to position (\d)"),
+    "reverse": re.compile(r"reverse positions (\d+) through (\d+)"),
 }
 
 # movement functions
+
 
 def swap_position(chars, positions):
     """
@@ -42,7 +44,8 @@ def swap_position(chars, positions):
     # swap i and j
     chars[i], chars[j] = chars[j], chars[i]
     # return string
-    return ''.join(chars)
+    return "".join(chars)
+
 
 def swap_letter(chars, letters):
     """
@@ -50,7 +53,8 @@ def swap_letter(chars, letters):
     swapped (regardless of where they appear in the string).
     """
     # swap based on positions of letters
-    return swap_position(chars,(chars.find(letters[0]),chars.find(letters[1])))
+    return swap_position(chars, (chars.find(letters[0]), chars.find(letters[1])))
+
 
 def rotate_steps(chars, steps):
     """
@@ -60,7 +64,7 @@ def rotate_steps(chars, steps):
     # get direction and count
     l_r, count = steps
 
-    if l_r == 'right':
+    if l_r == "right":
         # right positive integer
         count = int(count)
     else:
@@ -71,7 +75,8 @@ def rotate_steps(chars, steps):
     # rotate
     chars.rotate(count)
     # return string
-    return ''.join(chars)
+    return "".join(chars)
+
 
 def rotate_letter(chars, letters):
     """
@@ -93,7 +98,8 @@ def rotate_letter(chars, letters):
         # plus one additional time if the index was at least 4
         steps += 1
     # return string from rotate_steps
-    return rotate_steps(chars, ('right', steps))
+    return rotate_steps(chars, ("right", steps))
+
 
 def move(chars, positions):
     """
@@ -108,7 +114,8 @@ def move(chars, positions):
     # pop from and insert at to
     chars.insert(to_idx, chars.pop(from_idx))
     # return string
-    return ''.join(chars)
+    return "".join(chars)
+
 
 def reverse_substring(chars, positions):
     """
@@ -119,19 +126,21 @@ def reverse_substring(chars, positions):
     # get positions as int
     i, j = [int(position) for position in positions]
     # return sliced string, reversing the mid section
-    return chars[:i] + chars[i:j+1][::-1] + chars[j+1:]
+    return chars[:i] + chars[i : j + 1][::-1] + chars[j + 1 :]
+
 
 # function map
 handlers = {
-    'swap_position': swap_position,
-    'swap_letter': swap_letter,
-    'rotate_steps': rotate_steps,
-    'rotate_letter': rotate_letter,
-    'move': move,
-    'reverse': reverse_substring
+    "swap_position": swap_position,
+    "swap_letter": swap_letter,
+    "rotate_steps": rotate_steps,
+    "rotate_letter": rotate_letter,
+    "move": move,
+    "reverse": reverse_substring,
 }
 
-def scramble(input_string,instruction):
+
+def scramble(input_string, instruction):
     """
     Function to scramble string based on instruction
     """
@@ -139,10 +148,11 @@ def scramble(input_string,instruction):
     for key, pattern in patterns.items():
         # check pattern
         match = pattern.match(instruction)
-        if match: # yay, we matches
+        if match:  # yay, we matches
             # run string through handler
             return handlers[key](input_string, match.groups())
     return "we shouldn't be able to get here, but pylint wants a return"
+
 
 def solve(input_string, instructions):
     """
@@ -155,32 +165,27 @@ def solve(input_string, instructions):
     # return string
     return input_string
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016,21)
+    my_aoc = aoc.AdventOfCode(2016, 21)
     input_lines = [
-        'swap position 4 with position 0',
-        'swap letter d with letter b',
-        'reverse positions 0 through 4',
-        'rotate left 1 step',
-        'move position 1 to position 4',
-        'move position 3 to position 0',
-        'rotate based on position of letter b',
-        'rotate based on position of letter d'
+        "swap position 4 with position 0",
+        "swap letter d with letter b",
+        "reverse positions 0 through 4",
+        "rotate left 1 step",
+        "move position 1 to position 4",
+        "move position 3 to position 0",
+        "rotate based on position of letter b",
+        "rotate based on position of letter d",
     ]
-    START_STRING = 'abcde'
+    START_STRING = "abcde"
     # uncomment for live, comment for test
     input_lines = my_aoc.load_lines()
-    START_STRING = 'abcdefgh'
-    #print(input_lines)
+    START_STRING = "abcdefgh"
+    # print(input_lines)
     # parts structure to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    answer = {
-        1: None,
-        2: None
-    }
+    parts = {1: 1, 2: 2}
+    answer = {1: None, 2: None}
     # loop parts
     for part in parts:
         # log start time
@@ -191,11 +196,11 @@ if __name__ == "__main__":
         # What is the un-scrambled version of the scrambled password fbgdceah?
         if part == 2:
             # new string to match
-            MATCH_STRING = 'fbgdceah'
+            MATCH_STRING = "fbgdceah"
             # walk possible strings until we find an answer
             for perm in permutations(MATCH_STRING):
                 # build test string
-                TEST_STRING = ''.join(perm)
+                TEST_STRING = "".join(perm)
                 # scramble TEST_STRING
                 test_scramble = solve(TEST_STRING, input_lines)
                 # check test_scramble
@@ -206,4 +211,4 @@ if __name__ == "__main__":
                     break
         # log end time
         end = time.time()
-        print(f"Part {part}: {answer[part]}, took {end-start} seconds")
+        print(f"Part {part}: {answer[part]}, took {end - start} seconds")

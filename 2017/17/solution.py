@@ -8,12 +8,14 @@ slow. Looked at a few other implementations, and kicked myself for not sticking 
 deque. So here is my fianlish deque solution.  I still feel like there is a faster
 math solution here, and I just don't have the energy for that today, so maybe later
 """
+
 # import system modules
 import time
 from collections import deque
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(input_value, part):
     """
@@ -43,24 +45,16 @@ def solve(input_value, part):
     # part 2, return the number after 0
     return buffer[buffer.index(0) + 1]
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,17)
+    my_aoc = aoc.AdventOfCode(2017, 17)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -70,4 +64,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

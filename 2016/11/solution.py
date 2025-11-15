@@ -5,11 +5,11 @@ I might have over designed this one, and it took me a while as a result.
 It just felt like a good object oriented excercise. - see jupyter notebook for what
 I'm talking about.  Below is rewrite that actually finished in a not so reasonable time.
 
-The solution below scraps my over designed object oriented attempt.  The first worked well, 
+The solution below scraps my over designed object oriented attempt.  The first worked well,
 just slowly.
 
 This attempt uses a simpler data structure:
-    # Heap description:  
+    # Heap description:
     #   - stop_count int initialized to 0
     #   - current_floor int initialized to 0 (first floor)
     #   - tuple of tuples to represent the floors and items on them
@@ -21,7 +21,7 @@ This attempt uses a simpler data structure:
 far solve_a_star is not faster, and inconsistent in results. possibly need a different h_score
 current h_score is the product of the floor index and the count of items on the floor
 
-The current heuristics work, but there is some randomness.  sometimes it answers really quickly, 
+The current heuristics work, but there is some randomness.  sometimes it answers really quickly,
 and sometimes it takes a while.  sometimes it gets the right answer first, sometimes it doesnt.
 
 This version is accurate, but slow on part 2
@@ -32,7 +32,7 @@ In this version I changed the sets to lists, and removed all sorting, so origina
 preserved. New items on a floor are appended to the floor.  0.75 sec for part 1, 220 seconds
 for part 2.
 
-Next, lets try prepending instead of appending when we move to a floor. 
+Next, lets try prepending instead of appending when we move to a floor.
 okay, that caused wrong answers to be found first. reverting.
 
 I'm happy with this for now.  It passes pylint, and runs consistently every time.  I wish part 2
@@ -44,6 +44,7 @@ was faster, maybe I'll revisit another day:
 
 
 """
+
 import time
 import logging
 import re
@@ -51,12 +52,14 @@ from queue import PriorityQueue
 import itertools
 import sys
 from functools import lru_cache
-import aoc #pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 class Node:
     """
     Node class for scoring positions
     """
+
     def __init__(self, floor, floors, g_score, h_score):
         """
         Init node
@@ -67,7 +70,7 @@ class Node:
         self.g_score = g_score
         self.h_score = h_score
         self.f_score = g_score + h_score
-        self.threshold = float('infinity')
+        self.threshold = float("infinity")
 
     def __gt__(self, other):
         """
@@ -95,146 +98,143 @@ class Node:
         my_string += "\n"
         return my_string
 
+
 # overkill for the puzzle, but chatGPT was more than happy to generate this,
 # and it was faster than me looking up a few elements I didn't know
 elements = {
-    'hydrogen': 'H',
-    'helium': 'He',
-    'lithium': 'Li',
-    'beryllium': 'Be',
-    'boron': 'B',
-    'carbon': 'C',
-    'nitrogen': 'N',
-    'oxygen': 'O',
-    'fluorine': 'F',
-    'neon': 'Ne',
-    'sodium': 'Na',
-    'magnesium': 'Mg',
-    'aluminum': 'Al',
-    'silicon': 'Si',
-    'phosphorus': 'P',
-    'sulfur': 'S',
-    'chlorine': 'Cl',
-    'argon': 'Ar',
-    'potassium': 'K',
-    'calcium': 'Ca',
-    'scandium': 'Sc',
-    'titanium': 'Ti',
-    'vanadium': 'V',
-    'chromium': 'Cr',
-    'manganese': 'Mn',
-    'iron': 'Fe',
-    'cobalt': 'Co',
-    'nickel': 'Ni',
-    'copper': 'Cu',
-    'zinc': 'Zn',
-    'gallium': 'Ga',
-    'germanium': 'Ge',
-    'arsenic': 'As',
-    'selenium': 'Se',
-    'bromine': 'Br',
-    'krypton': 'Kr',
-    'rubidium': 'Rb',
-    'strontium': 'Sr',
-    'yttrium': 'Y',
-    'zirconium': 'Zr',
-    'niobium': 'Nb',
-    'molybdenum': 'Mo',
-    'technetium': 'Tc',
-    'ruthenium': 'Ru',
-    'rhodium': 'Rh',
-    'palladium': 'Pd',
-    'silver': 'Ag',
-    'cadmium': 'Cd',
-    'indium': 'In',
-    'tin': 'Sn',
-    'antimony': 'Sb',
-    'tellurium': 'Te',
-    'iodine': 'I',
-    'xenon': 'Xe',
-    'cesium': 'Cs',
-    'barium': 'Ba',
-    'lanthanum': 'La',
-    'cerium': 'Ce',
-    'praseodymium': 'Pr',
-    'neodymium': 'Nd',
-    'promethium': 'Pm',
-    'samarium': 'Sm',
-    'europium': 'Eu',
-    'gadolinium': 'Gd',
-    'terbium': 'Tb',
-    'dysprosium': 'Dy',
-    'holmium': 'Ho',
-    'erbium': 'Er',
-    'thulium': 'Tm',
-    'ytterbium': 'Yb',
-    'lutetium': 'Lu',
-    'hafnium': 'Hf',
-    'tantalum': 'Ta',
-    'tungsten': 'W',
-    'rhenium': 'Re',
-    'osmium': 'Os',
-    'iridium': 'Ir',
-    'platinum': 'Pt',
-    'gold': 'Au',
-    'mercury': 'Hg',
-    'thallium': 'Tl',
-    'lead': 'Pb',
-    'bismuth': 'Bi',
-    'polonium': 'Po',
-    'astatine': 'At',
-    'radon': 'Rn',
-    'francium': 'Fr',
-    'radium': 'Ra',
-    'actinium': 'Ac',
-    'thorium': 'Th',
-    'protactinium': 'Pa',
-    'uranium': 'U',
-    'neptunium': 'Np',
-    'plutonium': 'Pu',
-    'americium': 'Am',
-    'curium': 'Cm',
-    'berkelium': 'Bk',
-    'californium': 'Cf',
-    'einsteinium': 'Es',
-    'fermium': 'Fm',
-    'mendelevium': 'Md',
-    'nobelium': 'No',
-    'lawrencium': 'Lr',
-    'rutherfordium': 'Rf',
-    'dubnium': 'Db',
-    'seaborgium': 'Sg',
-    'bohrium': 'Bh',
-    'hassium': 'Hs',
-    'meitnerium': 'Mt',
-    'darmstadtium': 'Ds',
-    'roentgenium': 'Rg',
-    'copernicium': 'Cn',
-    'nihonium': 'Nh',
-    'flerovium': 'Fl',
-    'moscovium': 'Mc',
-    'livermorium': 'Lv',
-    'tennessine': 'Ts',
-    'oganesson': 'Og'
+    "hydrogen": "H",
+    "helium": "He",
+    "lithium": "Li",
+    "beryllium": "Be",
+    "boron": "B",
+    "carbon": "C",
+    "nitrogen": "N",
+    "oxygen": "O",
+    "fluorine": "F",
+    "neon": "Ne",
+    "sodium": "Na",
+    "magnesium": "Mg",
+    "aluminum": "Al",
+    "silicon": "Si",
+    "phosphorus": "P",
+    "sulfur": "S",
+    "chlorine": "Cl",
+    "argon": "Ar",
+    "potassium": "K",
+    "calcium": "Ca",
+    "scandium": "Sc",
+    "titanium": "Ti",
+    "vanadium": "V",
+    "chromium": "Cr",
+    "manganese": "Mn",
+    "iron": "Fe",
+    "cobalt": "Co",
+    "nickel": "Ni",
+    "copper": "Cu",
+    "zinc": "Zn",
+    "gallium": "Ga",
+    "germanium": "Ge",
+    "arsenic": "As",
+    "selenium": "Se",
+    "bromine": "Br",
+    "krypton": "Kr",
+    "rubidium": "Rb",
+    "strontium": "Sr",
+    "yttrium": "Y",
+    "zirconium": "Zr",
+    "niobium": "Nb",
+    "molybdenum": "Mo",
+    "technetium": "Tc",
+    "ruthenium": "Ru",
+    "rhodium": "Rh",
+    "palladium": "Pd",
+    "silver": "Ag",
+    "cadmium": "Cd",
+    "indium": "In",
+    "tin": "Sn",
+    "antimony": "Sb",
+    "tellurium": "Te",
+    "iodine": "I",
+    "xenon": "Xe",
+    "cesium": "Cs",
+    "barium": "Ba",
+    "lanthanum": "La",
+    "cerium": "Ce",
+    "praseodymium": "Pr",
+    "neodymium": "Nd",
+    "promethium": "Pm",
+    "samarium": "Sm",
+    "europium": "Eu",
+    "gadolinium": "Gd",
+    "terbium": "Tb",
+    "dysprosium": "Dy",
+    "holmium": "Ho",
+    "erbium": "Er",
+    "thulium": "Tm",
+    "ytterbium": "Yb",
+    "lutetium": "Lu",
+    "hafnium": "Hf",
+    "tantalum": "Ta",
+    "tungsten": "W",
+    "rhenium": "Re",
+    "osmium": "Os",
+    "iridium": "Ir",
+    "platinum": "Pt",
+    "gold": "Au",
+    "mercury": "Hg",
+    "thallium": "Tl",
+    "lead": "Pb",
+    "bismuth": "Bi",
+    "polonium": "Po",
+    "astatine": "At",
+    "radon": "Rn",
+    "francium": "Fr",
+    "radium": "Ra",
+    "actinium": "Ac",
+    "thorium": "Th",
+    "protactinium": "Pa",
+    "uranium": "U",
+    "neptunium": "Np",
+    "plutonium": "Pu",
+    "americium": "Am",
+    "curium": "Cm",
+    "berkelium": "Bk",
+    "californium": "Cf",
+    "einsteinium": "Es",
+    "fermium": "Fm",
+    "mendelevium": "Md",
+    "nobelium": "No",
+    "lawrencium": "Lr",
+    "rutherfordium": "Rf",
+    "dubnium": "Db",
+    "seaborgium": "Sg",
+    "bohrium": "Bh",
+    "hassium": "Hs",
+    "meitnerium": "Mt",
+    "darmstadtium": "Ds",
+    "roentgenium": "Rg",
+    "copernicium": "Cn",
+    "nihonium": "Nh",
+    "flerovium": "Fl",
+    "moscovium": "Mc",
+    "livermorium": "Lv",
+    "tennessine": "Ts",
+    "oganesson": "Og",
 }
 
 
 # regexes we will use for parsing notes
-pattern_floor = re.compile(r'The (\w+) floor contains (.*)')
-pattern_split = re.compile(r', and | and |, ')
-pattern_microchip = re.compile(r'a (\w+)-compatible microchip.*')
-pattern_generator = re.compile(r'a (\w+) generator.*')
+pattern_floor = re.compile(r"The (\w+) floor contains (.*)")
+pattern_split = re.compile(r", and | and |, ")
+pattern_microchip = re.compile(r"a (\w+)-compatible microchip.*")
+pattern_generator = re.compile(r"a (\w+) generator.*")
+
 
 def parse_notes(input_string):
     """
     Function to parse notes
     """
-    floors = {
-        'first': 0,
-        'second': 1,
-        'third': 2,
-        'fourth': 3
-    }
+    floors = {"first": 0, "second": 1, "third": 2, "fourth": 3}
     match = pattern_floor.match(input_string)
     floor = floors[match.group(1)]
     items = pattern_split.split(match.group(2))
@@ -248,6 +248,7 @@ def parse_notes(input_string):
                 building[floor].append(f"{elements[match.group(1)]}G")
             else:
                 pass
+
 
 @lru_cache(maxsize=None)
 def anonymize(floors):
@@ -286,7 +287,7 @@ def anonymize_old(floors):
     """
     # find the unique elements in the building from the top down
     elements_seen = []
-    for floor_num in range(3,-1,-1):
+    for floor_num in range(3, -1, -1):
         floor = floors[floor_num]
         for item in list(floor):
             if not item[:-1] in elements_seen:
@@ -296,14 +297,15 @@ def anonymize_old(floors):
     # walk all the items and replace the element with its index
     # ex:  HG -> 0G, LiM -> 1M
     for floor in list_floors:
-        #floor_summary = ' '.join(floor)
+        # floor_summary = ' '.join(floor)
         for item, label in enumerate(floor):
             for idx, element in enumerate(elements_seen):
-                #if floor_summary.count(element) > 1:
+                # if floor_summary.count(element) > 1:
                 if element in label:
-                    #print(f"{floor[item]} replace {element} with {str(idx)}")
+                    # print(f"{floor[item]} replace {element} with {str(idx)}")
                     floor[item] = label.replace(element, str(idx))
     return tuple(tuple(list(floor)) for floor in list_floors)
+
 
 @lru_cache(maxsize=None)
 def is_valid(floor):
@@ -316,9 +318,9 @@ def is_valid(floor):
     # walk the items in the floor
     for item in floor:
         # if item end in G add it's element to generators
-        if item[-1] == 'G':
+        if item[-1] == "G":
             generators.append(item[:-1])
-        else: # add to micro_chips instead
+        else:  # add to micro_chips instead
             micro_chips.append(item[:-1])
     # if there are any generators, lets look at the microchips
     if len(generators) > 0:
@@ -329,6 +331,7 @@ def is_valid(floor):
                 return False
     return True
 
+
 @lru_cache(maxsize=None)
 def is_solved(current_floor, floors):
     """
@@ -338,12 +341,13 @@ def is_solved(current_floor, floors):
     if current_floor != 3:
         return False
     # walk lower floors
-    for floor in range(current_floor - 1,-1,-1):
+    for floor in range(current_floor - 1, -1, -1):
         # if lower floor is not empty, it is not solved
         if len(floors[floor]) > 0:
             return False
     # nothing ruled out, must be solved
     return True
+
 
 def next_floors_a_star(current_node):
     """
@@ -358,7 +362,7 @@ def next_floors_a_star(current_node):
         if floor == current_node.floor - 1:
             empty = True
             # in each floor, if its length is not 0, set false
-            for lower_floor in range(current_node.floor-1,-1,-1):
+            for lower_floor in range(current_node.floor - 1, -1, -1):
                 if len(current_node.floors[lower_floor]) > 0:
                     empty = False
                     break
@@ -368,22 +372,23 @@ def next_floors_a_star(current_node):
         next_floor_list.append(floor)
     return next_floor_list
 
+
 def next_floors(current):
     """
     Function to return next floors to try
     """
     print(f"current: {current}")
     next_floor_list = []
-    for floor in [current['floor']+1, current['floor']-1]:
+    for floor in [current["floor"] + 1, current["floor"] - 1]:
         # check that floor exists
         if floor < 0 or floor > 3:
             continue
         # check so that we don't go down below all the other items
-        if floor == current['floor']-1:
+        if floor == current["floor"] - 1:
             empty = True
             # in each floor, if its length is not 0, set false
-            for lower_floor in range(current['floor']-1,-1,-1):
-                if len(current['floors'][lower_floor]) > 0:
+            for lower_floor in range(current["floor"] - 1, -1, -1):
+                if len(current["floors"][lower_floor]) > 0:
                     empty = False
                     break
             # if all the floors below are empty move on, don't process
@@ -391,6 +396,7 @@ def next_floors(current):
                 continue
         next_floor_list.append(floor)
     return next_floor_list
+
 
 @lru_cache(maxsize=None)
 def try_move(current_node, items, new_floor):
@@ -401,7 +407,7 @@ def try_move(current_node, items, new_floor):
     # this cut part 1 time in half :)
     if None in items and new_floor > current_node.floor:
         return []
-    new_nodes=[]
+    new_nodes = []
     # clone current['floors']
     new_floors = []
     for floor in current_node.floors:
@@ -424,10 +430,11 @@ def try_move(current_node, items, new_floor):
                 current_node.g_score + 1,
                 calc_h_score(
                     floors_tuple, current_node.g_score, current_node.threshold
-                )
+                ),
             )
         )
     return new_nodes
+
 
 # preserving failed h_score routines for future review
 def h_score_works_slow(floors, stops, threshold):
@@ -437,10 +444,10 @@ def h_score_works_slow(floors, stops, threshold):
     boosts score if stops //2 + score > threshold (min_solved)
     decreases (prioritizes) score if lower floors are empty
     """
-    #score = min_stops_remaining(floors)
+    # score = min_stops_remaining(floors)
     score = 0
     for idx, floor in enumerate(floors):
-        score += (3-idx) * len(floor)
+        score += (3 - idx) * len(floor)
     # if it will take more elevator stops to complete than we have left
     # before min_solved, then we aren't on the right track, so lets bump
     # score up to deprioritize this route
@@ -452,6 +459,7 @@ def h_score_works_slow(floors, stops, threshold):
             score -= 20
     return score
 
+
 def h_score_simple(floors, stops, threshold):
     """
     Function to calculate hscore
@@ -462,6 +470,7 @@ def h_score_simple(floors, stops, threshold):
     for idx, floor in enumerate(floors):
         score += (3 - idx) * len(floor)
     return score
+
 
 @lru_cache(maxsize=None)
 def calc_h_score(floors, stops, threshold):
@@ -489,6 +498,7 @@ def calc_h_score(floors, stops, threshold):
                 score -= 3000
     return score
 
+
 @lru_cache(maxsize=None)
 def min_stops_remaining(floors):
     """
@@ -499,6 +509,7 @@ def min_stops_remaining(floors):
     for idx, floor in enumerate(floors):
         score += (3 - idx) * len(floor)
     return score // 2
+
 
 def h_score_percentage(floors, stops, threshold):
     """
@@ -519,6 +530,7 @@ def h_score_percentage(floors, stops, threshold):
             score -= 1
     return score
 
+
 @lru_cache(maxsize=None)
 def init_goal(floors):
     """
@@ -529,8 +541,9 @@ def init_goal(floors):
     # sum items as goal
     for floor in floors:
         goal += len(floor)
-    goal = calc_h_score(([],[],[],[range(goal)]), 0 , float('infinity'))
+    goal = calc_h_score(([], [], [], [range(goal)]), 0, float("infinity"))
     return goal
+
 
 def a_star_next_nodes(current_node):
     """
@@ -540,18 +553,18 @@ def a_star_next_nodes(current_node):
     # for valid floors in current_floor +/- 1
     new_nodes = []
     new = {}
-    for new['floor'] in next_floors_a_star(current_node):
+    for new["floor"] in next_floors_a_star(current_node):
         # find each possible pairing, including empty (None)
         for items in itertools.combinations(
-            list(current_node.floors[current_node.floor]) + [None],
-            2
+            list(current_node.floors[current_node.floor]) + [None], 2
         ):
             # ignore matches
             if items[0] == items[1]:
                 continue
-            for new_node in try_move(current_node, items, new['floor']):
+            for new_node in try_move(current_node, items, new["floor"]):
                 new_nodes.append(new_node)
     return new_nodes
+
 
 def solve_a_star(floors):
     """
@@ -562,8 +575,10 @@ def solve_a_star(floors):
     # educated guess
     min_solved = 100
     start_node = Node(
-        0, tuple(tuple(list(floor)) for floor in floors), 0,
-        calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved)
+        0,
+        tuple(tuple(list(floor)) for floor in floors),
+        0,
+        calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved),
     )
     # initialize PriorityQueue
     open_set = PriorityQueue()
@@ -584,13 +599,15 @@ def solve_a_star(floors):
         # is this state in closed_set?
         # update closed set if we re in closed set, but fewer steps we'll process
         # otherwise continue
-        if current_node.g_score > closed_set.get(current_node.anonymized, float('infinity')):
+        if current_node.g_score > closed_set.get(
+            current_node.anonymized, float("infinity")
+        ):
             continue
         closed_set[current_node.anonymized] = current_node.g_score
         # check for solution first
         if is_solved(current_node.floor, current_node.floors):
             return current_node.g_score
-            #if current_node.g_score < min_solved:
+            # if current_node.g_score < min_solved:
             #    print(f"Took {counter} tries {current_node.g_score}")
             #    print(f"Found win in {current_node.g_score} stops: {current_node.floors}")
             #    print(current_node)
@@ -599,7 +616,7 @@ def solve_a_star(floors):
             #    # this is optimized for this input, we would just need to continue if
             #    # we were solving for general solutions
             #    return min_solved
-            #continue
+            # continue
         # is it possible to beat current score?
         if min_stops_remaining(current_node.floors) + current_node.g_score > min_solved:
             continue
@@ -607,66 +624,54 @@ def solve_a_star(floors):
         current_node.threshold = min_solved
         for new_node in a_star_next_nodes(current_node):
             # skip if already seen, unless it is a lower step count.
-            if new_node.g_score < closed_set.get(new_node.anonymized, float('infinity')):
+            if new_node.g_score < closed_set.get(
+                new_node.anonymized, float("infinity")
+            ):
                 open_set.put((new_node.f_score, new_node))
     return None
+
 
 if __name__ == "__main__":
     # sample data
     test_data = [
-        "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.", #pylint: disable=line-too-long
+        "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.",  # pylint: disable=line-too-long
         "The second floor contains a hydrogen generator.",
         "The third floor contains a lithium generator.",
         "The fourth floor contains nothing relevant.",
     ]
     logging.basicConfig(level=logging.WARNING)
-    my_aoc = aoc.AdventOfCode(2016,11)
+    my_aoc = aoc.AdventOfCode(2016, 11)
     lines = my_aoc.load_lines()
-    building = [
-        [],
-        [],
-        [],
-        []
-    ]
-    #print(sys.argv,len(sys.argv))
+    building = [[], [], [], []]
+    # print(sys.argv,len(sys.argv))
     if len(sys.argv) > 1:
         lines = test_data
     for note in lines:
         parse_notes(note)
 
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers for validation
-    correct = {
-        1: 47,
-        2: 71
-    }
+    correct = {1: 47, 2: 71}
     # dict to map functions
-    funcs = {
-        1: solve_a_star,
-        2: solve_a_star
-    }
+    funcs = {1: solve_a_star, 2: solve_a_star}
     # loop parts
     for my_part in parts:
         # log start time
         start_time = time.time()
         if my_part == 2:
-            for item_element in 'ED':
-                for item_type in 'MG':
+            for item_element in "ED":
+                for item_type in "MG":
                     building[0].append(f"{item_element}{item_type}")
         # get answer
         answer[my_part] = funcs[my_part](building)
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

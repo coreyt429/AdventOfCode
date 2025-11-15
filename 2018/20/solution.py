@@ -2,14 +2,16 @@
 Advent Of Code 2018 day 20
 
 """
+
 # import system modules
 import time
 import re
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def move(grid, direction):
     """
@@ -18,18 +20,13 @@ def move(grid, direction):
       - we are creating the rooms as we go
       - moving to a room is 2 move (door, room)
       - we are identifying doors as we go through them
-    
+
     Args:
         grid: Grid() object
         direction: str() movement direction 'n', 's', 'e', 'w'
     """
     # map doors by direction
-    door = {
-        'e': '|',
-        'w': '|',
-        'n': '-',
-        's': '-'
-    }
+    door = {"e": "|", "w": "|", "n": "-", "s": "-"}
     # get the neighbors of the current position
     neighbors = grid.get_neighbors()
     # save door location so we can mark it after we go through
@@ -40,44 +37,48 @@ def move(grid, direction):
     # mark path as door after moving through it.
     grid.set_point(door_location, door[direction])
     # get neighbors of new room position
-    neighbors = grid.get_neighbors(directions=['ne', 'nw', 'se', 'sw', 'n', 'w', 'e', 's'])
+    neighbors = grid.get_neighbors(
+        directions=["ne", "nw", "se", "sw", "n", "w", "e", "s"]
+    )
     # init walls if they are not already
     # walk neighbor directions
-    for n_dir in ['ne', 'nw', 'se', 'sw']:
+    for n_dir in ["ne", "nw", "se", "sw"]:
         # get neighbor
         neighbor = neighbors[n_dir]
         # get neighbor value
-        value = grid.get_point(neighbor, '%')
+        value = grid.get_point(neighbor, "%")
         # if oob, make in bounds
         # this seems like a Grid() issue.  This grid is infinite
         # so there should be no oob
-        if value == '%':
-            value = '#'
+        if value == "%":
+            value = "#"
             # set point of wall
             grid.set_point(neighbor, value)
     # walk door direcdtions
-    for n_dir in ['n', 'w', 'e', 's']:
+    for n_dir in ["n", "w", "e", "s"]:
         # get neighbor
         neighbor = neighbors[n_dir]
         # get neighbor value
-        value = grid.get_point(neighbor, ' ')
+        value = grid.get_point(neighbor, " ")
         # if default value (door not already set), then mark unkown
-        if value in ' ':
-            value = '?'
+        if value in " ":
+            value = "?"
             # set value
             grid.set_point(neighbor, value)
     # set room value
-    grid.set_point(grid.pos, '.')
+    grid.set_point(grid.pos, ".")
     # update grid data
     # grid.update
 
-def set_start(grid, pos=(1,1)):
+
+def set_start(grid, pos=(1, 1)):
     """
     Set the start point in the grid
     """
     # set start position
     grid.pos = pos
-    grid.overrides = {grid.pos: '*'}
+    grid.overrides = {grid.pos: "*"}
+
 
 def follow_path(grid, path):
     """
@@ -98,9 +99,10 @@ def follow_path(grid, path):
     # set start position
     set_start(grid)
 
-def follow_path2(grid, line, line_ptr=0, start_position=(1,1)):
+
+def follow_path2(grid, line, line_ptr=0, start_position=(1, 1)):
     """
-    Revision of follow path, that recursively walks the 
+    Revision of follow path, that recursively walks the
     path string
     """
     set_start(grid, start_position)
@@ -109,22 +111,23 @@ def follow_path2(grid, line, line_ptr=0, start_position=(1,1)):
         if idx < skip_idx:
             continue
         char = line[idx]
-        if char in 'news':
+        if char in "news":
             move(grid, char)
-        elif char == '|':
+        elif char == "|":
             set_start(grid, start_position)
-        elif char == '(':
+        elif char == "(":
             current_pos = grid.pos
-            skip_idx = follow_path2(grid, line, idx + 1 , current_pos)
-        elif char == ')':
+            skip_idx = follow_path2(grid, line, idx + 1, current_pos)
+        elif char == ")":
             return idx + 1
-        elif char == '$':
+        elif char == "$":
             return 0
-        elif char == '^':
+        elif char == "^":
             pass
         else:
-            print(f'Unknown character: {char}')
+            print(f"Unknown character: {char}")
     return 0
+
 
 def expand_string(line):
     """
@@ -136,9 +139,9 @@ def expand_string(line):
         final_strings: set() of str()
     """
     # regex to match inner ()
-    pattern_group = re.compile(r'\(([^()]+)\)')
+    pattern_group = re.compile(r"\(([^()]+)\)")
     # Remove ^ and $ as they're just markers
-    line = line.strip('^$')
+    line = line.strip("^$")
     # init heap
     heap = []
     # init final strings
@@ -148,7 +151,7 @@ def expand_string(line):
     # I don't think this provides any benefit, and we likely
     # could have just left popped a deque instead.  If this
     # step takes to long with the input data, try that
-    heappush(heap,(line.count('('), line))
+    heappush(heap, (line.count("("), line))
     already_seen = set()
     # process heap
     while heap:
@@ -171,18 +174,19 @@ def expand_string(line):
             # get last match string
             replace = f"({match[0]})"
             # expand replacements for last match string
-            replacements = match[0].split('|')
+            replacements = match[0].split("|")
             # walk replacements
             for replacement in replacements:
                 # create new line with replacement replacing replace
                 new_line = line.replace(replace, replacement)
                 if not new_line in already_seen:
                     # add to heap
-                    heappush(heap, (new_line.count('('), new_line))
+                    heappush(heap, (new_line.count("("), new_line))
         else:
             # catch regex misses
             print(f"We shouldn't see this, but we did: {line}")
     return final_strings
+
 
 def adjacent_rooms(grid, point):
     """
@@ -193,27 +197,23 @@ def adjacent_rooms(grid, point):
     # init rooms
     rooms = []
     # init offsets
-    offsets = {
-        'n': (0, 2),
-        'e': (2, 0),
-        's': (0, -2),
-        'w': (-2, 0)
-    }
+    offsets = {"n": (0, 2), "e": (2, 0), "s": (0, -2), "w": (-2, 0)}
     # for nesw directions
-    for direction in 'news':
+    for direction in "news":
         # if point is a door
-        if grid.get_point(neighbors[direction]) in '|-':
+        if grid.get_point(neighbors[direction]) in "|-":
             # room is on the other side of the door
             pos_x, pos_y = point
             rooms.append((pos_x + offsets[direction][0], pos_y + offsets[direction][1]))
     return rooms
 
+
 def map_rooms(grid):
     """
-    BFS Function to map room paths 
+    BFS Function to map room paths
     """
     # init start point
-    current_pos = (1,1)
+    current_pos = (1, 1)
     set_start(grid, current_pos)
     # init heap, paths, already_seen, and max_doors
     heap = []
@@ -249,6 +249,7 @@ def map_rooms(grid):
     # return data
     return max_doors, paths
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -258,7 +259,7 @@ def solve(input_value, part):
 ?.?
 #?#"""
     # init grid
-    my_grid = Grid(initial_grid, coordinate_system='cartesian', type='infinite')
+    my_grid = Grid(initial_grid, coordinate_system="cartesian", type="infinite")
     # process input to expand grid
     follow_path2(my_grid, input_value.lower())
     # update grid data
@@ -284,24 +285,16 @@ def solve(input_value, part):
     # return part 2 answer
     return count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,20)
+    my_aoc = aoc.AdventOfCode(2018, 20)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -311,4 +304,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

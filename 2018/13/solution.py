@@ -12,7 +12,7 @@ streamlined the move and remove operations a bit, but still no great gains
 Added a min_manhattan_distance check to skip calculations if the carts aren't
     together.  no real gain
 
-revisiting heapq as the storage for Carts. seemingly no gain, I think we are 
+revisiting heapq as the storage for Carts. seemingly no gain, I think we are
     taking everything out and putting it back in too much.
 
 removed manhattan code, put it back, that did seem to shave 40 seconds off
@@ -24,6 +24,7 @@ the simplicity of the position calculations.  That change alone took part 2
 from 400+ seconds to < 1 second.
 
 """
+
 # import system modules
 import time
 import sys
@@ -32,8 +33,9 @@ from collections import Counter
 import itertools
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid, manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid, manhattan_distance  # pylint: disable=import-error
+
 
 def parse_data(lines):
     """
@@ -42,13 +44,15 @@ def parse_data(lines):
     data_map = []
     for line in lines:
         data_map.append(list(line))
-    new_grid = Grid(data_map, default_value=' ', overrides={})
+    new_grid = Grid(data_map, default_value=" ", overrides={})
     return new_grid
+
 
 class Carts:
     """
     Class for a collection of carts
     """
+
     def __init__(self, grid):
         """
         init
@@ -71,10 +75,10 @@ class Carts:
         Function to identify carts on the grid
         """
         direction_map = {
-            '^': {"direction": 'n', "char": '|'},
-            '>': {"direction": 'e', "char": '-'},
-            'v': {"direction": 's', "char": '|'},
-            '<': {"direction": 'w', "char": '-'},
+            "^": {"direction": "n", "char": "|"},
+            ">": {"direction": "e", "char": "-"},
+            "v": {"direction": "s", "char": "|"},
+            "<": {"direction": "w", "char": "-"},
         }
         for key, value in self.grid.map.items():
             if value in direction_map:
@@ -110,10 +114,10 @@ class Carts:
         # this should help reduce calculations since the map is pretty big
         if self.back_off >= threshold:
             self.back_off -= 1
-            #print("skip detect_collision")
+            # print("skip detect_collision")
             return False
         self.back_off = self.min_manhattan_distance(threshold)
-        #print(f"resetting back_off: {self.back_off}")
+        # print(f"resetting back_off: {self.back_off}")
 
         positions = [cart.pos for cart in self.carts if not cart.removed]
         position_counts = Counter(positions)
@@ -121,11 +125,8 @@ class Carts:
         for position, count in position_counts.items():
             if count > 1:
                 collision_point = position
-                #print(f"Collision detected at {collision_point}")
-                self.last_collision = {
-                    "location": collision_point,
-                    "carts": []
-                }
+                # print(f"Collision detected at {collision_point}")
+                self.last_collision = {"location": collision_point, "carts": []}
                 keep = []
                 # loop over all carts, note for cart in self.carts would only
                 # loop over the carts in the current turn
@@ -133,7 +134,7 @@ class Carts:
                     cart = self.pop()
                     if cart.pos == collision_point:
                         self.last_collision["carts"].append(cart)
-                        #print(f"Removing: {cart}")
+                        # print(f"Removing: {cart}")
                         cart.remove()
                     else:
                         keep.append(cart)
@@ -159,7 +160,7 @@ class Carts:
         Function to sort carts
         """
         self.carts = sorted([cart for cart in self.carts if not cart.removed])
-        #self.carts.sort()
+        # self.carts.sort()
 
     def __str__(self):
         """
@@ -194,29 +195,26 @@ class Carts:
             return self.pop()
         raise StopIteration
 
+
 class Cart:
     """
     Class to represent cart
     """
-    symbols = {
-        'n': '^',
-        'e': '>',
-        's': 'v',
-        'w': '<'
-    }
+
+    symbols = {"n": "^", "e": ">", "s": "v", "w": "<"}
     curve_map = {
-        'n': {'/': 'e', '\\': 'w'},
-        'e': {'/': 'n', '\\': 's'},
-        's': {'/': 'w', '\\': 'e'},
-        'w': {'/': 's', '\\': 'n'}
+        "n": {"/": "e", "\\": "w"},
+        "e": {"/": "n", "\\": "s"},
+        "s": {"/": "w", "\\": "e"},
+        "w": {"/": "s", "\\": "n"},
     }
     turn_map = {
-        'n': {'f': 'n', 'l': 'w', 'r': 'e'},
-        'e': {'f': 'e', 'l': 'n', 'r': 's'},
-        's': {'f': 's', 'l': 'e', 'r': 'w'},
-        'w': {'f': 'w', 'l': 's', 'r': 'n'}
+        "n": {"f": "n", "l": "w", "r": "e"},
+        "e": {"f": "e", "l": "n", "r": "s"},
+        "s": {"f": "s", "l": "e", "r": "w"},
+        "w": {"f": "w", "l": "s", "r": "n"},
     }
-    directions = 'rlf'
+    directions = "rlf"
 
     def __init__(self, pos, direction, grid, container):
         """
@@ -229,56 +227,60 @@ class Cart:
         self.grid.overrides[self.pos] = self.symbols[self.direction]
         self.turns = 0
         self.removed = False
-        #self.container = container
+        # self.container = container
         self.moves = 0
 
     def __lt__(self, other):
         """
         less than for sorting
         """
-        return (self.moves, self.pos[1], self.pos[0]) < (other.moves, other.pos[1], other.pos[0])
+        return (self.moves, self.pos[1], self.pos[0]) < (
+            other.moves,
+            other.pos[1],
+            other.pos[0],
+        )
 
     def move(self):
         """
         Move cart forward
         """
         # move grid to our position
-        #self.grid.pos = self.pos
+        # self.grid.pos = self.pos
         # get grid neighbors, but only for the direction we are moving
-        #neighbors = self.grid.get_neighbors(directions=[self.direction])
+        # neighbors = self.grid.get_neighbors(directions=[self.direction])
         # set next_pos to neighbor
-        #try:
+        # try:
         #    next_pos = neighbors[self.direction]
-        #except KeyError:
+        # except KeyError:
         #    print(self.container)
         #    print(self)
         #    print(neighbors)
         #    sys.exit()
-        #commenting out, overrides are only needed if we are printing
-        #self.grid.overrides.pop(self.pos, None)  # Safely remove old override
+        # commenting out, overrides are only needed if we are printing
+        # self.grid.overrides.pop(self.pos, None)  # Safely remove old override
         # set new position
 
         next_pos = list(self.pos)
-        #print(self)
-        #print(f"current_tile: {self.grid.map[self.pos]}")
-        #print(f"before: {self.pos} - {next_pos}")
+        # print(self)
+        # print(f"current_tile: {self.grid.map[self.pos]}")
+        # print(f"before: {self.pos} - {next_pos}")
         # okay, this was the magic.
         # my neighbors function is great when you have multiple options
         # and in this case, we know which way the cart is going so we only need
         # to calculate the change in that direction
         # thanks to u/pythondevgb  that is the bit of logic I gleemed from your
         # solution that helped.
-        if self.direction == 'n':
+        if self.direction == "n":
             next_pos[1] += -1
-        elif self.direction == 's':
-            next_pos[1] +=1
-        elif self.direction == 'e':
+        elif self.direction == "s":
+            next_pos[1] += 1
+        elif self.direction == "e":
             next_pos[0] += 1
-        elif self.direction == 'w':
+        elif self.direction == "w":
             next_pos[0] -= 1
-        #print(f"add/subtract: {self.pos} - {next_pos}")
+        # print(f"add/subtract: {self.pos} - {next_pos}")
         self.pos = tuple(next_pos)
-        #print(f"set: {self.pos} - {next_pos}")
+        # print(f"set: {self.pos} - {next_pos}")
         # Cache the value of the new grid tile
         next_tile = self.grid.map[self.pos]
         # Is it a curve?
@@ -292,7 +294,7 @@ class Cart:
         # intersection at which the cart has arrived  - that is, the cart has no per-intersection
         # memory.
         # is it an intersection
-        if next_tile == '+':
+        if next_tile == "+":
             # increment turn counter, it starts at 0, and we increment before
             # deciding.  if you move to increment after it will change
             # the decision tree, unless you also update self.directions
@@ -302,12 +304,12 @@ class Cart:
             # get new direction from turn_map
             self.direction = self.turn_map[self.direction][turn_direction]
 
-        #commenting out, overrides are only needed if we are printing
-        #if self.pos in self.grid.overrides:
+        # commenting out, overrides are only needed if we are printing
+        # if self.pos in self.grid.overrides:
         #    # collision
         #    self.grid.overrides[self.pos] = 'X'
         #    return False
-        #self.grid.overrides[self.pos] =  self.symbols[self.direction]
+        # self.grid.overrides[self.pos] =  self.symbols[self.direction]
         self.moves += 1
         return True
 
@@ -317,7 +319,7 @@ class Cart:
         """
         # commenting out, any references to overrides are
         # only relevant if you want to print the map
-        #self.grid.overrides.pop(self.pos, None)  # Safely remove the override
+        # self.grid.overrides.pop(self.pos, None)  # Safely remove the override
         self.removed = True
         self.pos = (sys.maxsize, sys.maxsize)
 
@@ -328,6 +330,7 @@ class Cart:
         string = f"Cart {self.cart_id} at {self.pos} removed: {self.removed}"
         string += f" moves: {self.moves} direction: {self.direction}"
         return string
+
 
 def solve(input_value, part):
     """
@@ -344,14 +347,16 @@ def solve(input_value, part):
                 if cart_collection.detect_collision():
                     collision = True
                     break
-        return ','.join(str(coord) for coord in cart_collection.last_collision['location'])
-    #keep = []
-    #for cart in cart_collection:
+        return ",".join(
+            str(coord) for coord in cart_collection.last_collision["location"]
+        )
+    # keep = []
+    # for cart in cart_collection:
     #    if cart.cart_id in [3,7]:
     #        cart.remove()
     #    else:
     #        keep.append(cart)
-    #for cart in keep:
+    # for cart in keep:
     #    cart_collection.push(cart)
 
     while len(cart_collection) > 1:
@@ -364,26 +369,18 @@ def solve(input_value, part):
     for cart in cart_collection:
         if not cart.removed:
             break
-    return ','.join(str(coord) for coord in cart.pos)
+    return ",".join(str(coord) for coord in cart.pos)
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,13)
+    my_aoc = aoc.AdventOfCode(2018, 13)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -393,4 +390,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -2,12 +2,14 @@
 Advent Of Code 2017 day 6
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def redistribute(num_tuple):
     """
@@ -29,19 +31,20 @@ def redistribute(num_tuple):
         # increment idx
         idx += 1
         # roll over if idx is invalid
-        if idx >- num_list_len:
+        if idx > -num_list_len:
             idx = idx % num_list_len
         # move block from move_blocks to num_list[idx]
         num_list[idx] += 1
         move_blocks -= 1
     return tuple(num_list)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     # conver input text to tuple of ints
-    start_tuple = tuple(int(num) for num in re.findall(r'(\d+)', input_value))
+    start_tuple = tuple(int(num) for num in re.findall(r"(\d+)", input_value))
     # counter to count steps
     counter = 0
     # set of states already seen
@@ -81,24 +84,16 @@ def solve(input_value, part):
         counter += 1
         # end of loop
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,6)
+    my_aoc = aoc.AdventOfCode(2017, 6)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -108,4 +103,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

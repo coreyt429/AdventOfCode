@@ -11,12 +11,14 @@ self.get_point is the gatekeeper for the point values including overrides.  That
 the __str__ code a bit.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def next_state(grid):
     """
@@ -31,34 +33,36 @@ def next_state(grid):
     for point in grid:
         # get neighbor values as list
         neighbors = [
-            grid.get_point(neighbor) for neighbor in grid.get_neighbors(point=point).values()
-            ]
+            grid.get_point(neighbor)
+            for neighbor in grid.get_neighbors(point=point).values()
+        ]
         # An open acre (.) will become filled with trees (|) if three or more adjacent acres
         # contained trees. Otherwise, nothing happens.
-        if grid.get_point(point) == '.':
-            if neighbors.count('|') >= 3:
-                new_state[point] = '|'
+        if grid.get_point(point) == ".":
+            if neighbors.count("|") >= 3:
+                new_state[point] = "|"
                 continue
-            new_state[point] = '.'
+            new_state[point] = "."
         # An acre filled with trees (|) will become a lumberyard (#) if three or more adjacent
         # acres were lumberyards. Otherwise, nothing happens.
-        if grid.get_point(point) == '|':
-            if neighbors.count('#') >= 3:
-                new_state[point] = '#'
+        if grid.get_point(point) == "|":
+            if neighbors.count("#") >= 3:
+                new_state[point] = "#"
                 continue
-            new_state[point] = '|'
+            new_state[point] = "|"
         # An acre containing a lumberyard (#) will remain a lumberyard if it was adjacent to
         # at least one other lumberyard and at least one acre containing trees. Otherwise,
         # it becomes open.
-        if grid.get_point(point) == '#':
-            if neighbors.count('#') >= 1 and neighbors.count('|') >= 1:
-                new_state[point] = '#'
+        if grid.get_point(point) == "#":
+            if neighbors.count("#") >= 1 and neighbors.count("|") >= 1:
+                new_state[point] = "#"
                 continue
-            new_state[point] = '.'
+            new_state[point] = "."
     # update grid with new_state values
     for point, value in new_state.items():
         grid.set_point(point, value)
     # no return, since we are manipulating the grid object
+
 
 def solve(input_value, part):
     """
@@ -102,32 +106,24 @@ def solve(input_value, part):
         # case for my input so not accounting for it here.
         # if modulus == 0 in your input, you would instead want to
         # set map_str to the last map in already_seen
-        map_str = already_seen[loop_start -1 + modulus]
+        map_str = already_seen[loop_start - 1 + modulus]
     # count woods
-    woods = map_str.count('|')
+    woods = map_str.count("|")
     # count lumber yarde
-    lumber_yards = map_str.count('#')
+    lumber_yards = map_str.count("#")
     # return total resources value
     return woods * lumber_yards
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,18)
+    my_aoc = aoc.AdventOfCode(2018, 18)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -137,4 +133,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

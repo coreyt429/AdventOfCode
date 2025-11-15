@@ -2,23 +2,26 @@
 Advent Of Code 2017 day 7
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-class Program():
+
+class Program:
     """
     Class to define program
     """
+
     def __init__(self, input_string):
         """
         init Program()
         """
         # parse imput_string
-        match = re.match(r'(\w+) .(\d+).(.*)', input_string)
+        match = re.match(r"(\w+) .(\d+).(.*)", input_string)
         if match:
             # program name
             self.name = match.group(1)
@@ -33,9 +36,9 @@ class Program():
             # parse children
             if children:
                 # remove arrow
-                children = children.replace(' -> ','')
+                children = children.replace(" -> ", "")
                 # store children names, we'll find the objects later
-                self.children = children.split(', ')
+                self.children = children.split(", ")
 
     def __str__(self):
         """String"""
@@ -46,6 +49,7 @@ class Program():
     def __bool__(self):
         """Boolean"""
         return True
+
 
 def init_programs(lines):
     """
@@ -64,6 +68,7 @@ def init_programs(lines):
         # store in map
         program_map[program.name] = program
     return program_map
+
 
 def link_children(program_map):
     """
@@ -86,6 +91,7 @@ def link_children(program_map):
                 # link program as childs parent
                 program_map[child_name].parent = program
 
+
 def find_bottom(program_map):
     """
     Find the bottom of the tower
@@ -103,6 +109,7 @@ def find_bottom(program_map):
     # this shouldn't be possible, but it makes pylint happy to have it.
     return None
 
+
 def tower_weight(program):
     """
     Function to calculate weight of a sub tower
@@ -118,6 +125,7 @@ def tower_weight(program):
         # recurse each child and add its tower weight
         weight += tower_weight(child)
     return weight
+
 
 def find_imbalance(program):
     """
@@ -149,6 +157,7 @@ def find_imbalance(program):
                 return imbalance
     # hmm, this must be the imbalanced program, not its children
     return program
+
 
 def solve(lines, part):
     """
@@ -183,27 +192,19 @@ def solve(lines, part):
     adjusted = imbalance.weight + out_of_balance
     return adjusted
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,7)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2017, 7)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
-    #print(input_lines)
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -213,4 +214,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

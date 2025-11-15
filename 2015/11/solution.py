@@ -2,11 +2,13 @@
 Advent Of Code 2015 day 11
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def next_char(char):
     """
@@ -20,10 +22,11 @@ def next_char(char):
     if int_char > 122:
         int_char = 97
     # increment if banned letter
-    if int_char in [105, 108, 111]: # banned letters i, l, and o
+    if int_char in [105, 108, 111]:  # banned letters i, l, and o
         int_char += 1
     # return new character
     return chr(int_char)
+
 
 def next_password(input_string):
     """
@@ -32,15 +35,16 @@ def next_password(input_string):
     # convert to list
     password = list(input_string)
     # walk list backwards
-    for idx in range(len(password)-1, 0, -1):
+    for idx in range(len(password) - 1, 0, -1):
         # replace current character with net character
         password[idx] = next_char(password[idx])
         # break if not 'a' (only increment up to the
         # least significant position that needs to increment
-        if password[idx] != 'a':
+        if password[idx] != "a":
             break
     # return joined list
-    return ''.join(password)
+    return "".join(password)
+
 
 def three_consecutive(ints):
     """
@@ -54,6 +58,7 @@ def three_consecutive(ints):
         if ints[idx + 1] == ints[idx] + 1 and ints[idx + 2] == ints[idx + 1] + 1:
             return True
     return False
+
 
 def two_matched_pairs(ints):
     """
@@ -73,6 +78,7 @@ def two_matched_pairs(ints):
                     return True
     return False
 
+
 def is_valid(password):
     """
     Function to check a passwords validty
@@ -91,9 +97,10 @@ def is_valid(password):
     # banned letters i, o, l
     # Passwords may not contain the letters i, o, or l, as these letters can be mistaken
     # for other characters and are therefore confusing.
-    if any(char in password for char in ['i', 'o', 'l']):
+    if any(char in password for char in ["i", "o", "l"]):
         return False
     return True
+
 
 def solve(password):
     """
@@ -107,27 +114,22 @@ def solve(password):
     # return password
     return password
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,11)
+    my_aoc = aoc.AdventOfCode(2015, 11)
     input_text = my_aoc.load_text()
-    #print(input_text)
+    # print(input_text)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
     # set to input_text so part 1 runs on the input,
     # part 2 will them run on the password from part1
     answer = {
-        1: input_text, # set to input_text so part 1 runs on the input
-        2: None
+        1: input_text,  # set to input_text so part 1 runs on the input
+        2: None,
     }
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -137,4 +139,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

@@ -1,18 +1,20 @@
 """
 Advent Of Code 2018 day 14
 
-The scratchpad has lots of failures on this one. 
+The scratchpad has lots of failures on this one.
 
 I started out trying to find a match in all recipes,
 until it dawned on me that I was specifically looking
 for the lists starting at the indices I had in elves.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def build_recipes(recipes, elves):
     """
@@ -39,6 +41,7 @@ def build_recipes(recipes, elves):
         elves[elf_id] = position % len(recipes)
     # return updates
     return recipes, elves
+
 
 def print_data(recipes, elves):
     """
@@ -69,6 +72,7 @@ def print_data(recipes, elves):
     # print the string
     print(my_string)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -88,7 +92,7 @@ def solve(input_value, part):
                 # update recipes and elves to next iteration
                 recipes, elves = build_recipes(recipes, elves)
         # return string of ten digits after target
-        return ''.join([str(num) for num in recipes[target:target + 10]])
+        return "".join([str(num) for num in recipes[target : target + 10]])
     # part 2
     # init targets
     targets = {}
@@ -112,11 +116,11 @@ def solve(input_value, part):
             # walk elves
             for elf in elves:
                 # is our target list after this elf?
-                if target_list == recipes[elf:elf+len(target_list)]:
+                if target_list == recipes[elf : elf + len(target_list)]:
                     # yes, add to found
-                    found[target_string] = ''.join([str(num) for num in recipes])
+                    found[target_string] = "".join([str(num) for num in recipes])
     # init result
-    result = ''
+    result = ""
     # walk found items
     for sequence, recipe_string in found.items():
         # update result to last
@@ -124,24 +128,16 @@ def solve(input_value, part):
     # do the thing
     return result
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,14)
+    my_aoc = aoc.AdventOfCode(2018, 14)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -151,4 +147,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

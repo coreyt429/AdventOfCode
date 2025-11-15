@@ -5,13 +5,15 @@ This one was fun, and I learned a few things in python that I don't usually use.
 Yeah, had to google a bit, ash chatGPT vague questions, and play in the scratchpad.
 
 """
+
 # import system modules
 import time
 from collections import deque
 from functools import reduce
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def hash_list(some_list, queue, skip, total_rotate=0):
     """
@@ -40,6 +42,7 @@ def hash_list(some_list, queue, skip, total_rotate=0):
     # return 1, skp, and total_rotate to be passed back next pass
     return queue, skip, total_rotate
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -54,12 +57,12 @@ def solve(input_value, part):
     if part == 1:
         # for part 1, we simply run hash_list once
         queue, skip, total_rotate = hash_list(
-            [int(num) for num in input_value.split(',')], queue, skip, total_rotate
+            [int(num) for num in input_value.split(",")], queue, skip, total_rotate
         )
         # rotate back
         queue.rotate(total_rotate)
         # return the product of the first two numbers
-        return queue[0]*queue[1]
+        return queue[0] * queue[1]
     # part 2, a few more steps here.
     # first, get the ord() values of the char()s in the input string + extra list
     num_list = [ord(char) for char in input_value] + [17, 31, 73, 47, 23]
@@ -70,37 +73,29 @@ def solve(input_value, part):
     # split into groups of 16
     sparse_hash = list(queue)
     sparse_hashes = []
-    for idx in range(0,256,16):
-        sparse_hashes.append(sparse_hash[idx:idx+16])
+    for idx in range(0, 256, 16):
+        sparse_hashes.append(sparse_hash[idx : idx + 16])
     # use bitwise XOR to create dense_hash values
     dense_hash = []
     for sparse_hash in sparse_hashes:
         dense_hash.append(reduce(lambda x, y: x ^ y, sparse_hash))
     # get hex values of dense_hash for hex hash
-    my_hash = ''
+    my_hash = ""
     for num in dense_hash:
-        my_hash += str(hex(num))[-2:].replace('x','0')
+        my_hash += str(hex(num))[-2:].replace("x", "0")
     # return hex hash
     return my_hash
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,10)
+    my_aoc = aoc.AdventOfCode(2017, 10)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -110,4 +105,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

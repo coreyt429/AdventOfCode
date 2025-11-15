@@ -6,10 +6,12 @@ This one needed a creative solution, and more familiarity with collections.deque
 Good learning opportunity for me.
 
 """
+
 import time
 import collections
 
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(input_value, puzzle_part=1):
     """
@@ -45,7 +47,6 @@ def solve(input_value, puzzle_part=1):
     return queue.popleft()
 
 
-
 def solve_part2(input_value):
     """
     Function to solve part 2
@@ -54,7 +55,7 @@ def solve_part2(input_value):
     of rotate
     """
     # populate left with the first half of the elves
-    left = collections.deque(range(1,input_value // 2 + 1))
+    left = collections.deque(range(1, input_value // 2 + 1))
     # populate right with the second half reversed
     right = collections.deque(range(input_value, input_value // 2, -1))
     # loop until one side is empty
@@ -74,26 +75,18 @@ def solve_part2(input_value):
     # return whichever remains
     return left[0] or right[0]
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016,19)
+    my_aoc = aoc.AdventOfCode(2016, 19)
     my_input = int(my_aoc.load_text())
     # test input, uncomment to test
-    #my_input=5
+    # my_input=5
     # parts structure to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # answer structure
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # functiopn map since we are using seperate functions
-    func_map = {
-        1: solve,
-        2: solve_part2
-    }
+    func_map = {1: solve, 2: solve_part2}
     # loop parts
     for part in parts:
         # log start time
@@ -102,4 +95,4 @@ if __name__ == "__main__":
         answer[part] = func_map[part](my_input)
         # log end time
         end = time.time()
-        print(f"Part {part}: {answer[part]}, took {end-start} seconds")
+        print(f"Part {part}: {answer[part]}, took {end - start} seconds")

@@ -4,11 +4,14 @@ Advent Of Code 2017 day 2
 easy peasy, and pylint ran clean the first time.  Maybe I'm learning!
 
 """
+
 # import system modules
 import time
 import re
+
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(lines, part):
     """
@@ -20,7 +23,7 @@ def solve(lines, part):
     # walk lines
     for line in lines:
         # get ints from lines
-        nums = [int(num) for num in re.findall(r'(\d+)', line)]
+        nums = [int(num) for num in re.findall(r"(\d+)", line)]
         # checksum 1: For each row, determine the difference between the largest value
         # and the smallest value; the checksum is the sum of all of these differences
         checksum += max(nums) - min(nums)
@@ -40,7 +43,7 @@ def solve(lines, part):
                     # is divisible?
                     if num_1 % num_2 == 0:
                         # yes add to checksum
-                        checksum2 +=  num_1 / num_2
+                        checksum2 += num_1 / num_2
                         # mark found
                         found = True
                         break
@@ -53,24 +56,16 @@ def solve(lines, part):
     # return part 1
     return checksum
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,2)
+    my_aoc = aoc.AdventOfCode(2017, 2)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -80,4 +75,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

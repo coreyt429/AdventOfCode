@@ -8,12 +8,16 @@ I have reworked part1 to use sympy.divisors
 
 
 """
+
 # import system modules
 import time
 from sympy import divisors
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
+answer = {1: None, 2: None}
+
 
 def part1(target):
     """
@@ -23,7 +27,7 @@ def part1(target):
     # starting point 20% of 10% of target
     current_house = target // 10 // 5
     # If guesswork fails, uncomment next line and wait 6 seconds longer
-    #current_house = 1
+    # current_house = 1
     # loop
     while True:
         # get factors
@@ -36,7 +40,7 @@ def part1(target):
         # increment current_house
         # optimization cheat, once we determined that both answers are divisible by 40
         current_house += 40
-        #current_house += 1
+        # current_house += 1
     return current_house
 
 
@@ -48,7 +52,7 @@ def part2(target):
     # lets start with the previous answer, as this shoudl be higher
     current_house = answer[1]
     # If guesswork fails, uncomment next line and wait 6 seconds longer
-    #current_house = 1
+    # current_house = 1
     # loop
     while True:
         # get factors
@@ -65,8 +69,9 @@ def part2(target):
         # increment current_house
         # optimization cheat, once we determined that both answers are divisible by 40
         current_house += 40
-        #current_house += 1
+        # current_house += 1
     return current_house
+
 
 def solve(input_data, part):
     """
@@ -77,24 +82,14 @@ def solve(input_data, part):
         return part1(target)
     return part2(target)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,20)
+    my_aoc = aoc.AdventOfCode(2015, 20)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    parts = {1: 1, 2: 2}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -104,4 +99,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

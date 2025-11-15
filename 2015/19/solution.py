@@ -5,7 +5,7 @@ Fudge!!!!!!
 
 Okay, so I failed at this one in my original attempt, but I know more now, I can do this. Right?
 
-So, my original implementation was a bfs (likely borrowed, from who I don't recall). But it 
+So, my original implementation was a bfs (likely borrowed, from who I don't recall). But it
 didn't work.
 
 So I tried improving it, and decided the search space was just too big, so....
@@ -26,14 +26,16 @@ combinations.
 ugh.  lets just play with the data in the scratchpad.  what happens if I just replace all the
 substrings.  hey, that was shorter.  what if I do it again.  shorter.  3 times, shorter.
 
-4 times.  e  wtf?  that simple?  really.  
+4 times.  e  wtf?  that simple?  really.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_input(data):
     """
@@ -41,14 +43,15 @@ def parse_input(data):
     """
     grammar_rules = {}
     # split between chart of grammar rules, and start string
-    chart, start = data.strip().split('\n\n')
+    chart, start = data.strip().split("\n\n")
     # for each line in split
-    for line in chart.split('\n'):
+    for line in chart.split("\n"):
         # get source and destination
-        src, dst = line.split(' => ')
+        src, dst = line.split(" => ")
         # add to grammar_rules
-        grammar_rules.setdefault(src,[]).append(dst)
+        grammar_rules.setdefault(src, []).append(dst)
     return start, grammar_rules
+
 
 def calibrate(str_current, replacements, depth):
     """
@@ -65,23 +68,24 @@ def calibrate(str_current, replacements, depth):
             # for rule in replacement
             for mod in replacements[char]:
                 # modify and add to compounts
-                str_new = str_current[:idx]+mod+str_current[idx+1:]
-                #print(str_new)
+                str_new = str_current[:idx] + mod + str_current[idx + 1 :]
+                # print(str_new)
                 compounds.add(str_new)
                 # recurse until depth is 0
                 if depth > 0:
-                    calibrate(str_new,replacements,depth)
+                    calibrate(str_new, replacements, depth)
         # if first two chars are in replacements
-        elif str_current[idx:idx+2] in replacements:
+        elif str_current[idx : idx + 2] in replacements:
             # for rule in replacement
-            for mod in replacements[str_current[idx:idx+2]]:
+            for mod in replacements[str_current[idx : idx + 2]]:
                 # modify and add
-                str_new = str_current[:idx]+mod+str_current[idx+2:]
+                str_new = str_current[:idx] + mod + str_current[idx + 2 :]
                 compounds.add(str_new)
                 # recurse
-                if depth > 0 :
-                    calibrate(str_new,replacements,depth)
+                if depth > 0:
+                    calibrate(str_new, replacements, depth)
     return compounds
+
 
 def reverse_rules(replacements):
     """
@@ -90,18 +94,20 @@ def reverse_rules(replacements):
     # init rules
     rules = {}
     # walk replacements
-    for key, values  in replacements.items():
+    for key, values in replacements.items():
         for value in values:
             # swap positions
             rules[value] = key
     return rules
 
-def part1(start,replacements, target):
+
+def part1(start, replacements, target):
     """
     Function to solve part 2
     """
     # calibrate and return length
     return len(calibrate(start, replacements, target))
+
 
 def part2(start, replacements):
     """
@@ -124,6 +130,7 @@ def part2(start, replacements):
                 target = target.replace(key, value)
     return changes
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -133,30 +140,22 @@ def solve(input_value, part):
     # part 1
     if part == 1:
         return part1(start, replacements, 1)
-    #part 2
+    # part 2
     return part2(start, replacements)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015,19)
+    my_aoc = aoc.AdventOfCode(2015, 19)
     input_text = my_aoc.load_text()
-    #print(input_text)
-    #input_lines = my_aoc.load_lines()
-    #print(input_lines)
+    # print(input_text)
+    # input_lines = my_aoc.load_lines()
+    # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -166,4 +165,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

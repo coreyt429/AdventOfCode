@@ -16,25 +16,28 @@ working) to identify logic issues.  In case this helps in future reviews, the la
 was not handling loss in the hard mode hp-1 stage.
 
 """
+
 # import system modules
 import time
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 class GameState:
     """
     class for game state
     """
+
     def __init__(self, **kwargs):
-        self.turn = kwargs['turn']
-        self.mana_spent = kwargs['mana_spent']
-        self.boss = kwargs['boss']
-        self.player = kwargs['player']
-        self.win = kwargs.get('win', False)
-        self.lose = kwargs.get('lose', False)
-        self.hard_mode = kwargs.get('hard_mode', False)
+        self.turn = kwargs["turn"]
+        self.mana_spent = kwargs["mana_spent"]
+        self.boss = kwargs["boss"]
+        self.player = kwargs["player"]
+        self.win = kwargs.get("win", False)
+        self.lose = kwargs.get("lose", False)
+        self.hard_mode = kwargs.get("hard_mode", False)
 
     def __lt__(self, other):
         """
@@ -71,14 +74,16 @@ class GameState:
             player=self.player.clone(),
             win=bool(self.win),
             lose=bool(self.lose),
-            hard_mode=bool(self.hard_mode)
+            hard_mode=bool(self.hard_mode),
         )
         return child
+
 
 class Player:
     """
     Class for player
     """
+
     def __init__(self, hit_points, mana, spell_history, active_spells):
         """
         Init function
@@ -142,13 +147,15 @@ class Player:
             int(self.hit_points),
             int(self.mana),
             (spell.clone() for spell in self.spell_history),
-            (spell.clone() for spell in self.active_spells)
+            (spell.clone() for spell in self.active_spells),
         )
+
 
 class Boss:
     """
     Class for Boss
     """
+
     def __init__(self, hit_points, attack):
         """
         Init
@@ -173,24 +180,22 @@ class Boss:
         """
         Function to clone a spell
         """
-        return Boss(
-            int(self.hit_points),
-            int(self.attack)
-        )
+        return Boss(int(self.hit_points), int(self.attack))
 
 
-class Spell():
+class Spell:
     """
     Spell class
     """
+
     def __init__(self, **kwargs):
-        self.name = kwargs['name']
-        self.cost = kwargs['cost']
-        self.damage = kwargs['damage']
-        self.heal = kwargs['heal']
-        self.armor = kwargs['armor']
-        self.mana = kwargs['mana']
-        self.duration = kwargs['duration']
+        self.name = kwargs["name"]
+        self.cost = kwargs["cost"]
+        self.damage = kwargs["damage"]
+        self.heal = kwargs["heal"]
+        self.armor = kwargs["armor"]
+        self.mana = kwargs["mana"]
+        self.duration = kwargs["duration"]
 
     def clone(self):
         """
@@ -212,77 +217,29 @@ class Spell():
         """
         return f"{self.name}: {self.duration}"
 
+
 # hit_points,attack populate from input
-boss_start = {
-    'hit_points': 0,
-    'attack': 0
-}
+boss_start = {"hit_points": 0, "attack": 0}
 
 # hit_points,mana
-player_start={
-    'hit_points': 50,
-    'mana': 500
-}
+player_start = {"hit_points": 50, "mana": 500}
 
 spells = [
     # Magic Missile costs 53 mana. It instantly does 4 damage.
-    Spell(
-        name='Magic Missile',
-        cost=53,
-        damage=4,
-        heal=0,
-        armor=0,
-        mana=0,
-        duration=0
-    ),
-
+    Spell(name="Magic Missile", cost=53, damage=4, heal=0, armor=0, mana=0, duration=0),
     # Drain costs 73 mana. It instantly does 2 damage and heals you for 2 hit points.
-    Spell(
-        name='Drain',
-        cost=73,
-        damage=2,
-        heal=2,
-        armor=0,
-        mana=0,
-        duration=0
-    ),
-
+    Spell(name="Drain", cost=73, damage=2, heal=2, armor=0, mana=0, duration=0),
     # Shield costs 113 mana. It starts an effect that lasts for 6 turns.
     # While it is active, your armor is increased by 7.
-    Spell(
-        name='Shield',
-        cost=113,
-        damage=0,
-        heal=0,
-        armor=7,
-        mana=0,
-        duration=6
-    ),
-
+    Spell(name="Shield", cost=113, damage=0, heal=0, armor=7, mana=0, duration=6),
     # Poison costs 173 mana. It starts an effect that lasts for 6 turns.
     # At the start of each turn while it is active, it deals the boss 3 damage.
-    Spell(
-        name='Poison',
-        cost=173,
-        damage=3,
-        heal=0,
-        armor=0,
-        mana=0,
-        duration=6
-    ),
-
+    Spell(name="Poison", cost=173, damage=3, heal=0, armor=0, mana=0, duration=6),
     # Recharge costs 229 mana. It starts an effect that lasts for 5 turns.
     # At the start of each turn while it is active, it gives you 101 new mana.
-    Spell(
-        name='Recharge',
-        cost=229,
-        damage=0,
-        heal=0,
-        armor=0,
-        mana=101,
-        duration=5
-    )
+    Spell(name="Recharge", cost=229, damage=0, heal=0, armor=0, mana=101, duration=5),
 ]
+
 
 def process_active_spells(game_state):
     """
@@ -315,7 +272,7 @@ def process_active_spells(game_state):
         boss.hit_points -= spell.damage
         # decrement duration
         spell.duration -= 1
-        #print(f"Active Spell: {spell.name} boss: {boss.hit_points} duration: {spell.duration}")
+        # print(f"Active Spell: {spell.name} boss: {boss.hit_points} duration: {spell.duration}")
         # is boss defeated
         if boss.hit_points <= 0:
             game_state.win = True
@@ -326,13 +283,14 @@ def process_active_spells(game_state):
     # replace active spells with new_active_spells
     player.active_spells = tuple(new_active_spells)
 
+
 def do_player_turn(heap, game_state):
     """
     Function to process player turn
     Parameters:
         heap: heapq
         game_state: GameState()
-    
+
     Returns:
         new_game_state: GameState
     """
@@ -344,8 +302,8 @@ def do_player_turn(heap, game_state):
     # you lose 1 hit point. If this brings you to or below 0 hit points, you lose.
     if game_state.hard_mode:
         game_state.player.init_damage()
-        if game_state.player.hit_points <=0:
-            game_state.lose=True
+        if game_state.player.hit_points <= 0:
+            game_state.lose = True
             return game_state
     for spell in spells:
         if not spell.name in active_spell_names:
@@ -364,8 +322,8 @@ def do_player_turn(heap, game_state):
                 # did we beat the boss?
                 if boss.hit_points < 1:
                     new_game_state.win = True
-                #print(f"Post spell case: {new_game_state.player}")
-                heappush(heap,new_game_state)
+                # print(f"Post spell case: {new_game_state.player}")
+                heappush(heap, new_game_state)
     if not spells_cast:
         game_state.lose = 1
     return game_state
@@ -376,7 +334,7 @@ def simulate_game(part):
     Function to simulate game
     """
     # init lowest_win_cost and heap
-    lowest_win_cost=float('infinity')
+    lowest_win_cost = float("infinity")
     heap = []
     # turn_num, mana_spent, boss, player, player_turn
     # push start state onto heap
@@ -385,10 +343,12 @@ def simulate_game(part):
         GameState(
             turn=0,
             mana_spent=0,
-            boss=Boss(boss_start['hit_points'], boss_start['attack']),
-            player=Player(player_start['hit_points'], player_start['mana'], tuple(), tuple()),
-            hard_mode=bool(part == 2)
-        )
+            boss=Boss(boss_start["hit_points"], boss_start["attack"]),
+            player=Player(
+                player_start["hit_points"], player_start["mana"], tuple(), tuple()
+            ),
+            hard_mode=bool(part == 2),
+        ),
     )
     # process heap
     while heap:
@@ -396,7 +356,7 @@ def simulate_game(part):
         game_state = heappop(heap)
         # have we already won and lowest?
         if game_state.win and game_state.mana_spent < lowest_win_cost:
-            #print(game_state)
+            # print(game_state)
             lowest_win_cost = game_state.mana_spent
             continue
         # get player and boss
@@ -407,10 +367,10 @@ def simulate_game(part):
 
         # identify skip conditions
         skip_conditions = [
-            player.hit_points <=0,
+            player.hit_points <= 0,
             game_state.mana_spent > lowest_win_cost,
             game_state.lose,
-            game_state.win
+            game_state.win,
         ]
         if any(skip_conditions):
             continue
@@ -427,7 +387,7 @@ def simulate_game(part):
             game_state = do_player_turn(heap, game_state)
             if game_state.win:
                 lowest_win_cost = game_state.mana_spent
-        else: # boss turn
+        else:  # boss turn
             player.damage = max(boss.attack - player.armor, 1)
             if player.hit_points > player.damage:
                 new_game_state = game_state.clone()
@@ -438,35 +398,28 @@ def simulate_game(part):
                 game_state.lose = True
     return lowest_win_cost
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     # ['Hit Points: 55', 'Damage: 8']
-    boss_start['hit_points'] = int(input_value[0].split(' ')[-1])
-    boss_start['attack'] = int(input_value[1].split(' ')[-1])
+    boss_start["hit_points"] = int(input_value[0].split(" ")[-1])
+    boss_start["attack"] = int(input_value[1].split(" ")[-1])
     if part == 1:
         return simulate_game(part)
     return simulate_game(part)
+
 
 if __name__ == "__main__":
     my_aoc = aoc.AdventOfCode(2015, 22)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -476,4 +429,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

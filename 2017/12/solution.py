@@ -2,12 +2,14 @@
 Advent Of Code 2017 day 12
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def trace_pipe(pipes, current, visited=()):
     """
@@ -25,6 +27,7 @@ def trace_pipe(pipes, current, visited=()):
     # return tuple visited
     return visited
 
+
 def load_pipes(lines):
     """
     Function to read input and build pipe connections
@@ -35,7 +38,7 @@ def load_pipes(lines):
     # walk lines
     for line in lines:
         # find all numbers in line, and store as ints
-        nums = [int(num) for num in re.findall(r'(\d+)', line)]
+        nums = [int(num) for num in re.findall(r"(\d+)", line)]
         # update all_nums set
         all_nums.update(nums)
         # pop current, the rest are connected to current
@@ -46,6 +49,7 @@ def load_pipes(lines):
             connections.setdefault(current, set()).add(num)
             connections.setdefault(num, set()).add(current)
     return connections, all_nums
+
 
 def solve(lines, part):
     """
@@ -74,25 +78,17 @@ def solve(lines, part):
     # return the count of groups
     return len(groups)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017,12)
+    my_aoc = aoc.AdventOfCode(2017, 12)
     # fetch input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -102,4 +98,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

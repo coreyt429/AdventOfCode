@@ -2,22 +2,24 @@
 Advent Of Code 2018 day 7
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # regex for input
-pattern_input = re.compile(r'Step (\w).*step (\w).*')
+pattern_input = re.compile(r"Step (\w).*step (\w).*")
+
 
 def parse_input(lines):
     """
     Function to parse input
     Args:
         lines: list(str()) input data
-    
+
     Returns:
         requirements: dict() with prerequisites and next_steps
     """
@@ -34,52 +36,54 @@ def parse_input(lines):
             # init steps if not already
             if step_b not in requirements:
                 requirements[step_b] = {}
-                requirements[step_b]['prereqs'] = []
-                requirements[step_b]['next'] = []
+                requirements[step_b]["prereqs"] = []
+                requirements[step_b]["next"] = []
             if step_a not in requirements:
                 requirements[step_a] = {}
-                requirements[step_a]['prereqs'] = []
-                requirements[step_a]['next'] = []
+                requirements[step_a]["prereqs"] = []
+                requirements[step_a]["next"] = []
             # step_a is a requirement of step_b
-            requirements[step_b]['prereqs'].append(step_a)
+            requirements[step_b]["prereqs"].append(step_a)
             # step_b is a next step for step_a
-            requirements[step_a]['next'].append(step_b)
+            requirements[step_a]["next"].append(step_b)
     return requirements
+
 
 def dependencies_satisfied(instructions, step, result):
     """
     Function to determine if a step is ready to execute
-    
+
     Args:
         instructions: dict() instruction list
         step: str() step name
         result: str() steps already set in order
-    
+
     Returns:
         ready: bool() status
     """
     # init ready, assume True, then disprove
     ready = True
     # get dependencies for step
-    dependencies = instructions[step]['prereqs']
+    dependencies = instructions[step]["prereqs"]
     # are all step's dependencies already in result?
     for prev_step in dependencies:
         if prev_step not in result:
             ready = False
     return ready
 
+
 def get_order(instructions):
     """
     Function to order instructions
-    
+
     Args:
         instructions: dict()
-    
+
     Returns:
         result: str() order of instruction keys
     """
     # init result and available as empty
-    result = ''
+    result = ""
     available = []
     # until all keys are in result
     # technically, just checking length, and we always
@@ -107,6 +111,7 @@ def get_order(instructions):
                 available.append(step)
     return result
 
+
 def time_per_step(step, seconds):
     """
     Calculate time for step
@@ -114,13 +119,14 @@ def time_per_step(step, seconds):
     Args:
         step: str() name of step (A, B, C, etc)
         seconds: int() seconds offset to add
-    
+
     Returns:
         int() seconds for step
     """
     # seconds 0 for test, 60 for prod
     # add A=0, B=1, etc (Note A=1, B=2, was causing 1 additional second per step)
-    return seconds + ord(step) - ord('A')
+    return seconds + ord(step) - ord("A")
+
 
 def build(instructions, order, worker_count=4, seconds=60):
     """
@@ -131,7 +137,7 @@ def build(instructions, order, worker_count=4, seconds=60):
         order: str() steps in order
         worker_count: int() number of workers default=4
         seconds: int() number of seconds to pad steps default=60
-    
+
     Returns:
         seconds: int() number of seconds build process will take
     """
@@ -139,7 +145,7 @@ def build(instructions, order, worker_count=4, seconds=60):
     order = list(order)
     # init in_pogress and completed
     in_progress = []
-    completed = ''
+    completed = ""
     # build workers:
     workers = []
     for _ in range(worker_count):
@@ -153,29 +159,30 @@ def build(instructions, order, worker_count=4, seconds=60):
         # walk workers
         for worker in workers:
             # is worker idle
-            if worker['time_left'] == 0:
+            if worker["time_left"] == 0:
                 # if worker has a step, then it is completed
-                if worker['step']:
+                if worker["step"]:
                     # add to completed
-                    completed += worker['step']
+                    completed += worker["step"]
                     # remove from in_progress
-                    in_progress.pop(in_progress.index(worker['step']))
+                    in_progress.pop(in_progress.index(worker["step"]))
                     # remove from worker
-                    worker['step'] = None
+                    worker["step"] = None
                 # worker was either already working on None,or
                 # we jsut finished another step
                 # find new step to work on
                 # walk steps
                 for step in order:
                     # if step not completed, or in_progress, and is ready to start:
-                    if (
-                        step not in list(completed) + in_progress and
-                        dependencies_satisfied(instructions, step, completed)
+                    if step not in list(
+                        completed
+                    ) + in_progress and dependencies_satisfied(
+                        instructions, step, completed
                     ):
                         # add step to worker
-                        worker['step'] = step
+                        worker["step"] = step
                         # init step timer
-                        worker['time_left'] = time_per_step(step, seconds)
+                        worker["time_left"] = time_per_step(step, seconds)
                         # add to in_progress
                         in_progress.append(step)
                         # break loop so we don't add more steps
@@ -183,9 +190,10 @@ def build(instructions, order, worker_count=4, seconds=60):
             # worker is busy
             else:
                 # do work
-                worker['time_left'] -= 1
+                worker["time_left"] -= 1
     # return to complete all steps
     return second
+
 
 def solve(input_value, part):
     """
@@ -197,24 +205,16 @@ def solve(input_value, part):
         return build(reqs, order)
     return order
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,7)
+    my_aoc = aoc.AdventOfCode(2018, 7)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -224,4 +224,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
