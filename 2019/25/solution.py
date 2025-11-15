@@ -20,18 +20,18 @@ it a little over 1 second.
                              |               Observatory*
                              |
                     Hot Chocolate Fountain* - Passages!
-                              | 
+                              |
                            crew quarters* --- Stables
                               |                 |
                               |              Arcade* ----- Science Lab!
                               |                 |
                               |              Engineering - Navigation*
-                              |         
+                              |
                               |
                            storage ------------------------ hull breach
                               |                                  |
                               |      Gift Wrapping Center* - sick bay! - Warp Drive Maintenance*
-Security Checkpoint     -  Holodeck   
+Security Checkpoint     -  Holodeck
       |
  pressure plate
 
@@ -68,7 +68,7 @@ space law space brochure - Observatory
      - b
        - shell
        - astronaut ice cream
-      
+
 
 "Alert! Droids on this ship are heavier than the detected value!"
   - none
@@ -76,14 +76,16 @@ space law space brochure - Observatory
     - jam
 
 """
+
 # import system modules
 import time
 from itertools import combinations
 import re
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def get_item_commands():
     """
@@ -100,12 +102,13 @@ def get_item_commands():
     items = [
         # 'spool of cat6',
         # 'space law space brochure',
-        'asterisk',
+        "asterisk",
         # 'jam',
         # 'shell',
-        'astronaut ice cream',
-        'space heater',
-        'klein bottle']
+        "astronaut ice cream",
+        "space heater",
+        "klein bottle",
+    ]
     # drop all items at the security checkpoint
     for item in items:
         commands.append(f"drop {item}")
@@ -120,6 +123,7 @@ def get_item_commands():
                 commands.append(f"drop {item}")
     return commands
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -132,9 +136,9 @@ def solve(input_value, part):
     # commands commented out to optimize route and not pickup unnecessary items
     commands = [
         "south",
-        #"west",
-        #"take shell",
-        #"east",
+        # "west",
+        # "take shell",
+        # "east",
         "east",
         "take space heater",
         "west",
@@ -142,27 +146,27 @@ def solve(input_value, part):
         "inv",
         "west",
         "north",
-        #"take jam",
+        # "take jam",
         "east",
         "south",
         "take asterisk",
         "south",
         "take klein bottle",
-        #"east",
-        #"take spool of cat6",
-        #"west",
+        # "east",
+        # "take spool of cat6",
+        # "west",
         "north",
         "north",
         "west",
         "north",
         "take astronaut ice cream",
-        #"north",
-        #"east",
-        #"south",
-        #"take space law space brochure",
-        #"north",
-        #"west",
-        #"south",
+        # "north",
+        # "east",
+        # "south",
+        # "take space law space brochure",
+        # "north",
+        # "west",
+        # "south",
         "south",
         "south",
         "south",
@@ -180,7 +184,7 @@ def solve(input_value, part):
             if icc.next_op_code() is None:
                 break
             icc.step()
-        output_string = ''
+        output_string = ""
         while icc.output:
             output_string += chr(icc.output.pop(0))
         # uncomment when playing manually
@@ -188,7 +192,7 @@ def solve(input_value, part):
         # A loud, robotic voice says "Analysis complete! You may proceed."
         # and you enter the cockpit. Santa notices your small droid, looks puzzled
         # for a moment, realizes what has happened, and radios your ship directly.
-        if 'keypad' in output_string:
+        if "keypad" in output_string:
             break
         if commands:
             input_string = commands.pop(0)
@@ -202,31 +206,20 @@ def solve(input_value, part):
             icc.step()
     # "Oh, hello! You should be able to get in by typing 2105377 on the keypad
     # at the main airlock."
-    return int(re.findall(r'\d+', output_string)[0])
+    return int(re.findall(r"\d+", output_string)[0])
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,25)
+    my_aoc = aoc.AdventOfCode(2019, 25)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 2105377,
-        2: "Align the warp drive"
-    }
+    correct = {1: 2105377, 2: "Align the warp drive"}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -236,6 +229,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

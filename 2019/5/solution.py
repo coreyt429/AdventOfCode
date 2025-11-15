@@ -5,21 +5,19 @@ I took time to build classes for OpCode and IntCodeComputer
 since we are likely to need this again for a couple more puzzles.
 
 In theory, we should just need to modify this to add OpCodes and
-any new concepts thrown in. 
+any new concepts thrown in.
 
 It might be fun to retrofit 2019.2 with this as well, but I'll save
 that for another day.
 
 """
+
 # import system modules
 import time
-import math
-import sys
 
-sys.path.append('2019')
 # import my modules
-import aoc # pylint: disable=import-error
-from intcode import IntCodeComputer, OpCode
+import aoc  # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
 # class OpCode():
 #     """
 #     Class to represent an operation
@@ -259,6 +257,7 @@ from intcode import IntCodeComputer, OpCode
 #             self.ptr += 1
 #         return result
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -268,32 +267,21 @@ def solve(input_value, part):
         return icc.run(1)
     return icc.run(5)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,5)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2019, 5)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers to validate after cleanup
-    correct = {
-        1: 16434972,
-        2: 16694270
-    }
+    correct = {1: 16434972, 2: 16694270}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -303,5 +291,7 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         assert answer[my_part] == correct[my_part]

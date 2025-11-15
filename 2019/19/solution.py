@@ -19,13 +19,15 @@ up part 1 significantly:
 Part 1: 197, took 0.31675004959106445 seconds
 Part 2: 9181022, took 7.902804851531982 seconds
 """
+
 # import system modules
 import time
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 class Drone(Grid):
     """
@@ -36,19 +38,19 @@ class Drone(Grid):
 
     def __init__(self, program, height=10, width=10):
         """Init"""
-        start_map = '.'
-        super().__init__(start_map, use_overrides=False, default_value='.')
+        start_map = "."
+        super().__init__(start_map, use_overrides=False, default_value=".")
         self.icc = IntCodeComputer(program)
         self.icc.output = []
-        self.scan_position((0,0))
-        self.scan_position((height - 1,width - 1))
+        self.scan_position((0, 0))
+        self.scan_position((height - 1, width - 1))
         self.update()
 
     def scan_position(self, position):
         """
         Method to scan a particular location
         """
-        tiles = '.#'
+        tiles = ".#"
         # Retore icc to initial state each time
         self.icc.restore()
 
@@ -65,29 +67,30 @@ class Drone(Grid):
     def scan_row(self, y_val):
         """
         Method to scan a particular row
-        
+
         To minimize scan time, we only look at specific rows.
         """
         line_dict = {}
         # start at a position known to me to the right of the beam x=y+1
         x_val = y_val + 1
-        point = (x_val , y_val)
+        point = (x_val, y_val)
         self.scan_position(point)
         # Here we use two passes. First scan until the drone is in the beam,
         # then scan until the drone exits the beam
-        for value in '#.':
+        for value in "#.":
             while x_val >= 0 and self.get_point(point) != value:
                 x_val -= 1
                 if x_val < 0:
                     continue
-                point = (x_val , y_val)
+                point = (x_val, y_val)
                 self.scan_position(point)
                 # store value in line_dict t quickly reconstruct for return value
                 line_dict[point] = self.get_point(point)
-        line = ''
-        for x_val in range(self.cfg['min'][0], self.cfg['max'][0] + 1):
-            line += line_dict.get((x_val, y_val), '.')
+        line = ""
+        for x_val in range(self.cfg["min"][0], self.cfg["max"][0] + 1):
+            line += line_dict.get((x_val, y_val), ".")
         return line
+
 
 def solve(input_value, part):
     """
@@ -99,13 +102,13 @@ def solve(input_value, part):
         for row in range(50):
             drone.scan_row(row)
         # How many points are affected by the tractor beam in the 50x50 area closest to the emitter?
-        return str(drone).count('#')
+        return str(drone).count("#")
     # Find the 100x100 square closest to the emitter that fits entirely within the tractor beam;
     # within that square, find the point closest to the emitter.
     # manual inspection of a scan showed that the answer should be in a 1150 x 1150 grid
-    size=1150
-    drone = Drone(input_text, size, size)
-    target='#'*100
+    size = 1150
+    drone = Drone(input_value, size, size)
+    target = "#" * 100
     # manual inspection also showed that it would not be in the first 1000 rows
     for y_val in range(1000, size + 1):
         # scan each row, if it has target in it, then scan the last row of the potential box
@@ -115,35 +118,24 @@ def solve(input_value, part):
             drone.scan_row(y_val + 99)
             point_1 = (line.rindex(target), y_val)
             point_3 = (line.rindex(target), y_val + 99)
-            if drone.get_point(point_1) == drone.get_point(point_3) == '#':
+            if drone.get_point(point_1) == drone.get_point(point_3) == "#":
                 break
     # What value do you get if you take that point's X coordinate,
     # multiply it by 10000, then add the point's Y coordinate?
-    return point_1[0]*10000 + point_1[1]
+    return point_1[0] * 10000 + point_1[1]
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,19)
+    my_aoc = aoc.AdventOfCode(2019, 19)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 197,
-        2: 9181022
-    }
+    correct = {1: 197, 2: 9181022}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -153,6 +145,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

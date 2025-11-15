@@ -10,12 +10,13 @@ Explanation of spring code logic: https://www.youtube.com/watch?v=3TEU2FCLgmA&t=
 Credit to u/finloa for linking the video in your solution.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 
 def solve(input_value, part):
@@ -73,32 +74,21 @@ RUN""".splitlines()
                 return output
             if use_live_feed:
                 # print feed if enabled
-                print(chr(output),end='')
+                print(chr(output), end="")
     return part
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,21)
+    my_aoc = aoc.AdventOfCode(2019, 21)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 19348404,
-        2: 1139206699
-    }
+    correct = {1: 19348404, 2: 1139206699}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -108,6 +98,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

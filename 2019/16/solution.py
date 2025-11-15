@@ -10,6 +10,7 @@ same way.  So my final solution looks very similar to the level2()
 function.
 
 """
+
 # import system modules
 import time
 from itertools import cycle, accumulate
@@ -17,13 +18,14 @@ import numpy as np
 
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-pattern=[0, 1, 0, -1]
+pattern = [0, 1, 0, -1]
 # save pattern_len so we don't calculate it repeatedly
 PATTERN_LENGTH = len(pattern)
 pattern_cache_base = {}
 pattern_cache_full = {}
+
 
 def calculate_pattern_original(idx, length):
     """
@@ -62,6 +64,7 @@ def calculate_pattern_original(idx, length):
     # return new pattern
     return new_pattern2
 
+
 def calculate_pattern(idx, length):
     """
     Function to calculate the pattern to use with optimizations
@@ -82,9 +85,10 @@ def calculate_pattern(idx, length):
             base_pattern.extend([value] * repeat)
         pattern_cache_base[idx] = base_pattern
     # Expand the pattern to the desired length, skipping the first element
-    full_pattern = (base_pattern * ((length // len(base_pattern)) + 1))[1:length + 1]
+    full_pattern = (base_pattern * ((length // len(base_pattern)) + 1))[1 : length + 1]
     pattern_cache_full[(idx, length)] = full_pattern
     return full_pattern
+
 
 def run_phase_original(signal):
     """
@@ -102,7 +106,7 @@ def run_phase_original(signal):
         for idx_2, value in enumerate(signal):
             # add value * pattern to new_sum
             # new_sum += (value * base_pattern[(idx_2 + 1) % len(base_pattern)])
-            new_sum += (value * full_pattern[idx_2])
+            new_sum += value * full_pattern[idx_2]
         # get last digit of new_sum
         # new_val = int(str(new_sum)[-1])
         # not sure why this didn't work, revisit later
@@ -113,6 +117,7 @@ def run_phase_original(signal):
         new_signal.append(new_val)
     # return new_signal
     return new_signal
+
 
 def run_phase(signal):
     """
@@ -132,11 +137,12 @@ def run_phase(signal):
         new_signal.append(new_val)
     return new_signal
 
+
 def signal_to_str(signal):
     """
     Function to convert signal list to signal string
     """
-    return ''.join([str(num) for num in signal])
+    return "".join([str(num) for num in signal])
 
 
 def level2(input_string):
@@ -167,13 +173,15 @@ def level2(input_string):
     # reverse last 8 digits
     return "".join(str(num) for num in arr[-1:-9:-1])
 
+
 def run_phase_part_2(signal):
     """
     Attempt to optimize phase run, still slow
     """
-    for i in range(len(signal) -1, -1, -1):
+    for i in range(len(signal) - 1, -1, -1):
         signal[i] = sum(signal[i:]) % 10
     return signal
+
 
 def solve(input_value, part):
     """
@@ -184,7 +192,7 @@ def solve(input_value, part):
     if part == 1:
         for _ in range(100):
             signal = run_phase(signal)
-        return signal_to_str(signal)[offset:offset + 8]
+        return signal_to_str(signal)[offset : offset + 8]
     # part 2
     # The real signal is your puzzle input repeated 10000 times. Treat this new signal as a
     # single input list. Patterns are still calculated as before, and 100 phases of FFT are
@@ -209,29 +217,18 @@ def solve(input_value, part):
     # reverse last 8 digits
     return "".join(str(num) for num in reversed_signal[-1:-9:-1])
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,16)
+    my_aoc = aoc.AdventOfCode(2019, 16)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: '59281788',
-        2: '96062868'
-    }
+    correct = {1: "59281788", 2: "96062868"}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -241,6 +238,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

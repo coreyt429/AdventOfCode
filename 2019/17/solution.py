@@ -16,13 +16,15 @@ I initially tested by printing the value if it was > 256, and that proved
 to be the correct answer, so I modified it to a return.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def find_intersections(grid):
     """
@@ -33,15 +35,15 @@ def find_intersections(grid):
     # iterate over points in grid
     for point in grid:
         # if point is scaffolding, take a closer look
-        if grid.get_point(point) == '#':
+        if grid.get_point(point) == "#":
             # init intersection as true
             intersection = True
             # get neightbors of point
-            neighbors = grid.get_neighbors(point=point, directions=['n','s','e','w'])
+            neighbors = grid.get_neighbors(point=point, directions=["n", "s", "e", "w"])
             # iterate over neighbors
             for neighbor in neighbors.values():
                 # if neghbor is not scaffolding, then not an intersection
-                if grid.get_point(neighbor, '?') != '#':
+                if grid.get_point(neighbor, "?") != "#":
                     # set intersection false, and move to next point
                     intersection = False
                     break
@@ -50,6 +52,7 @@ def find_intersections(grid):
                 intersections.append(point)
     # return intersection points
     return intersections
+
 
 def solve(input_value, part):
     """
@@ -63,7 +66,7 @@ def solve(input_value, part):
         # run program
         icc.run()
         # get grid text from output
-        grid_text = ''.join([chr(num) for num in icc.output])
+        grid_text = "".join([chr(num) for num in icc.output])
         # init grid
         grid = Grid(grid_text, use_overrides=False)
         # find intersections
@@ -104,33 +107,21 @@ def solve(input_value, part):
                 return output
             if use_live_feed:
                 # print feed if enabled
-                print(chr(output),end='')
+                print(chr(output), end="")
     return None
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,17)
+    my_aoc = aoc.AdventOfCode(2019, 17)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 3936,
-        2: 785733
-    }
+    correct = {1: 3936, 2: 785733}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -140,6 +131,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

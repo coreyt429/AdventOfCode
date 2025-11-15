@@ -25,12 +25,14 @@ was sound, I just had incorrect values for some of the points due to copy/paste 
 followup edit.
 
 """
+
 # import system modules
 import time
 from collections import defaultdict
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def get_outer_neighbors(point, part):
     """
@@ -39,15 +41,16 @@ def get_outer_neighbors(point, part):
     x_val, y_val, z_val = point
     neighbors = []
     if part == 2:
-        if x_val == 0: # left
+        if x_val == 0:  # left
             neighbors.append((1, 2, z_val - 1))
-        elif x_val == 4: # right
+        elif x_val == 4:  # right
             neighbors.append((3, 2, z_val - 1))
-        if y_val == 0: # top
+        if y_val == 0:  # top
             neighbors.append((2, 1, z_val - 1))
-        elif y_val == 4: # bottom
+        elif y_val == 4:  # bottom
             neighbors.append((2, 3, z_val - 1))
     return neighbors
+
 
 def get_inner_neighbors(point, part=1):
     """
@@ -56,28 +59,29 @@ def get_inner_neighbors(point, part=1):
     x_val, y_val, z_val = point
     neighbors = []
     if part == 2:
-        #get outside edge of next layer down
-        #(1,2) left
+        # get outside edge of next layer down
+        # (1,2) left
         if x_val == 1 and y_val == 2:
             new_x = 0
             for new_y in range(5):
                 neighbors.append((new_x, new_y, z_val + 1))
-        #(3,2) right
+        # (3,2) right
         if x_val == 3 and y_val == 2:
             new_x = 4
             for new_y in range(5):
                 neighbors.append((new_x, new_y, z_val + 1))
-        #(2,1) top
+        # (2,1) top
         if x_val == 2 and y_val == 1:
             new_y = 0
             for new_x in range(5):
                 neighbors.append((new_x, new_y, z_val + 1))
-        #(2,3) bottom
+        # (2,3) bottom
         if x_val == 2 and y_val == 3:
             new_y = 4
             for new_x in range(5):
                 neighbors.append((new_x, new_y, z_val + 1))
     return neighbors
+
 
 def get_neighbors(point, part=1):
     """
@@ -101,23 +105,25 @@ def get_neighbors(point, part=1):
     # print(f"get_neighbors3({point},{part}): {len(neighbors)} {neighbors}")
     return neighbors
 
+
 def load_data(lines):
     """
     Function to load input data
     into a defaultdict keyed on tuple(x,y,z)
     """
-    grid = defaultdict(lambda: '.')
+    grid = defaultdict(lambda: ".")
     z_val = 0
     for y_val, line in enumerate(lines):
         for x_val, char in enumerate(line):
             grid[(x_val, y_val, z_val)] = char
     return grid
 
+
 def next_generation(grid, part):
     """
     Function to build next generation of bugs
     """
-    new_grid = defaultdict(lambda: '.')
+    new_grid = defaultdict(lambda: ".")
     sorted_keys = sorted(grid.keys(), key=lambda k: (k[2], k[1], k[0]))
     for point in sorted_keys:
         # print(f"Checking point {point}: {grid[point]}")
@@ -125,7 +131,7 @@ def next_generation(grid, part):
             x_val, y_val, _ = point
             if x_val == y_val == 2:
                 # print(f"  {point}: middle '?'")
-                new_grid[point] = '?'
+                new_grid[point] = "?"
                 continue
         value = grid[point]
         neighbors = get_neighbors(point, part)
@@ -135,24 +141,25 @@ def next_generation(grid, part):
             if part == 2:
                 x_val, y_val, _ = neighbor
                 if x_val == y_val == 2:
-                    new_grid[neighbor] = '?'
+                    new_grid[neighbor] = "?"
                     continue
             if neighbor not in grid:
-                new_grid[neighbor] = '.'
+                new_grid[neighbor] = "."
             # print(f"  neighbor: {neighbor} {grid[neighbor]}")
-            if grid[neighbor] == '#':
+            if grid[neighbor] == "#":
                 count += 1
         # print(f"  count: {count}")
-        new_value = '.'
+        new_value = "."
         # A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
-        if value == '#' and count == 1:
-            new_value = '#'
+        if value == "#" and count == 1:
+            new_value = "#"
         # An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
-        if value in '.?' and count in (1,2):
-            new_value = '#'
+        if value in ".?" and count in (1, 2):
+            new_value = "#"
         # print(f"  new_value: {new_value}")
         new_grid[point] = new_value
     return new_grid
+
 
 def print_grid(grid):
     """
@@ -160,51 +167,51 @@ def print_grid(grid):
     """
     sorted_keys = sorted(grid.keys(), key=lambda k: (k[2], k[1], k[0]))
     boundaries = {}
-    for axis in 'xyz':
-        boundaries[axis] = {
-            "min": float('infinity'),
-            "max": 0
-        }
+    for axis in "xyz":
+        boundaries[axis] = {"min": float("infinity"), "max": 0}
     for point in sorted_keys:
-        for idx, axis in enumerate('xyz'):
-            boundaries[axis]['min'] = min(boundaries[axis]['min'], point[idx])
-            boundaries[axis]['max'] = max(boundaries[axis]['max'], point[idx])
+        for idx, axis in enumerate("xyz"):
+            boundaries[axis]["min"] = min(boundaries[axis]["min"], point[idx])
+            boundaries[axis]["max"] = max(boundaries[axis]["max"], point[idx])
     # print(boundaries)
-    for z_val in range(boundaries['z']['min'], boundaries['z']['max'] + 1):
+    for z_val in range(boundaries["z"]["min"], boundaries["z"]["max"] + 1):
         print(f"Depth {z_val}:")
-        for y_val in range(boundaries['y']['min'], boundaries['y']['max'] + 1):
-            for x_val in range(boundaries['x']['min'], boundaries['x']['max'] + 1):
-                print(grid[(x_val, y_val, z_val)],end='')
+        for y_val in range(boundaries["y"]["min"], boundaries["y"]["max"] + 1):
+            for x_val in range(boundaries["x"]["min"], boundaries["x"]["max"] + 1):
+                print(grid[(x_val, y_val, z_val)], end="")
             print()
         print()
+
 
 def grid_string(grid):
     """
     String representation of grid dict
     """
-    new_string = ''
+    new_string = ""
     sorted_keys = sorted(grid.keys(), key=lambda k: (k[2], k[1], k[0]))
     for point in sorted_keys:
         new_string += grid[point]
     return new_string
 
+
 def calculate_biodiversity(grid_text):
     """
     Function to calculate biodiveristy
     """
-    line = grid_text.replace('\n','')
+    line = grid_text.replace("\n", "")
     # print(line)
     idx = 0
     biodiversity = 0
     while idx < len(line):
         try:
-            idx = line.index('#', idx)
+            idx = line.index("#", idx)
         except ValueError:
             break
         biodiversity += 2**idx
         idx += 1
         # print(idx, biodiversity)
     return biodiversity
+
 
 def solve(input_value, part):
     """
@@ -235,42 +242,31 @@ def solve(input_value, part):
     for z_val in [-1, 1]:
         for y_val in range(5):
             for x_val in range(5):
-                grid[(x_val, y_val, z_val)] = '?'
+                grid[(x_val, y_val, z_val)] = "?"
     for _ in range(200):
         grid = next_generation(grid, part)
     sorted_keys = sorted(grid.keys(), key=lambda k: (k[2], k[1], k[0]))
-    count=0
+    count = 0
     for point in sorted_keys:
-        if grid[point] == '#':
+        if grid[point] == "#":
             count += 1
         # print(f"{point}: {grid[point]}")
     # 2050 is too high
     # 2001 is too high
     return count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,24)
+    my_aoc = aoc.AdventOfCode(2019, 24)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 1113073,
-        2: 1928
-    }
+    correct = {1: 1113073, 2: 1928}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -280,6 +276,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

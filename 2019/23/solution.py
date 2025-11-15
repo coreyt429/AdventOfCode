@@ -20,12 +20,15 @@ profiling shows intcode.py:302(step) as the culprit, but further optimzations th
 are not really justified to shave 4.4 seconds down.  As this would require regression
 testing against previous puzzles using the code as well.
 """
+
 # import system modules
 import time
 from collections import deque
+
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def get_next_nat(iccs, packet_queue):
     """
@@ -36,7 +39,7 @@ def get_next_nat(iccs, packet_queue):
     while keep_running:
         for idx, icc in enumerate(iccs):
             # check to see if output has a complete packet
-            while len(icc.output) >  2:
+            while len(icc.output) > 2:
                 # move next packet to the queue
                 for _ in range(3):
                     packet_queue.append(icc.output.popleft())
@@ -59,6 +62,8 @@ def get_next_nat(iccs, packet_queue):
                 icc.inputs.append(-1)
             # print(idx, icc.next_op_code(),icc.inputs, icc.output)
             icc.step()
+    raise RuntimeError("Should not reach here")
+
 
 def solve(input_value, part):
     """
@@ -91,29 +96,18 @@ def solve(input_value, part):
             iccs[0].inputs.append(y_val)
             last_y_val = y_val
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,23)
+    my_aoc = aoc.AdventOfCode(2019, 23)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 26163,
-        2: 18733
-    }
+    correct = {1: 26163, 2: 18733}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -123,6 +117,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

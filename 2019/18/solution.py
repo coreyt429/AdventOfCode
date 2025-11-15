@@ -10,6 +10,7 @@ now, it is just a list with the single tuple.  So the only difference
 in part 1 and part2 is the map change from split(map)
 
 """
+
 # import system modules
 import time
 import functools
@@ -18,43 +19,45 @@ import string
 import networkx
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def char_bit_map(input_chars):
     """Function to build bitmaps for string of characters"""
     return {key: 1 << (ord(key) - ord(input_chars[0])) for key in input_chars}
 
+
 # global key_to_bit map
 key_to_bit = char_bit_map(string.ascii_lowercase)
 door_to_bit = char_bit_map(string.ascii_uppercase)
+
 
 class MyGrid(Grid):
     """
     MyGrid is a subclass of Grid to test a networkx driven shortest_path function
     lets work on integrating this into Grid
     """
+
     def __init__(self, grid_data):
         """init"""
         super().__init__(grid_data, use_overrides=False)
         # init graph
         self.graph = networkx.Graph()
         for point in self:
-            tile = self.get_point(point, '#')
-            if tile == '#':
+            tile = self.get_point(point, "#")
+            if tile == "#":
                 continue
             for direction, neighbor in self.get_neighbors(
-                    point=point, directions=['n','e','s','w']
-                ).items():
-                if direction not in ['n','e','s','w']:
+                point=point, directions=["n", "e", "s", "w"]
+            ).items():
+                if direction not in ["n", "e", "s", "w"]:
                     continue
-                neighbor_tile = self.get_point(neighbor, '#')
-                if neighbor_tile == '#':
+                neighbor_tile = self.get_point(neighbor, "#")
+                if neighbor_tile == "#":
                     continue
                 self.graph.add_edge(
-                    (point[0], point[1]),
-                    (neighbor[0], neighbor[1]),
-                    weight=1
+                    (point[0], point[1]), (neighbor[0], neighbor[1]), weight=1
                 )
 
     def shortest_path(self, start, goal):
@@ -70,12 +73,13 @@ class MyGrid(Grid):
         """dummy method"""
         return True
 
+
 class Explorer:
     """
     Class to represent our value explorere
     """
 
-    def __init__(self, pos=None, key_value=0, steps=0, key_string=''):
+    def __init__(self, pos=None, key_value=0, steps=0, key_string=""):
         """
         init: note, I ended up not using parent
         """
@@ -88,8 +92,8 @@ class Explorer:
         self.steps = steps
         # this took a bit of trial and error, but steps - len(key_string)
         # seems to be the fastest solving sort order
-        self.sort_key = steps - len(self.key_string)# * -1
-        
+        self.sort_key = steps - len(self.key_string)  # * -1
+
     def __lt__(self, other):
         """lt for heapq"""
         return self.sort_key < other.sort_key
@@ -101,37 +105,40 @@ class Explorer:
         return (*self.pos, self.keys)
 
     def __str__(self):
-        my_string =  f"{self.pos}: {self.key_string}"
+        my_string = f"{self.pos}: {self.key_string}"
         return my_string
+
 
 # init path_cache
 path_cache = {}
 door_cache = {}
+
 
 def cache_path(start, goal, path):
     """cache paths"""
     path_cache[(start, goal)] = path
     path_cache[(goal, start)] = list(reversed(path))
 
+
 def cache_doors(start, goal, door_list):
     """cache doors"""
     door_cache[(start, goal)] = door_list
     door_cache[(goal, start)] = list(reversed(door_list))
 
+
 # init door and key bitmasks
-bitmasks = {
-    "keys": 0,
-    "doors": 0
-}
-bitmasks['keys'] = 0
-bitmasks['doors'] = 0
+bitmasks = {"keys": 0, "doors": 0}
+bitmasks["keys"] = 0
+bitmasks["doors"] = 0
 keys = {}
 doors = {}
+
 
 @functools.lru_cache(maxsize=None)
 def check_key(key, collected_keys):
     """check to see if key is present"""
     return collected_keys & key_to_bit[key.lower()]
+
 
 def fetch_doors(start, goal, path):
     """Fetch doors on a path"""
@@ -141,6 +148,7 @@ def fetch_doors(start, goal, path):
             door_list.append(point)
     cache_doors(start, goal, door_list)
     return door_list
+
 
 def key_reachable(grid, start, key, collected_keys):
     """
@@ -171,12 +179,13 @@ def key_reachable(grid, start, key, collected_keys):
     # all checks passed
     return path
 
+
 def load_map_data(grid, start_points):
     """
     Function to read the map
     """
-    bitmasks['keys'] = 0
-    bitmasks['doors'] = 0
+    bitmasks["keys"] = 0
+    bitmasks["doors"] = 0
     for my_dict in [keys, doors, path_cache, door_cache]:
         key_list = list(my_dict.keys())
         for key in key_list:
@@ -184,20 +193,21 @@ def load_map_data(grid, start_points):
     # iterate over grid
     for point in grid:
         # get point value
-        tile = grid.get_point(point, '#')
+        tile = grid.get_point(point, "#")
         # @ represents a start point, so append to starting points
-        if  tile == '@':
+        if tile == "@":
             start_points.append(point)
             continue
         if tile in string.ascii_lowercase:
             # add key
             keys[tile] = point
-            bitmasks['keys'] += key_to_bit[tile]
+            bitmasks["keys"] += key_to_bit[tile]
         if tile in string.ascii_uppercase:
             # add key
             doors[tile] = point
             doors[point] = tile
-            bitmasks['doors'] += door_to_bit[tile]
+            bitmasks["doors"] += door_to_bit[tile]
+
 
 def starting_paths(grid, start_points, path_tiles, reachable_keys):
     """
@@ -206,7 +216,7 @@ def starting_paths(grid, start_points, path_tiles, reachable_keys):
     while reachable_keys:
         reachable_keys.pop()
     # iterate over start_points
-    for idx, start in enumerate(start_points): #  + list(keys.values()): commented out
+    for idx, start in enumerate(start_points):  #  + list(keys.values()): commented out
         reachable_keys.append(set())
         # iterate over key locations
         for key, goal in keys.items():
@@ -219,6 +229,7 @@ def starting_paths(grid, start_points, path_tiles, reachable_keys):
                 path_tiles.update(path)
                 cache_path(start, goal, path)
                 reachable_keys[idx].add(key)
+
 
 def explore_map(map_text):
     """
@@ -250,7 +261,7 @@ def explore_map(map_text):
     # init closed set seen
     seen = {}
     # init min_steps
-    min_steps = float('infinity')
+    min_steps = float("infinity")
     # process heap
     while heap:
         # pull explorer from heap
@@ -263,7 +274,7 @@ def explore_map(map_text):
         seen[explorer.state()] = explorer.steps
 
         # if we have found all the keys, set min_steps and break
-        if explorer.keys == bitmasks['keys']:
+        if explorer.keys == bitmasks["keys"]:
             min_steps = min(min_steps, explorer.steps)
 
         for idx, pos in enumerate(explorer.pos):
@@ -278,14 +289,17 @@ def explore_map(map_text):
                     pos=list(explorer.pos),
                     steps=explorer.steps + len(path) - 1,
                     key_value=int(explorer.keys),
-                    key_string=explorer.key_string + test_key
+                    key_string=explorer.key_string + test_key,
                 )
                 new_explorer.pos[idx] = path[-1]
                 new_explorer.keys |= key_to_bit[test_key]
-                new_explorer.sort_key = new_explorer.steps - len(new_explorer.key_string)
+                new_explorer.sort_key = new_explorer.steps - len(
+                    new_explorer.key_string
+                )
                 heappush(heap, new_explorer)
     # return shortest distance
     return min_steps
+
 
 def split_map(map_text):
     """
@@ -296,20 +310,20 @@ def split_map(map_text):
     # iterate over grid
     for point in grid:
         # find start point
-        if grid.get_point(point, '#') == '@':
+        if grid.get_point(point, "#") == "@":
             # pull all neighbors
             neighbors = grid.get_neighbors(point=point)
             # change start point to wall
-            grid.set_point(point, '#')
+            grid.set_point(point, "#")
             # iterate over neighbors
             for direction, neighbor in neighbors.items():
                 # ne, nw, se, sw:
                 if len(direction) == 2:
                     # make new start point
-                    grid.set_point(neighbor, '@')
+                    grid.set_point(neighbor, "@")
                 else:
                     # make wall
-                    grid.set_point(neighbor, '#')
+                    grid.set_point(neighbor, "#")
             # stop processing
             break
     # return new text map
@@ -329,29 +343,18 @@ def solve(input_value, part):
     # return result of explore_map
     return explore_map(map_text)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,18)
+    my_aoc = aoc.AdventOfCode(2019, 18)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 3512,
-        2: 1514
-    }
+    correct = {1: 3512, 2: 1514}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -361,6 +364,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

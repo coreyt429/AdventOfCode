@@ -10,9 +10,9 @@ I was tempted to add a next_op method to check for input ops, but opted
 to just do that in the part_2 instead since it was just two lines of
 code (which really could have been one, but I'll leave it two for readability):
     instruction_text = str(self.icc.program[self.icc.ptr])
-    op_code = int(instruction_text[-2:]) 
+    op_code = int(instruction_text[-2:])
     # alternate form
-    op_code = int(str(self.icc.program[self.icc.ptr])[-2:]) 
+    op_code = int(str(self.icc.program[self.icc.ptr])[-2:])
 
 I started overthinking the game logic, but kept my self disciplined to
 trying the simplest case first, and that worked.
@@ -30,21 +30,23 @@ blocks and walls.  But following the line out to calculate what the ball might h
 would have been more resource intensive, so luckily that was not needed.
 
 This did give me an opportunity to revisit slope and intercept formulas. So there
-was a math lesson as well. 
+was a math lesson as well.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 class ArcadeCabinet(Grid):
     """
     Class to represent arcade cabinet
-    
+
     This class extends Grid() and adds an IntCodeComputer() for processing
     """
 
@@ -55,12 +57,14 @@ class ArcadeCabinet(Grid):
         # init super() to configure grid
         # Since we have a fixed size, and cartesion will flip the game upside down
         # I went ahead and filled the screen as 24x45 0's and used screen coordinates
-        super().__init__(['0'*45]*24, coordinate_system='screen', use_overrides=False)
+        super().__init__(
+            ["0" * 45] * 24, coordinate_system="screen", use_overrides=False
+        )
         # init computer
         self.icc = IntCodeComputer(program)
         # set default_value ob_default_value to empty.
-        self.cfg['default_value'] = '0'
-        self.cfg['ob_default_value'] = '0'
+        self.cfg["default_value"] = "0"
+        self.cfg["ob_default_value"] = "0"
         # redefine self.icc.output.  It is None by default
         self.icc.output = []
         # init square_count
@@ -96,7 +100,7 @@ class ArcadeCabinet(Grid):
                 # If the joystick is tilted to the left, provide -1.
                 # If the joystick is tilted to the right, provide 1.
                 # how far should we move?
-                delta_x = target[0] -  self.paddle[0]
+                delta_x = target[0] - self.paddle[0]
                 # init joystick to neutral 0
                 joystick = 0
                 # if target is to the right, move joystick right
@@ -164,6 +168,7 @@ class ArcadeCabinet(Grid):
         # return target position for paddle
         return (new_x, self.paddle[1])
 
+
 def part_1(input_value):
     """
     Function to run part 1
@@ -178,7 +183,8 @@ def part_1(input_value):
     game.update()
     # print(len(game.map))
     # return count of 2's
-    return str(game).count('2')
+    return str(game).count("2")
+
 
 def part_2(input_value):
     """
@@ -208,6 +214,7 @@ def part_2(input_value):
     # return last game score
     return game.score
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -216,29 +223,18 @@ def solve(input_value, part):
         return part_1(input_value)
     return part_2(input_value)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,13)
+    my_aoc = aoc.AdventOfCode(2019, 13)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 296,
-        2: 13824
-    }
+    correct = {1: 296, 2: 13824}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -248,6 +244,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

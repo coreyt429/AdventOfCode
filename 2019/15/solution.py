@@ -17,33 +17,29 @@ up most of the processing time.  Improved it significantly,  then scrapped the c
 that was using it so hopefully that will save the day some other day.
 
 """
+
 # import system modules
 import time
 from queue import heappush, heappop
 from copy import deepcopy
 
 # import my modules
-from intcode import IntCodeComputer # pylint: disable=import-error
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+from intcode import IntCodeComputer  # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
 
-opposite = {
-    1: 2,
-    2: 1,
-    3: 4,
-    4: 3
-}
-directions = {
-    1: 'n',
-    2: 's',
-    3: 'w',
-    4: 'e'
-}
+opposite = {1: 2, 2: 1, 3: 4, 4: 3}
+directions = {1: "n", 2: "s", 3: "w", 4: "e"}
+
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 class NodeState:
     """
     NodeState class for encapsulating data in the heapq
     """
+
     def __init__(self, pos, ptr, program):
         """init"""
         self.pos = pos
@@ -58,39 +54,42 @@ class NodeState:
         """string"""
         return f"{self.pos}, {self.ptr}"
 
+
 class RepairDroid(Grid):
     """Class to represent repair droid"""
+
     # status codes
-    WALL=0
-    MOVED=1
-    OXYGEN=2
-    NOOP=3
+    WALL = 0
+    MOVED = 1
+    OXYGEN = 2
+    NOOP = 3
 
     # directions
-    NORTH=1
-    SOUTH=2
-    WEST=3
-    EAST=4
+    NORTH = 1
+    SOUTH = 2
+    WEST = 3
+    EAST = 4
     directions = [NORTH, SOUTH, WEST, EAST]
     direction_map = {
-        'n': NORTH,
-        NORTH: 'n',
-        's': SOUTH,
-        SOUTH: 's',
-        'w': WEST,
-        WEST: 'w',
-        'e': EAST,
-        EAST: 'e'
+        "n": NORTH,
+        NORTH: "n",
+        "s": SOUTH,
+        SOUTH: "s",
+        "w": WEST,
+        WEST: "w",
+        "e": EAST,
+        EAST: "e",
     }
+
     def __init__(self, program):
         # init grid
         super().__init__(
             ["."],
-            coordinate_system='cartesian',
-            type='infinite',
-            default_value='?',
-            ob_default_value='?',
-            pos_token='D'
+            coordinate_system="cartesian",
+            type="infinite",
+            default_value="?",
+            ob_default_value="?",
+            pos_token="D",
         )
         # init icc
         self.icc = IntCodeComputer(program)
@@ -122,13 +121,15 @@ class RepairDroid(Grid):
         oxygen_steps = 0
         self.icc.output = []
         heap = []
-        node = NodeState(deepcopy(self.pos), deepcopy(self.icc.ptr), deepcopy(self.icc.program))
+        node = NodeState(
+            deepcopy(self.pos), deepcopy(self.icc.ptr), deepcopy(self.icc.program)
+        )
         for direction in [1, 2, 3, 4]:
             heappush(heap, (0, direction, node))
         while heap:
             steps, direction, node = heappop(heap)
             self.icc.ptr = deepcopy(node.ptr)
-            self.cfg['use_overrides']=False
+            self.cfg["use_overrides"] = False
             self.icc.program = deepcopy(node.program)
             self.pos = deepcopy(node.pos)
 
@@ -136,21 +137,21 @@ class RepairDroid(Grid):
             if status_code == 2:
                 oxygen_steps = steps + 1
                 self.move(directions[direction])
-                self.set_point(self.pos, 'O')
+                self.set_point(self.pos, "O")
             if status_code == 1:
                 self.move(directions[direction])
-                self.set_point(self.pos, '.')
+                self.set_point(self.pos, ".")
                 node = NodeState(
                     deepcopy(self.pos),
                     deepcopy(self.icc.ptr),
-                    deepcopy(self.icc.program)
+                    deepcopy(self.icc.program),
                 )
                 for new_direction in [1, 2, 3, 4]:
                     if new_direction != opposite[direction]:
                         heappush(heap, (steps + 1, new_direction, node))
             if status_code == 0:
                 self.move(directions[direction])
-                self.set_point(self.pos,'#')
+                self.set_point(self.pos, "#")
                 self.move(directions[opposite[direction]])
         return oxygen_steps
 
@@ -158,8 +159,9 @@ class RepairDroid(Grid):
         """method to replace remaining ? with #"""
         self.update()
         for point in self:
-            if self.get_point(point, '?') == '?':
-                self.set_point(point,'#')
+            if self.get_point(point, "?") == "?":
+                self.set_point(point, "#")
+
 
 def solve(input_value, part):
     """
@@ -189,30 +191,28 @@ def solve(input_value, part):
             if point in closed_set:
                 continue
             # oxygen
-            if droid.get_point(point, '?') == 'O':
+            if droid.get_point(point, "?") == "O":
                 # get neighbors
                 neighbors = droid.get_neighbors(
-                    point=point,
-                    directions=['n','s','e','w'],
-                    invalid='#'
+                    point=point, directions=["n", "s", "e", "w"], invalid="#"
                 )
                 # iterate over neighbors
                 for neighbor in neighbors.values():
                     # if neighbor is empty
-                    if droid.get_point(neighbor) == '.':
+                    if droid.get_point(neighbor) == ".":
                         # add to new_oxygen
                         new_oxygen.add(neighbor)
                 # add point to closed set
                 closed_set.add(point)
             # add walls to closed_set
-            elif droid.get_point(point, '?') == '#':
+            elif droid.get_point(point, "?") == "#":
                 closed_set.add(point)
         # did we find any new rooms to oxygenate?
         if new_oxygen:
             # iterate over new rooms
             for point in new_oxygen:
                 # set to oxygen
-                droid.set_point(point, 'O')
+                droid.set_point(point, "O")
             # increment minutes
             minutes += 1
         else:
@@ -223,29 +223,16 @@ def solve(input_value, part):
     # part 1, return steps to oxygen source
     return steps
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,15)
+    my_aoc = aoc.AdventOfCode(2019, 15)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    parts = {1: 1, 2: 2}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 354,
-        2: 370
-    }
+    correct = {1: 354, 2: 370}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -255,6 +242,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -7,16 +7,18 @@ validation of the first test wires.
 
 building the wires was the most expensive operation in the puzzle,
 so I changed to passing the strings instead of list, so I could use
-lru_cache to minimize wait time.  
+lru_cache to minimize wait time.
 
 """
+
 # import system modules
 import time
 import functools
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid, manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid, manhattan_distance  # pylint: disable=import-error
+
 
 @functools.lru_cache
 def build_wires(wire_description_1, wire_description_2):
@@ -26,7 +28,7 @@ def build_wires(wire_description_1, wire_description_2):
     Args:
         wire_description_1: str()
         wire_description_2: str()
-    
+
     Returns:
         wires: list() of tuple(x, y)
     """
@@ -43,7 +45,7 @@ def build_wires(wire_description_1, wire_description_2):
         # set grid to origin
         grid.pos = (0, 0)
         # walk instructions
-        for instruction in lower_case.split(','):
+        for instruction in lower_case.split(","):
             # get direction from instruction
             direction = instruction[0]
             # get steps from instruction
@@ -59,13 +61,14 @@ def build_wires(wire_description_1, wire_description_2):
     # return wire list
     return wires
 
+
 def find_intersections(wires):
     """
     Function to find intersecting points in two wires
 
     Args:
         wires: list() of list() of tuple(x, y)
-    
+
     Returns:
         unnamed: set() of tuple(x, y)
     """
@@ -76,13 +79,14 @@ def find_intersections(wires):
     # return intersction of the two sets
     return points_a.intersection(points_b)
 
+
 def closest_intersection(wires):
     """
     Function to find closes intersection to origin
-    
+
     Args:
         wires: list() of list() of tuple(x, y)
-    
+
     Returns:
         unnamed: int()
     """
@@ -94,6 +98,7 @@ def closest_intersection(wires):
     distances = [manhattan_distance(origin, point) for point in intersections]
     # return shortest distance
     return min(distances)
+
 
 def solve(input_value, part):
     """
@@ -117,7 +122,7 @@ def solve(input_value, part):
             # append index of firt occurence + 1
             inx_map[point].append(wire.index(point) + 1)
     # init min_steps
-    min_steps = float('infinity')
+    min_steps = float("infinity")
     # walk map values
     for steps in inx_map.values():
         # update min_steps
@@ -125,27 +130,19 @@ def solve(input_value, part):
     # return smallest value
     return min_steps
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,3)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2019, 3)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -155,4 +152,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

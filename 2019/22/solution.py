@@ -6,11 +6,13 @@ I need to revisit this one and wrap my head around the math.
 I understand it on some level, but not enough to see the solution.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def deal_stack(cards):
     """
@@ -19,12 +21,14 @@ def deal_stack(cards):
     """
     return cards[::-1]
 
+
 def cut_deck(deck, count):
     """
     To cut N cards, take the top N cards off the top of the deck and move them as a
     single unit to the bottom of the deck, retaining their order.
     """
     return deck[count:] + deck[:count]
+
 
 def deal_deck(deck, increment):
     """
@@ -42,41 +46,46 @@ def deal_deck(deck, increment):
         new_deck[new_idx] = card
     return new_deck
 
+
 def modinv(a, m):
     """Modular inverse using the Extended Euclidean Algorithm."""
     return pow(a, -1, m)
 
-def parse_instructions(instructions, M):
+
+def parse_instructions(instructions, m):
     """Parse the shuffle instructions and return a, b coefficients."""
     a, b = 1, 0  # Start with the identity transformation: f(x) = x
     for instruction in instructions:
         if instruction.startswith("deal into new stack"):
-            a, b = -a % M, (-b - 1) % M
+            a, b = -a % m, (-b - 1) % m
         elif instruction.startswith("cut"):
-            N = int(instruction.split()[-1])
-            b = (b - N) % M
+            n = int(instruction.split()[-1])
+            b = (b - n) % m
         elif instruction.startswith("deal with increment"):
-            N = int(instruction.split()[-1])
-            a = (a * N) % M
-            b = (b * N) % M
+            n = int(instruction.split()[-1])
+            a = (a * n) % m
+            b = (b * n) % m
     return a, b
 
-def repeated_shuffle(a, b, n, M):
+
+def repeated_shuffle(a, b, n, m):
     """Compute the coefficients of the transformation after n repetitions."""
-    an = pow(a, n, M)
-    bn = (b * (an - 1) * modinv(a - 1, M)) % M
+    an = pow(a, n, m)
+    bn = (b * (an - 1) * modinv(a - 1, m)) % m
     return an, bn
 
-def find_card_at_position_2020(instructions, M, n):
+
+def find_card_at_position_2020(instructions, m, n):
     """
     Function to find target card location
     """
-    a, b = parse_instructions(instructions, M)
-    an, bn = repeated_shuffle(a, b, n, M)
+    a, b = parse_instructions(instructions, m)
+    an, bn = repeated_shuffle(a, b, n, m)
     # Find the card that ends up at position 2020
     pos = 2020
-    card = (pos - bn) * modinv(an, M) % M
+    card = (pos - bn) * modinv(an, m) % m
     return card
+
 
 def solve(input_value, part):
     """
@@ -85,45 +94,34 @@ def solve(input_value, part):
     deck = list(range(10007))
     if part == 2:
         # Parameters for the problem
-        M = 119315717514047  # Size of the deck
+        m = 119315717514047  # Size of the deck
         n = 101741582076661  # Number of shuffles
         # Find the card at position 2020 after all shuffles
-        return find_card_at_position_2020(input_value, M, n)
+        return find_card_at_position_2020(input_value, m, n)
     for instruction in input_value:
-        if "cut"  in instruction:
-            count = int(instruction.split(' ')[-1])
+        if "cut" in instruction:
+            count = int(instruction.split(" ")[-1])
             deck = cut_deck(deck, count)
         elif "deal into new stack" in instruction:
             deck = deal_stack(deck)
         else:
-            count = int(instruction.split(' ')[-1])
+            count = int(instruction.split(" ")[-1])
             deck = deal_deck(deck, count)
     # deck_string = ' '.join([str(card) for card in deck])
     return deck.index(2019)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,22)
+    my_aoc = aoc.AdventOfCode(2019, 22)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 6850,
-        2: 13224103523662
-    }
+    correct = {1: 6850, 2: 13224103523662}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -133,6 +131,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -12,17 +12,20 @@ algorithm.  I probably should have used networkx here, and again
 it runs in 0.05 seconds with a manual Dijkstra solution so I'll take
 it as good that I remember teh algorithm.
 """
+
 # import system modules
 import time
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-class CelestialObject():
+
+class CelestialObject:
     """
     Class to represent celestial objects
     """
+
     def __init__(self, oid):
         """init"""
         self.oid = oid
@@ -54,7 +57,10 @@ class CelestialObject():
 
     def __str__(self):
         """string"""
-        return f"{self.oid}: direct {self.direct_orbits}, indirect {self.indirect_orbits}"
+        return (
+            f"{self.oid}: direct {self.direct_orbits}, indirect {self.indirect_orbits}"
+        )
+
 
 def load_objects(lines):
     """
@@ -65,7 +71,7 @@ def load_objects(lines):
     # walk lines
     for line in lines:
         # get parent and child ids
-        parent_id, child_id = line.split(')')
+        parent_id, child_id = line.split(")")
         # create objects if they don't already exist
         for obj_id in (parent_id, child_id):
             if obj_id not in objects:
@@ -87,7 +93,7 @@ def shortest_path(start, goal):
     # add start point
     heappush(heap, (0, start))
     # init min_steps
-    min_steps = float('infinity')
+    min_steps = float("infinity")
     # process heap
     while heap:
         # get next item
@@ -119,6 +125,7 @@ def shortest_path(start, goal):
             heappush(heap, (steps + 1, child))
     return min_steps
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -133,30 +140,19 @@ def solve(input_value, part):
     # part 2
     if part == 2:
         # return shortest_path
-        return shortest_path(
-            objects['YOU'].parent,
-            objects['SAN'].parent
-        )
+        return shortest_path(objects["YOU"].parent, objects["SAN"].parent)
     return orbit_count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,6)
+    my_aoc = aoc.AdventOfCode(2019, 6)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -166,4 +162,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

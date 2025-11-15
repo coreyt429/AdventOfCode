@@ -13,19 +13,24 @@ cartesian coordinates not screen coordinates.  So I launched down this long rabb
 moving the whole thing to cartesian which worked great.  The answer needs to be in screen :(
 Converting the final answer to screen was not working well, so I rethought the whole thing.
 Backed out the changes so everything was screen coordinates.  Then reworked the bearing function
-to account for screen coordinates.  
+to account for screen coordinates.
 
 """
+
 # import system modules
 import time
 import math
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid, sort_collinear_points, are_collinear # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid, sort_collinear_points, are_collinear  # pylint: disable=import-error
 
-X=0
-Y=1
+X = 0
+Y = 1
+
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def bearing(p_1, p_2):
     """
@@ -38,13 +43,14 @@ def bearing(p_1, p_2):
     # get arctangent in radians
     radians = math.atan2(d_y, d_x)
     # convert to degrees
-    degrees =  math.degrees(radians)
+    degrees = math.degrees(radians)
     # Adjust for relative to the Y axis (bearing)
     degrees = 90 - degrees
     # Ensure bearing is in 0-360 range
     if degrees < 0:
         degrees += 360
     return degrees
+
 
 def get_sorted_points(line_list, origin):
     """
@@ -73,7 +79,7 @@ def get_sorted_points(line_list, origin):
         # reverse the line leading to origin
         new_lines.append(line[:index][::-1])
         # add the line after origin
-        new_lines.append(line[index + 1:])
+        new_lines.append(line[index + 1 :])
 
     new_lines.sort(key=lambda line: bearing(origin, line[0]))
     sorted_points = []
@@ -87,14 +93,15 @@ def get_sorted_points(line_list, origin):
             added = True
     return sorted_points
 
+
 def find_best_position(grid):
     """
     Function to find the position in the map that can monitor
     the most asteroids
-    
+
     Args:
         grid: Grid()
-    
+
     Returns:
         best_position: tuple(x, y) coordinate of the best position
         most_detected: int() number of asteroids monitored
@@ -123,7 +130,7 @@ def find_best_position(grid):
                     # add p_2 to line
                     line.append(p_2)
                     # set found
-                    found=True
+                    found = True
                     # stop processing lines
                     break
             # if we didn't find a mathing line, create one
@@ -157,6 +164,7 @@ def find_best_position(grid):
     # return values
     return best_position, most_detected, lines_by_point
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -173,33 +181,20 @@ def solve(input_value, part):
     # select 200th asteroid to destroy
     point = sorted_points[199]
     # store answer 2 for next pass
-    answer[2] =  (100 * point[0]) + point[1]
+    answer[2] = (100 * point[0]) + point[1]
     # part 1
     return count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,10)
+    my_aoc = aoc.AdventOfCode(2019, 10)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
-    # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    parts = {1: 1, 2: 2}
     # correct answers to validate changes
-    correct = {
-        1: 230,
-        2: 1205
-    }
+    correct = {1: 230, 2: 1205}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -209,6 +204,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

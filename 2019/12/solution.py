@@ -8,6 +8,7 @@ reddit solutions The solution u/ConstantGazelle pointed out that the answer was 
 the cycle for X, Y, and Z repitition individually.  Then calculate the LCM of period[X],
 period[Y], and period[Z].
 """
+
 # import system modules
 import time
 import re
@@ -16,15 +17,16 @@ import math
 from functools import reduce
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 # axis ids
-X=0
-Y=1
-Z=2
+X = 0
+Y = 1
+Z = 2
 
 # regex to extract numbers
-pattern_nums = re.compile(r'(-*\d+)')
+pattern_nums = re.compile(r"(-*\d+)")
+
 
 def parse_input(lines):
     """
@@ -41,6 +43,7 @@ def parse_input(lines):
     # returm moon items
     return items
 
+
 def moon_string(moon):
     """
     function to print moon data
@@ -49,6 +52,7 @@ def moon_string(moon):
     pos = moon["position"]
     vel = moon["velocity"]
     return f"pos=<x={pos[X]}, y={pos[Y]}, {pos[Z]}>, vel=<x={vel[X]}, y={vel[Y]}, z={vel[Z]}>"
+
 
 def get_velocities(moons):
     """
@@ -69,6 +73,7 @@ def get_velocities(moons):
             # axis does not change for that pair of moons.
     return moons
 
+
 def move_moons(moons):
     """
     Function to move moons
@@ -80,8 +85,9 @@ def move_moons(moons):
         # iterate over axes
         for axis in (X, Y, Z):
             # update position
-            moon["position"][axis] +=  moon["velocity"][axis]
+            moon["position"][axis] += moon["velocity"][axis]
     return moons
+
 
 def potential_energy(moon):
     """
@@ -91,12 +97,14 @@ def potential_energy(moon):
     # of its x, y, and z position coordinates.
     return sum(abs(val) for val in moon["position"])
 
+
 def kinetic_energy(moon):
     """
     Function to calculate kinetic energy
     """
     # A moon's kinetic energy is the sum of the absolute values of its velocity coordinates.
     return sum(abs(val) for val in moon["velocity"])
+
 
 def lcm_of_list(numbers):
     """
@@ -105,11 +113,13 @@ def lcm_of_list(numbers):
     """
     return reduce(math.lcm, numbers)
 
+
 def moon_state(moon):
     """
     function to get the state of a moon
     """
-    return tuple([moon["id"],tuple(moon["position"]),tuple(moon["velocity"])])
+    return tuple([moon["id"], tuple(moon["position"]), tuple(moon["velocity"])])
+
 
 def plane_state(moons, axis):
     """
@@ -124,6 +134,7 @@ def plane_state(moons, axis):
         # add velocity to state
         state.append(moon["velocity"][axis])
     return tuple(state)
+
 
 def calculate_energy(moons):
     """
@@ -140,6 +151,7 @@ def calculate_energy(moons):
         # add energy to total
         total += energy
     return total
+
 
 def solve(input_value, part):
     """
@@ -190,29 +202,18 @@ def solve(input_value, part):
     # return LCM
     return lcm_of_list(periods.values())
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,12)
+    my_aoc = aoc.AdventOfCode(2019, 12)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 6220,
-        2: 548525804273976
-    }
+    correct = {1: 6220, 2: 548525804273976}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -222,6 +223,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

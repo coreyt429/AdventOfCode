@@ -5,16 +5,19 @@ This one was fairly straight forward.  Part 1 was easy.  Part 2, I had to optimi
 a bit to minimize loops.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-class NanoFactory():
+
+class NanoFactory:
     """
     Class to represent a nano factory
     """
+
     def __init__(self, rules_text):
         """init"""
         # init inventory
@@ -29,23 +32,23 @@ class NanoFactory():
             self.production[element] = 0
 
     def parse_data(self, lines):
-        """Parse text data """
+        """Parse text data"""
         # init rules
         rules = []
         # iterate over lines
         for line in lines:
             # split into input/output sections
-            input_str, output = line.split(' => ')
+            input_str, output = line.split(" => ")
             # split inputs
-            inputs = input_str.split(', ')
+            inputs = input_str.split(", ")
             # split outputs
-            outputs = output.split(', ')
+            outputs = output.split(", ")
             # init rule
             rule = {"inputs": [], "outputs": []}
             # iterate over inputs
             for input_str in inputs:
                 # split quantity and element
-                quantity, element = input_str.split(' ')
+                quantity, element = input_str.split(" ")
                 # convert to int
                 quantity = int(quantity)
                 # add input to rule
@@ -55,7 +58,7 @@ class NanoFactory():
             # iterate over outputs
             for output in outputs:
                 # split quantitiy and element
-                quantity, element = output.split(' ')
+                quantity, element = output.split(" ")
                 # convert to int
                 quantity = int(quantity)
                 # add output to rule
@@ -71,20 +74,21 @@ class NanoFactory():
         """collect ore"""
         # increment stats
         self.ore_collected += quantity
-        self.inventory['ORE'] += quantity
-        self.production['ORE'] += quantity
+        self.inventory["ORE"] += quantity
+        self.production["ORE"] += quantity
         return True
 
     def make(self, quantity, element):
         """Make element"""
         # print(f"Making {quantity} {element}")
+        production_quantity = 0
         # return true if we already have enough
         if self.inventory[element] >= quantity:
             return True
         # init wip
         wip = {}
         # if ore, just collect some
-        if element == 'ORE':
+        if element == "ORE":
             return self.collect_ore(quantity)
         # get rule
         rule = self.get_rule(element)
@@ -93,25 +97,31 @@ class NanoFactory():
         for output in rule["outputs"]:
             # find target output
             if output["element"] == element:
-                #init prod_qty
+                # init prod_qty
                 prod_qty = 1
                 # set production_quantity
                 production_quantity = output["quantity"]
                 # if we don't have enough, with 1 prod_qty, start with close guess
                 if output["quantity"] * prod_qty + self.inventory[element] < quantity:
-                    prod_qty += (quantity - self.inventory[element]) // output["quantity"] - 1
+                    prod_qty += (quantity - self.inventory[element]) // output[
+                        "quantity"
+                    ] - 1
                 # loop until production is satisfactory
-                while output["quantity"] * prod_qty + self.inventory[element] < quantity:
+                while (
+                    output["quantity"] * prod_qty + self.inventory[element] < quantity
+                ):
                     prod_qty += 1
         # iterate over inputs
         for input_val in rule["inputs"]:
             # if we don't have enough
-            if self.inventory[input_val["element"]]  <  input_val["quantity"] *  prod_qty:
+            if self.inventory[input_val["element"]] < input_val["quantity"] * prod_qty:
                 # make it
-                if not self.make(input_val["quantity"] * prod_qty, input_val["element"]):
+                if not self.make(
+                    input_val["quantity"] * prod_qty, input_val["element"]
+                ):
                     return False
             # take from inventory
-            self.inventory[input_val["element"]] -=  input_val["quantity"] * prod_qty
+            self.inventory[input_val["element"]] -= input_val["quantity"] * prod_qty
             # # check for negative values, I think this is fixed, so commenting out
             # if self.inventory[input["element"]] < 0:
             #     # print(f"{input['element']} depleted: {self.inventory[input['element']]}")
@@ -129,20 +139,21 @@ class NanoFactory():
         # iterate over rules
         for rule in self.rules:
             # iterate over outputs
-            for output in rule['outputs']:
+            for output in rule["outputs"]:
                 # if we find it, return it
                 if output["element"] == element:
                     return rule
         return None
+
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     # init nano_factory
-    nano_factory  = NanoFactory(input_value)
+    nano_factory = NanoFactory(input_value)
     # make 1 fuel
-    nano_factory.make(1, 'FUEL')
+    nano_factory.make(1, "FUEL")
     if part == 1:
         return nano_factory.ore_collected
     # init target
@@ -169,37 +180,26 @@ def solve(input_value, part):
             # increment current_count
             current_count += step_size
         # init nano factory
-        nano_factory  = NanoFactory(input_value)
+        nano_factory = NanoFactory(input_value)
         # make current_count FUEL
-        nano_factory.make(current_count, 'FUEL')
+        nano_factory.make(current_count, "FUEL")
         # update last_ore
         last_ore = nano_factory.ore_collected
     # return last_count, it will be the last successful under target count
     return last_count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,14)
+    my_aoc = aoc.AdventOfCode(2019, 14)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 397771,
-        2: 3126714
-    }
+    correct = {1: 397771, 2: 3126714}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -209,6 +209,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

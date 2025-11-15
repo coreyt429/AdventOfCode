@@ -5,11 +5,13 @@ This one was pretty straight forward, not much to say.
 
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def check_passcode(int_in, mode=1):
     """
@@ -51,11 +53,12 @@ def check_passcode(int_in, mode=1):
     # return true if all conditions met
     return all([has_repeating_digit, no_incrementing_values])
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    start_num, end_num = [int(num) for num in input_value.split('-')]
+    start_num, end_num = [int(num) for num in input_value.split("-")]
     num = start_num
     passwords = []
     for num in range(start_num, end_num + 1):
@@ -63,24 +66,16 @@ def solve(input_value, part):
             passwords.append(num)
     return len(passwords)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019,4)
+    my_aoc = aoc.AdventOfCode(2019, 4)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -90,4 +85,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
