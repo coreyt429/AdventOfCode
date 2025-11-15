@@ -12,5 +12,7 @@ dependencies = [
     "ipykernel",
     "jupyterlab",
     "dotenv",
-    "sympy"
+    "sympy",
+    "colorama",
+    "networkx"
 ]
