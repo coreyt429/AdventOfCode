@@ -4,19 +4,21 @@ Advent Of Code 2022 day 7
 The Directory() class makes filesystem traversal and size calculation easy.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-class Directory():
+
+class Directory:
     """Class to represent a directory"""
 
-    def __init__(self, path='/', parent=None):
+    def __init__(self, path="/", parent=None):
         """Init method"""
         self.parent = parent
-        self.path = path.replace('//','/')
+        self.path = path.replace("//", "/")
         self.files = {}
         self.children = {}
         self.size = None
@@ -37,7 +39,9 @@ class Directory():
 
     def add_child(self, child_name):
         """method to add a child directory"""
-        self.children[child_name] = Directory(path=f"{self.path}/{child_name}", parent=self)
+        self.children[child_name] = Directory(
+            path=f"{self.path}/{child_name}", parent=self
+        )
 
     def __str__(self):
         """string representation"""
@@ -50,42 +54,45 @@ class Directory():
             my_str += f"    {file_name}: {file_size}\n"
         return my_str
 
+
 def do_chdir(current_dir, target):
     """function to change directory"""
-    if target == '/':
+    if target == "/":
         while current_dir.parent is not None:
             current_dir = current_dir.parent
         return current_dir
-    if target == '..':
+    if target == "..":
         return current_dir.parent
     return current_dir.children[target]
 
+
 def do_ls(current_dir, lines):
     """Function to read ls output"""
-    while lines and lines[0][0] != '$':
+    while lines and lines[0][0] != "$":
         line = lines.pop(0)
-        tokens = line.split(' ')
-        if tokens[0] == 'dir':
+        tokens = line.split(" ")
+        if tokens[0] == "dir":
             if tokens[1] not in current_dir.children:
                 current_dir.add_child(tokens[1])
         else:
             current_dir.add_file(*reversed(tokens))
 
+
 def scan_filesystem(lines):
     """Function to scan filesystem from input data"""
-    root = Directory('/')
+    root = Directory("/")
     current_dir = root
     while lines:
         line = lines.pop(0)
         # print(line)
-        if line[0] == '$':
-            tokens = line[2:].split(' ', 1)
+        if line[0] == "$":
+            tokens = line[2:].split(" ", 1)
             command = tokens[0]
             target = tokens[1] if len(tokens) > 1 else None
-            if command == 'cd':
+            if command == "cd":
                 current_dir = do_chdir(current_dir, target)
                 continue
-            if command == 'ls':
+            if command == "ls":
                 do_ls(current_dir, lines)
                 continue
     return root
@@ -101,7 +108,8 @@ def find_directories(current_dir, size_limit):
         total += find_directories(child, size_limit)
     return total
 
-def find_delete_directory(current_dir, size_limit, smallest=float('infinity')):
+
+def find_delete_directory(current_dir, size_limit, smallest=float("infinity")):
     """Function to recurse directory structure"""
     if current_dir.calculate_size() > size_limit:
         smallest = min(smallest, current_dir.calculate_size())
@@ -125,32 +133,21 @@ def solve(input_value, part):
     target = space_needed - space_available
     return find_delete_directory(root, target)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,7)
+    my_aoc = aoc.AdventOfCode(2022, 7)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 1307902,
-        2: 7068748
-    }
+    correct = {1: 1307902, 2: 7068748}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -160,6 +157,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

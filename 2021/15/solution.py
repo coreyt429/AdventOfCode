@@ -20,16 +20,18 @@ in playing with it.
 
 
 """
+
 # import system modules
 import time
 from heapq import heappop, heappush
 from queue import PriorityQueue
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid, manhattan_distance, Node # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid, manhattan_distance, Node  # pylint: disable=import-error
 
-directions = ['n', 's', 'e', 'w']
+directions = ["n", "s", "e", "w"]
+
 
 class MyNode(Node):
     """Extend Node Class"""
@@ -65,6 +67,7 @@ class MyNode(Node):
         """f score"""
         return self.g_score + self.h_score
 
+
 def safest_path_a_star(start, goal, grid):
     """
     Function to execute A* algorithm to detect shortest path between each pair
@@ -74,21 +77,21 @@ def safest_path_a_star(start, goal, grid):
         start: tuple() x/y coordinate
         goal: tuple() x/y coordinate
         grid: Grid() object
-    
+
     Returns:
         path: list(tuple()) x/y coordinates of path
-    
+
     A* Node parameters:
         position: tuple() x/y coordinates
         g_score: int() risk_level
         h_score: int() heuristic manhattan_distance(position, goal)
-        
+
     """
     # init shortest_paths and shortest_length
     shortest_paths = []
     shortest_nodes = []
     max_paths = 1
-    shortest_length = float('infinity')
+    shortest_length = float("infinity")
     # set start_node  (position, g_score, h_score)
     start_node = MyNode(start, goal, grid=grid)
     # initialize PriorityQueue
@@ -105,8 +108,8 @@ def safest_path_a_star(start, goal, grid):
         if any(
             [
                 current_node.loop,
-            current_node.path_tuple in closed_set,
-            current_node.g_score > shortest_length
+                current_node.path_tuple in closed_set,
+                current_node.g_score > shortest_length,
             ]
         ):
             continue
@@ -131,7 +134,9 @@ def safest_path_a_star(start, goal, grid):
         # add to closed set movement from parent to current
         closed_set.add(current_node.path_tuple)
         # get neighbors
-        neighbors = grid.get_neighbors(point=current_node.position, directions=directions)
+        neighbors = grid.get_neighbors(
+            point=current_node.position, directions=directions
+        )
         for neighbor in neighbors.values():
             if neighbor is None:
                 continue
@@ -145,11 +150,12 @@ def safest_path_a_star(start, goal, grid):
                 open_set.put((neighbor_node.f_score, neighbor_node))
     return shortest_length
 
+
 def safest_path(start, end, grid):
     """Function to find the safest path's risk_level"""
     heap = []
     heappush(heap, (0, start))
-    min_risk_level = float('infinity')
+    min_risk_level = float("infinity")
     visited = set()
     # visited = {}
     while heap:
@@ -162,24 +168,31 @@ def safest_path(start, end, grid):
         if current in visited:
             continue
         visited.add(current)
-        for neighbor in grid.get_neighbors(point=current, directions=directions).values():
+        for neighbor in grid.get_neighbors(
+            point=current, directions=directions
+        ).values():
             heappush(heap, (risk_level + grid.get_point(neighbor), neighbor))
 
     return min_risk_level
 
+
 def expand_grid(grid, size=5):
     """function to expand grid by 5"""
-    grid.cfg['default_value'] = None
-    grid.cfg['ob_default_value'] = None
-    rows, cols = grid.cfg['max']
+    grid.cfg["default_value"] = None
+    grid.cfg["ob_default_value"] = None
+    rows, cols = grid.cfg["max"]
     original_rows = rows + 1
     original_cols = cols + 1
     rows = (rows + 1) * size
     cols = (cols + 1) * size
     for y_val in range(rows):
         for x_val in range(cols):
-            above = grid.get_point((x_val, y_val - original_rows), default=None, ob_default=None)
-            left = grid.get_point((x_val - original_cols, y_val), default=None, ob_default=None)
+            above = grid.get_point(
+                (x_val, y_val - original_rows), default=None, ob_default=None
+            )
+            left = grid.get_point(
+                (x_val - original_cols, y_val), default=None, ob_default=None
+            )
             if above is None and left is None:
                 # original block, don't change
                 continue
@@ -193,6 +206,7 @@ def expand_grid(grid, size=5):
     grid.update()
     grid.clear_neighbor_cache()
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -201,39 +215,28 @@ def solve(input_value, part):
     grid.convert_to_ints()
     if part == 2:
         expand_grid(grid)
-    target = tuple(grid.cfg['max'])
+    target = tuple(grid.cfg["max"])
     start = (0, 0)
     risk_level = safest_path(start, target, grid)
     # part 2, 3036 too high
     #         3033 too high
     return risk_level
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,15)
+    my_aoc = aoc.AdventOfCode(2021, 15)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 366,
-        2: 2829
-    }
+    correct = {1: 366, 2: 2829}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -243,6 +246,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

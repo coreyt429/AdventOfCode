@@ -8,6 +8,7 @@ least move a lot of the methods to functions so lru_cache can
 be used to cache repetitive operations.
 
 """
+
 # import system modules
 import time
 import re
@@ -15,12 +16,14 @@ from itertools import permutations, product
 import numpy as np
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import manhattan_distance  # pylint: disable=import-error
 
-class Scanner():
+
+class Scanner:
     """Class to represent a scanner"""
-    pattern_digit = re.compile(r'(\-*\d+)')
+
+    pattern_digit = re.compile(r"(\-*\d+)")
 
     def __init__(self, scanner_text):
         """init"""
@@ -56,10 +59,16 @@ class Scanner():
         """Find scanner 1's position relative to scanner 0."""
         return tuple(-np.array(translation_vector))
 
-    def transform_all_points(self, scanner_1_points, rotation_matrix, translation_vector):
+    def transform_all_points(
+        self, scanner_1_points, rotation_matrix, translation_vector
+    ):
         """Transform all scanner 1 points relative to scanner 0."""
-        rotated_points = [self.rotate_point(p, rotation_matrix) for p in scanner_1_points]
-        transformed_points = [tuple(np.add(p, translation_vector)) for p in rotated_points]
+        rotated_points = [
+            self.rotate_point(p, rotation_matrix) for p in scanner_1_points
+        ]
+        transformed_points = [
+            tuple(np.add(p, translation_vector)) for p in rotated_points
+        ]
         return transformed_points
 
     def align(self, other):
@@ -79,7 +88,7 @@ class Scanner():
             self.aligned = True
             return True
         self.aligned = False
-        return  False
+        return False
 
     def generate_rotation_matrices(self):
         """Generate all 24 valid rotation matrices for 90-degree cube rotations."""
@@ -88,7 +97,9 @@ class Scanner():
         matrices = []
         for permuted_axes in permutations(base_axes):
             for sign_comb in product(signs, repeat=3):
-                matrix = np.array([s * np.array(axis) for s, axis in zip(sign_comb, permuted_axes)])
+                matrix = np.array(
+                    [s * np.array(axis) for s, axis in zip(sign_comb, permuted_axes)]
+                )
                 if np.linalg.det(matrix) == 1:
                     matrices.append(matrix)
         return matrices
@@ -98,14 +109,17 @@ class Scanner():
         rotation_matrices = self.generate_rotation_matrices()
 
         for rotation_matrix in rotation_matrices:
-            rotated_scanner_1 = [self.rotate_point(p, rotation_matrix) for p in self.beacons]
+            rotated_scanner_1 = [
+                self.rotate_point(p, rotation_matrix) for p in self.beacons
+            ]
 
             # Compare each rotated beacon set
             for p_0 in other.beacons:
                 for p_1 in rotated_scanner_1:
                     translation = np.subtract(p_0, p_1)
                     transformed_beacons = {
-                        tuple(np.add(beacon, translation)) for beacon in rotated_scanner_1
+                        tuple(np.add(beacon, translation))
+                        for beacon in rotated_scanner_1
                     }
 
                     # Check if there are at least 12 matching points
@@ -114,10 +128,11 @@ class Scanner():
                         return rotation_matrix, translation, common_beacons
         return None, None, None
 
+
 def parse_data(text):
     """Function to parse input text"""
     scanners = []
-    scanner_texts = text.split('\n\n')
+    scanner_texts = text.split("\n\n")
     for scanner_text in scanner_texts:
         scanners.append(Scanner(scanner_text))
     return scanners
@@ -157,7 +172,7 @@ def solve(input_value, part):
         19: 3,
         22: 17,
         23: 12,
-        25: 7
+        25: 7,
     }
     # counter = 0
     while any((not scanner.aligned for scanner in scanners)):
@@ -191,36 +206,27 @@ def solve(input_value, part):
     max_distance = 0
     for scanner in scanners:
         for other in scanners:
-            max_distance = max(max_distance, manhattan_distance(scanner.position, other.position))
+            max_distance = max(
+                max_distance, manhattan_distance(scanner.position, other.position)
+            )
     answer[2] = max_distance
     all_beacons = set()
     for scanner in scanners:
         all_beacons.update(scanner.beacons)
     return len(all_beacons)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,19)
+    my_aoc = aoc.AdventOfCode(2021, 19)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 318,
-        2: 12166
-    }
+    correct = {1: 318, 2: 12166}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -230,6 +236,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

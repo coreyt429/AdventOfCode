@@ -9,18 +9,22 @@ The only thing that tripped me up on this one was a poorly placed "break" that w
 causing an incorrect answer in part 2
 
 """
+
 # import system modules
 import time
 from colorama import Fore
+
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 class Bingo:
     """Class to represent Bingo game"""
+
     def __init__(self, game_data):
         """Init Method"""
         number_text, *cards_text_list = game_data.split("\n\n")
-        self.numbers = [int(num) for num in number_text.split(',')]
+        self.numbers = [int(num) for num in number_text.split(",")]
         self.cards = self.build_cards(cards_text_list)
 
     def build_cards(self, cards_text_list):
@@ -48,8 +52,10 @@ class Bingo:
                 break
         return last_score
 
+
 class BingoCard:
     """Class to represent a bingo card"""
+
     def __init__(self, numbers):
         """Init Method"""
         self.numbers = self.parse_numbers(numbers)
@@ -62,7 +68,7 @@ class BingoCard:
         """Method to parse text input"""
         numbers = []
         for line in text.splitlines():
-            numbers.append([int(num) for num in line.split(' ') if num.isdigit()])
+            numbers.append([int(num) for num in line.split(" ") if num.isdigit()])
         return numbers
 
     def check(self):
@@ -115,7 +121,7 @@ class BingoCard:
 
     def __str__(self):
         """String Method for debugging"""
-        my_str = ''
+        my_str = ""
         for row in self.numbers:
             for num in row:
                 if num in self.marked:
@@ -123,11 +129,12 @@ class BingoCard:
                 else:
                     my_str += f"{num:2} "
             my_str.rstrip()
-            my_str += '\n'
+            my_str += "\n"
         if self.winner:
             my_str += f"\nWinner! {self.score} {self.last_called}\n"
-        my_str += '\n'
+        my_str += "\n"
         return my_str
+
 
 def solve(input_value, part):
     """
@@ -136,29 +143,18 @@ def solve(input_value, part):
     game = Bingo(input_value)
     return game.play(mode=part)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,4)
+    my_aoc = aoc.AdventOfCode(2021, 4)
     input_data = my_aoc.load_text()
-   # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    # parts dict to loop
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 44088,
-        2: 23670
-    }
+    correct = {1: 44088, 2: 23670}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -168,6 +164,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

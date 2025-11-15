@@ -9,21 +9,25 @@ Without this, the test data worked, and the puzzle data looped forever.
 Add this in, and the puzzle data finishes in about 3 seconds.
 
 """
+
 # import system modules
 import time
+
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_data(text):
     """function to parse input data"""
-    text_hands = text.split('\n\n')
+    text_hands = text.split("\n\n")
     hands = {}
     for text_hand in text_hands:
         name, *cards = text_hand.splitlines()
-        name = name.replace(':','')
+        name = name.replace(":", "")
         cards = [int(card) for card in cards]
         hands[name] = cards
     return hands
+
 
 def play_cards(hands):
     """function to get next card from each player"""
@@ -33,11 +37,12 @@ def play_cards(hands):
         table[player] = hands[player].pop(0)
     return table
 
+
 def check_winner(table):
     """function to identify the hand winner"""
     # the player with the higher-valued card wins the round.
     high_card = 0
-    low_card = float('infinity')
+    low_card = float("infinity")
     winner = None
     for player, card in table.items():
         high_card = max(high_card, card)
@@ -46,12 +51,14 @@ def check_winner(table):
             winner = player
     return winner, high_card, low_card
 
+
 def is_winner(hands):
     """Function to check for end of game"""
     for cards in hands.values():
         if len(cards) == 0:
             return False
     return True
+
 
 def score_hand(hand):
     """Funciton to score a hand"""
@@ -66,6 +73,7 @@ def score_hand(hand):
         score += card * multiplier
         multiplier += 1
     return score
+
 
 def play_combat(hands):
     """function to play a game of combat"""
@@ -83,6 +91,7 @@ def play_combat(hands):
         # If this causes a player to have all of the cards, they win, and the game ends.
         game_on = is_winner(hands)
     return winner, hands[winner]
+
 
 def play_recursive_combat(hands):
     # print(f"play_recursive_combat({start_hands}, {game_id})")
@@ -121,8 +130,8 @@ def play_recursive_combat(hands):
             #         ) for key, value in hands.items()))
             # )
             winner, hand = play_recursive_combat(
-                {key:value[:table[key]] for key, value in hands.items()}
-                )
+                {key: value[: table[key]] for key, value in hands.items()}
+            )
             hands[winner].append(table[winner])
             for player, card in table.items():
                 if player != winner:
@@ -139,6 +148,7 @@ def play_recursive_combat(hands):
         game_on = is_winner(hands)
     return winner, hands[winner]
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -152,29 +162,18 @@ def solve(input_value, part):
     _, winning_hand = play_recursive_combat(hands)
     return score_hand(winning_hand)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,22)
+    my_aoc = aoc.AdventOfCode(2020, 22)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 32366,
-        2: 30891
-    }
+    correct = {1: 32366, 2: 30891}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -184,6 +183,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

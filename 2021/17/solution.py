@@ -8,40 +8,45 @@ the visualization.  The tricky part was narrowing the range
 to search.
 
 """
+
 # import system modules
 import time
 import re
 import math
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 
 def parse_data(text):
     """Function to parse input data"""
-    digit_pattern = re.compile(r'(\-*\d+)')
+    digit_pattern = re.compile(r"(\-*\d+)")
     nums = [int(num) for num in digit_pattern.findall(text)]
-    return dict({'x': nums[:2], 'y': nums[2:]})
+    return dict({"x": nums[:2], "y": nums[2:]})
+
 
 def find_min_x(target):
     """Function to find the minimum x velocity that can reach the target"""
-    x_min = min(target['x'])
-    return round(math.sqrt(x_min*2))
+    x_min = min(target["x"])
+    return round(math.sqrt(x_min * 2))
+
 
 def in_target_area(point, target):
     """Function to determine if a point is in the target area"""
-    if target['x'][0] <= point[0] <=  target['x'][1]:
-        if target['y'][0] <= point[1] <=  target['y'][1]:
+    if target["x"][0] <= point[0] <= target["x"][1]:
+        if target["y"][0] <= point[1] <= target["y"][1]:
             return True
     return False
 
+
 def missed_target_area(point, target):
     """Function to determine if a point has passed the target area"""
-    if point[0] >  max(target['x']):
+    if point[0] > max(target["x"]):
         return True
-    if point[1] <  min(target['y']):
+    if point[1] < min(target["y"]):
         return True
     return False
+
 
 def trace_path(velocity, target):
     """Function to trace a path"""
@@ -64,6 +69,7 @@ def trace_path(velocity, target):
             return True, max_y, min_y, (x_val, y_val)
     return False, max_y, min_y, (0, 0)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -72,9 +78,9 @@ def solve(input_value, part):
     # minimum x velocity that will get there
     start_x = find_min_x(target)
     # maximum x velocity, that won't overshoot on step 1
-    stop_x = max(target['x'])
+    stop_x = max(target["x"])
     # start at the minimum y, any lower and we overshoot
-    start_y = min(target['y'])
+    start_y = min(target["y"])
     # stop at the opposite y value
     stop_y = abs(start_y)
     goal = 0
@@ -97,29 +103,18 @@ def solve(input_value, part):
     # 30628 correct
     return goal
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,17)
+    my_aoc = aoc.AdventOfCode(2021, 17)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 30628,
-        2: 4433
-    }
+    correct = {1: 30628, 2: 4433}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -129,6 +124,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

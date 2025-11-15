@@ -19,6 +19,7 @@ MULTIPLIER = 252533
 DIVISOR = 33554393
 TARGET_ROW, TARGET_COL = None, None
 
+
 def solve(part):
     """
     Function to solve puzzle

@@ -15,33 +15,37 @@ I kept doing this until the difference between the safe and unsafe points was 1.
 Then I returned the point that was the unsafe point.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """Function to parse input"""
-    return [tuple(map(int, line.split(','))) for line in lines]
+    return [tuple(map(int, line.split(","))) for line in lines]
 
 
 def corrupt_range(grid, corrupted, start, end):
     """Function to corrupt a range of points"""
     for point in corrupted[start:end]:
-        grid.set_point(point, '#')
+        grid.set_point(point, "#")
+
 
 def clear_range(grid, corrupted, start, end):
     """Function to corrupt a range of points"""
     for point in corrupted[start:end]:
-        grid.set_point(point, '.')
+        grid.set_point(point, ".")
+
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    grid_array = [['.'] * 71 for _ in range(71)]
+    grid_array = [["."] * 71 for _ in range(71)]
     grid = Grid(grid_array, use_overrides=False)
     corrupted = parse_input(input_value)
     corrupt_range(grid, corrupted, 0, 1024)
@@ -64,31 +68,20 @@ def solve(input_value, part):
         safe = unsafe
         # and push unsafe closer to the end
         unsafe += (len(corrupted) + 1 - unsafe) // 2
-    return ','.join(map(str,corrupted[unsafe]))
+    return ",".join(map(str, corrupted[unsafe]))
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,18)
+    my_aoc = aoc.AdventOfCode(2024, 18)
     input_data = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 360,
-        2: '58,62'
-    }
+    correct = {1: 360, 2: "58,62"}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -98,6 +91,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -2,14 +2,17 @@
 Advent Of Code 2023 day 1
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-pattern_digit = re.compile(r'(\d)')
+pattern_digit = re.compile(r"(\d)")
+
+
 def calibrate(lines):
     """
     Function to calibrate weather machine
@@ -26,13 +29,25 @@ def calibrate(lines):
         total += int(digit)
     return total
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     lines = input_value
     if part == 2:
-        num_strs = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+        num_strs = [
+            "zero",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+        ]
         lines = []
         for line in input_value:
             for idx, num_str in enumerate(num_strs):
@@ -40,25 +55,17 @@ def solve(input_value, part):
             lines.append(line)
     return calibrate(lines)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2023,1)
+    my_aoc = aoc.AdventOfCode(2023, 1)
     # fetch input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -68,4 +75,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

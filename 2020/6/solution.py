@@ -4,21 +4,24 @@ Advent Of Code 2020 day 6
 python sets make this one pretty easy.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_groups(input_string):
     """Function to parse groups"""
     groups = []
     # Each group's answers are separated by a blank line
-    input_groups = input_string.split('\n\n')
+    input_groups = input_string.split("\n\n")
     for group in input_groups:
         # within each group, each person's answers are on a single line.
         groups.append(group.splitlines())
     return groups
+
 
 def solve(input_value, part):
     """
@@ -42,7 +45,7 @@ def solve(input_value, part):
                 first = False
             else:
                 all_answers.intersection_update(set(person))
-        group_answers = set(''.join(group))
+        group_answers = set("".join(group))
 
         # print(f"Final all_answers: {all_answers} ")
         total_2 += len(all_answers)
@@ -54,29 +57,18 @@ def solve(input_value, part):
         return total_2
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,6)
+    my_aoc = aoc.AdventOfCode(2020, 6)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 6161,
-        2: 2971
-    }
+    correct = {1: 6161, 2: 2971}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -86,6 +78,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

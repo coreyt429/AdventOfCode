@@ -2,9 +2,10 @@
 Advent Of Code 2021 day 23
 
 Shortest path problem. My biggest struggles were tripping on missed rules, and
-not checking my if conditions correctly. 
+not checking my if conditions correctly.
 
 """
+
 # import system modules
 import time
 import itertools
@@ -12,21 +13,12 @@ from heapq import heappop, heappush
 from functools import lru_cache
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-cost = {
-    'A': 1,
-    'B': 10,
-    'C': 100,
-    'D': 1000
-}
+cost = {"A": 1, "B": 10, "C": 100, "D": 1000}
 
-destination = {
-    'A': 0,
-    'B': 1,
-    'C': 2,
-    'D': 3
-}
+destination = {"A": 0, "B": 1, "C": 2, "D": 3}
+
 
 def unfold_rooms(rooms):
     """Function to unfold rooms in part 2"""
@@ -35,29 +27,20 @@ def unfold_rooms(rooms):
     # #D#C#B#A#
     # #D#B#A#C#
     # rooms = ((rooms[0][0], 'D', 'D', rooms[0][1]), etc)
-    additions = (
-        ('D','D'),
-        ('C','B'),
-        ('B','A'),
-        ('A','C')
-    )
+    additions = (("D", "D"), ("C", "B"), ("B", "A"), ("A", "C"))
     new_rooms = []
     for idx, room in enumerate(rooms):
-        new_rooms.append(
-            (
-                room[0],
-                additions[idx][0],
-                additions[idx][1],
-                room[1]
-            )
-        )
+        new_rooms.append((room[0], additions[idx][0], additions[idx][1], room[1]))
     return tuple(new_rooms)
+
 
 @lru_cache(maxsize=None)
 def get_room_clear(occupant, max_slot=1):
     """Function to generate room clear tuple"""
     # Generate combinations with replacement
-    combinations = itertools.combinations_with_replacement((occupant, '.'), max_slot + 1)
+    combinations = itertools.combinations_with_replacement(
+        (occupant, "."), max_slot + 1
+    )
     # Generate all unique permutations for each combination
     all_permutations = set(itertools.permutations(comb) for comb in combinations)
     # Flatten the results from the permutations sets
@@ -65,22 +48,24 @@ def get_room_clear(occupant, max_slot=1):
     # Return sorted, unique results as a tuple
     return tuple(sorted(flattened_permutations))
 
+
 def is_blocked(idx, entry, hallway):
     """Function to check for impediments between idx and entry"""
     start, end = min(idx, entry), max(idx, entry)
     for step in range(start, end + 1):
         if step == idx:
             continue
-        if hallway[step] != '.':
+        if hallway[step] != ".":
             return True
     return False
+
 
 def process_hallway(heap, energy_spent, hallway, rooms, max_slot):
     """Function to process hallway positions to add movements to the heap"""
     # hallway next_steps
     for idx, occupant in enumerate(hallway):
         # skip empty
-        if occupant == '.':
+        if occupant == ".":
             continue
         # Once an amphipod stops moving in the hallway, it will stay in that spot until it
         # can move into a room. (That is, once any amphipod starts moving, any other amphipods
@@ -103,11 +88,11 @@ def process_hallway(heap, energy_spent, hallway, rooms, max_slot):
                 continue
 
         slot = max_slot
-        while rooms[room_id][slot] != '.':
+        while rooms[room_id][slot] != ".":
             slot -= 1
         # print(f"slot: {slot}")
         tmp_hallway = list(hallway)
-        tmp_hallway[idx] = '.'
+        tmp_hallway[idx] = "."
         tmp_rooms = [list(room) for room in rooms]
         tmp_rooms[room_id][slot] = occupant
         heappush(
@@ -115,15 +100,17 @@ def process_hallway(heap, energy_spent, hallway, rooms, max_slot):
             (
                 energy_spent + (cost[occupant] * (abs(idx - entry) + slot + 1)),
                 tuple(tmp_hallway),
-                tuple(tuple(room) for room in tmp_rooms))
+                tuple(tuple(room) for room in tmp_rooms),
+            ),
         )
+
 
 def process_rooms(heap, energy_spent, hallway, rooms, max_slot):
     """Function to process rooms for next moves"""
     # room next steps
     for room_id, room in enumerate(rooms):
         slot = 0
-        while slot < max_slot + 1 and room[slot] == '.':
+        while slot < max_slot + 1 and room[slot] == ".":
             slot += 1
         if slot > max_slot:
             continue
@@ -137,27 +124,28 @@ def process_rooms(heap, energy_spent, hallway, rooms, max_slot):
         targets = set()
         for idx in range(entry, -1, -1):
             if idx in valid:
-                if hallway[idx] != '.':
+                if hallway[idx] != ".":
                     break
                 targets.add(idx)
         for idx in range(entry, 11):
             if idx in valid:
-                if hallway[idx] != '.':
+                if hallway[idx] != ".":
                     break
                 targets.add(idx)
         for idx in targets:
             tmp_hallway = list(hallway)
             tmp_hallway[idx] = occupant
             tmp_rooms = [list(room) for room in rooms]
-            tmp_rooms[room_id][slot] = '.'
+            tmp_rooms[room_id][slot] = "."
             heappush(
                 heap,
                 (
                     energy_spent + (cost[occupant] * ((slot + 1) + abs(entry - idx))),
                     tuple(tmp_hallway),
-                    tuple(tuple(room) for room in tmp_rooms)
-                )
+                    tuple(tuple(room) for room in tmp_rooms),
+                ),
             )
+
 
 def find_min_energy(hallway, rooms, part=1):
     """Function to find the minimum energy needed to rehome the amphipods"""
@@ -167,11 +155,11 @@ def find_min_energy(hallway, rooms, part=1):
         rooms = unfold_rooms(rooms)
         # update slot references to go from 0 - 3
         max_slot = 3
-    solution_state = tuple((char,)*(max_slot+1) for char in 'ABCD')
+    solution_state = tuple((char,) * (max_slot + 1) for char in "ABCD")
     heap = []
     heappush(heap, (0, hallway, rooms))
     visited = {}
-    min_energy_spent = float('infinity')
+    min_energy_spent = float("infinity")
     while heap:
         energy_spent, hallway, rooms = heappop(heap)
         # I don't think we will want to see the same state twice
@@ -197,7 +185,7 @@ def find_min_energy(hallway, rooms, part=1):
 
 def parse_input(lines):
     """Function to parse input"""
-    hallway = tuple(['.']*11)
+    hallway = tuple(["."] * 11)
     rooms = (
         (lines[2][3], lines[3][3]),
         (lines[2][5], lines[3][5]),
@@ -205,6 +193,7 @@ def parse_input(lines):
         (lines[2][9], lines[3][9]),
     )
     return hallway, rooms
+
 
 def solve(input_value, part):
     """
@@ -215,32 +204,21 @@ def solve(input_value, part):
     hallway, rooms = parse_input(input_value)
     return find_min_energy(hallway, rooms, part)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,23)
+    my_aoc = aoc.AdventOfCode(2021, 23)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 15412,
-        2: 52358
-    }
+    correct = {1: 15412, 2: 52358}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -250,6 +228,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

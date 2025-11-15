@@ -4,23 +4,26 @@ Advent Of Code 2020 day 21
 Easy peasy.  I needed that after the last couple of days.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_data(lines):
     """Function to parse input data"""
     food_data = []
     for line in lines:
-        ingredient_str, allergen_str = line.split(' (contains ')
-        allergen_str = allergen_str.replace(')','')
-        ingredients = ingredient_str.split(' ')
-        allergens = allergen_str.split(', ')
+        ingredient_str, allergen_str = line.split(" (contains ")
+        allergen_str = allergen_str.replace(")", "")
+        ingredients = ingredient_str.split(" ")
+        allergens = allergen_str.split(", ")
         # print(f"{ingredients} <> {allergens}")
         food_data.append((tuple(ingredients), tuple(allergens)))
     return tuple(food_data)
+
 
 def identify_ingredients_and_allergens(data):
     """Function to extract ingredient and allergen sets"""
@@ -32,6 +35,7 @@ def identify_ingredients_and_allergens(data):
                 allergen_set.add(allergen)
                 ingredient_set.add(ingredient)
     return allergen_set, ingredient_set
+
 
 def identify_allergen_ingredients(data, allergen_set, ingredient_set):
     """Function to identify allergen ingredients"""
@@ -48,7 +52,7 @@ def identify_allergen_ingredients(data, allergen_set, ingredient_set):
                         deletes.add(ingredient)
                 possible_ingredients.difference_update(deletes)
 
-    changed=True
+    changed = True
     while changed:
         changed = False
         for allergen, ingredients in data_map.items():
@@ -64,6 +68,7 @@ def identify_allergen_ingredients(data, allergen_set, ingredient_set):
         allergen_ingredients.update(ingredients)
     return allergen_ingredients, data_map
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -71,18 +76,17 @@ def solve(input_value, part):
     data = parse_data(input_value)
     allergen_set, ingredient_set = identify_ingredients_and_allergens(data)
     allergen_ingredients, allergen_ingredient_map = identify_allergen_ingredients(
-        data,
-        allergen_set,
-        ingredient_set
+        data, allergen_set, ingredient_set
     )
     if part == 2:
         # What is your canonical dangerous ingredient list?
-        return ','.join(
+        return ",".join(
             [
-                str(list(value)[0]) for key, value in sorted(
+                str(list(value)[0])
+                for key, value in sorted(
                     allergen_ingredient_map.items(), key=lambda item: item[0]
                 )
-                ]
+            ]
         )
     non_allergen_ingredients = ingredient_set.difference(allergen_ingredients)
     # How many times do any of those ingredients appear?
@@ -93,29 +97,18 @@ def solve(input_value, part):
                 count += 1
     return count
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,21)
+    my_aoc = aoc.AdventOfCode(2020, 21)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 2098,
-        2: 'ppdplc,gkcplx,ktlh,msfmt,dqsbql,mvqkdj,ggsz,hbhsx'
-    }
+    correct = {1: 2098, 2: "ppdplc,gkcplx,ktlh,msfmt,dqsbql,mvqkdj,ggsz,hbhsx"}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -125,6 +118,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

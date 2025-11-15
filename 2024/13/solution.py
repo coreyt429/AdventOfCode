@@ -10,19 +10,21 @@ came up with a sound math strategy.  Ran that through sympy and solved,
 sample data and part 1 with no problem.
 
 Bring on part 2.  oh that's it, just add to prize x/y values.  same solution
-same solve time. 
+same solve time.
 
 
 """
+
 # import system modules
 import time
 import re
 from sympy import symbols, solve
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-digit_pattern = re.compile(r'(\d+)')
+digit_pattern = re.compile(r"(\d+)")
+
 
 def parse_input(text, part):
     """Function to parse input"""
@@ -36,13 +38,14 @@ def parse_input(text, part):
         button_a = digit_pattern.findall(machine_list[0])
         button_b = digit_pattern.findall(machine_list[1])
         prize = digit_pattern.findall(machine_list[2])
-        machines.append({
-            'button_a': tuple(int(num) for num in button_a),
-            'button_b': tuple(int(num) for num in button_b),
-            'prize': tuple(int(num) + add for num in prize),
-        })
+        machines.append(
+            {
+                "button_a": tuple(int(num) for num in button_a),
+                "button_b": tuple(int(num) for num in button_b),
+                "prize": tuple(int(num) + add for num in prize),
+            }
+        )
     return machines
-
 
 
 def solve_two_diophantine(eq1, eq2):
@@ -57,18 +60,22 @@ def solve_two_diophantine(eq1, eq2):
     a_coef2, b_coef2, c_2 = eq2
 
     # Define variables
-    sym_a, sym_b = symbols('a b', integer=True)
+    sym_a, sym_b = symbols("a b", integer=True)
 
     # Solve the system of equations
     solutions = solve(
-        [a_coef1 * sym_a + b_coef1 * sym_b - c_1, a_coef2 * sym_a + b_coef2 * sym_b - c_2],
+        [
+            a_coef1 * sym_a + b_coef1 * sym_b - c_1,
+            a_coef2 * sym_a + b_coef2 * sym_b - c_2,
+        ],
         (sym_a, sym_b),
-        dict=True
+        dict=True,
     )
 
     if solutions:
         return solutions
     return "No integer solutions exist."
+
 
 def solution(input_value, part):
     """
@@ -81,44 +88,41 @@ def solution(input_value, part):
         equations = [None, None]
         for dim in (0, 1):
             equations[dim] = (
-                machine['button_a'][dim],
-                machine['button_b'][dim],
-                machine['prize'][dim]
+                machine["button_a"][dim],
+                machine["button_b"][dim],
+                machine["prize"][dim],
             )
-        equation1 = (machine['button_a'][0], machine['button_b'][0], machine['prize'][0])
-        equation2 = (machine['button_a'][1], machine['button_b'][1], machine['prize'][1])
+        equation1 = (
+            machine["button_a"][0],
+            machine["button_b"][0],
+            machine["prize"][0],
+        )
+        equation2 = (
+            machine["button_a"][1],
+            machine["button_b"][1],
+            machine["prize"][1],
+        )
         result = solve_two_diophantine(equation1, equation2)
         if isinstance(result, list):
-            cost = float('infinity')
+            cost = float("infinity")
             for press_data in result:
                 presses = tuple(press_data.values())
                 cost = min(cost, (presses[0] * 3) + (presses[1] * 1))
             total += cost
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,13)
+    my_aoc = aoc.AdventOfCode(2024, 13)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 31623,
-        2: 93209116744825
-    }
+    correct = {1: 31623, 2: 93209116744825}
     # dict to map functions
-    funcs = {
-        1: solution,
-        2: solution
-    }
+    funcs = {1: solution, 2: solution}
     # loop parts
     for my_part in parts:
         # log start time
@@ -128,6 +132,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

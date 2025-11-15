@@ -12,24 +12,27 @@ That worked and only took 2.9 seconds.
 I'm leaving the framework of my shortest path solution as well, for educational
 purposes. (mine mainly)
 """
+
 # import system modules
 import time
 from functools import lru_cache
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 @lru_cache(maxsize=None)
 def min_max_vals(cubes):
     """Function to get the min and max values for a set of cubes"""
-    min_vals = [float('infinity'), float('infinity'), float('infinity')]
-    max_vals = [0, 0 ,0]
+    min_vals = [float("infinity"), float("infinity"), float("infinity")]
+    max_vals = [0, 0, 0]
     for cube in cubes:
         for dim, val in enumerate(cube):
             min_vals[dim] = min(min_vals[dim], val)
             max_vals[dim] = max(max_vals[dim], val)
     return tuple(min_vals), tuple(max_vals)
+
 
 @lru_cache()
 def is_oob(cube, min_vals, max_vals):
@@ -40,6 +43,7 @@ def is_oob(cube, min_vals, max_vals):
         if val > max_vals[dim] + 1:
             return True
     return False
+
 
 def shortest_path(start, cubes, goal=(0, 0, 0)):
     """shortest path back to origin"""
@@ -74,6 +78,7 @@ def shortest_path(start, cubes, goal=(0, 0, 0)):
     # print(f"returning None")
     return None
 
+
 def fill_outside(cubes):
     """funciton to pre populate outside"""
     heap = [(0, 0, 0)]
@@ -97,27 +102,34 @@ def fill_outside(cubes):
                 heap.append(neighbor)
     return counter
 
+
 def parse_input(lines):
     """Function to parse input data"""
     points = []
     for line in lines:
-        vals = [int(val) for val in line.split(',')]
+        vals = [int(val) for val in line.split(",")]
         points.append(tuple(vals))
     return tuple(points)
+
 
 @lru_cache(maxsize=None)
 def get_neighbors(cube):
     """Function to calculate neighbors"""
     x_val, y_val, z_val = cube
     offsets = [
-        (1, 0, 0), (-1, 0, 0),  # Neighbors along the x-axis
-        (0, 1, 0), (0, -1, 0),  # Neighbors along the y-axis
-        (0, 0, 1), (0, 0, -1),  # Neighbors along the z-axis
+        (1, 0, 0),
+        (-1, 0, 0),  # Neighbors along the x-axis
+        (0, 1, 0),
+        (0, -1, 0),  # Neighbors along the y-axis
+        (0, 0, 1),
+        (0, 0, -1),  # Neighbors along the z-axis
     ]
     # Using a list comprehension for better performance
     return [(x_val + dx, y_val + dy, z_val + dz) for dx, dy, dz in offsets]
 
+
 outside = set()
+
 
 def solve(input_value, part):
     """
@@ -145,29 +157,18 @@ def solve(input_value, part):
         #         sides -= count
     return sides
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,18)
+    my_aoc = aoc.AdventOfCode(2022, 18)
     input_data = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 4548,
-        2: 2588
-    }
+    correct = {1: 4548, 2: 2588}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -177,6 +178,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

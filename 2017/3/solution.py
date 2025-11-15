@@ -13,6 +13,7 @@ import time
 
 # import my modules
 import aoc  # pylint: disable=import-error
+from grid import manhattan_distance
 
 # x/y constants
 X = 0
@@ -125,7 +126,7 @@ def solve(input_value, part):
         # get target point
         point = get_target_coordinates(int(input_value))
         # return manhattan distance to the center
-        return my_aoc.manhattan_distance(point, (0, 0))
+        return manhattan_distance(point, (0, 0))
     # return mem_map traversal
     return traverse(int(input_value))
 

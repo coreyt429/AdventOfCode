@@ -18,7 +18,7 @@ Thoughts for speeding up.
          # scan ahead in direction until we see a block
          self.teleport(point_before_block)
          return self.pos
-    
+
        def has_loop(self):
          already = set()
          self.reset()
@@ -32,23 +32,26 @@ Thoughts for speeding up.
             if next_point is None:
                 return False
         return True
-        
+
 Part 2 is running now in 11 seconds. In addition to the above, I precalculated the block locations
 to minimize iteration on the Grid()
-        
+
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
 
 stash = {}
 
+
 class Guard(Grid):
     """Class to represent guard"""
+
     def __init__(self, map_data):
         """method to initialize guard position"""
         super().__init__(map_data, pos_token="X", use_overrides=False)
@@ -56,42 +59,42 @@ class Guard(Grid):
         for point, char in self.items():
             # look for direction char, likely always starts as '^',
             # we'll check for any just in case
-            if char  in '<>^v':
+            if char in "<>^v":
                 # set position token to char
-                self.cfg['pos_token'] = char
-                self.set_point(point, '.')
+                self.cfg["pos_token"] = char
+                self.set_point(point, ".")
                 self.teleport(point)
                 break
         # turn user_overrides on so we can see the guard position
         self.cfg["use_overrides"] = True
         self.visited = set([self.pos])
         self.direction_map = self.build_direction_map()
-        self.direction = self.direction_map[self.cfg['pos_token']]
-        self.start = (self.pos, self.cfg['pos_token'])
+        self.direction = self.direction_map[self.cfg["pos_token"]]
+        self.start = (self.pos, self.cfg["pos_token"])
 
     def reset(self):
         """Method to return guard to starting position and direction"""
         self.teleport(self.start[0])
-        while self.cfg['pos_token'] != self.start[1]:
+        while self.cfg["pos_token"] != self.start[1]:
             self.turn()
 
     def build_direction_map(self):
         """Method to populate direction map"""
         direction_map = {}
-        for symbol, direction in zip('^v<>', 'nswe'):
+        for symbol, direction in zip("^v<>", "nswe"):
             direction_map[symbol] = direction
             direction_map[direction] = symbol
         return direction_map
 
     def turn(self):
         """Method to turn right 90 degrees"""
-        directions = 'nesw'
+        directions = "nesw"
         idx = directions.index(self.direction)
         # move to next direction
         idx = (idx + 1) % 4
         self.direction = directions[idx]
-        self.cfg['pos_token'] = self.direction_map[self.direction]
-        self.overrides[self.pos] = self.cfg['pos_token']
+        self.cfg["pos_token"] = self.direction_map[self.direction]
+        self.overrides[self.pos] = self.cfg["pos_token"]
 
     def step(self):
         """Method to take a step, and log the position"""
@@ -99,7 +102,7 @@ class Guard(Grid):
         # next step is off the map
         if self.direction not in neighbors:
             return False
-        while self.get_point(point=neighbors[self.direction]) == '#':
+        while self.get_point(point=neighbors[self.direction]) == "#":
             self.turn()
         self.move(self.direction)
         self.visited.add(self.pos)
@@ -109,6 +112,7 @@ class Guard(Grid):
         """Method to have the guard walk around until off map"""
         while self.step():
             yield self.pos
+
 
 def next_stop(current_point, direction, points):
     """Function to find the point before the next block"""
@@ -148,6 +152,7 @@ def next_stop(current_point, direction, points):
     # print(f"next_point: {next_point}")
     return next_point
 
+
 def has_loop_2(guard, blocks):
     """function to check a map for loops"""
     # print(f"has_loop_2({guard.pos})")
@@ -170,28 +175,30 @@ def has_loop_2(guard, blocks):
     # print(f"{(last_point, guard.pos)} is in {already}")
     return True
 
+
 def find_loops_2(input_value):
     """function to find positions where an added block causes a loop"""
     guard = Guard(input_value)
     blocks = []
     for point, char in guard.items():
-        if char == '#':
+        if char == "#":
             blocks.append(point)
     # point_counter = 0
-    stash['visited'].remove(guard.pos)
+    stash["visited"].remove(guard.pos)
     # point_count = len(stash['visited'])
     loops = 0
-    for test_point in stash['visited']:
+    for test_point in stash["visited"]:
         # point_counter += 1
         # if point_counter % 100 == 0:
         #     print(f"{point_counter}/{point_count}: {test_point} > {loops}")
-        guard.set_point(test_point, '#')
+        guard.set_point(test_point, "#")
         if has_loop_2(guard, tuple(blocks + [test_point])):
             # print(f"loop detected: {test_point}")
             loops += 1
-        guard.set_point(test_point, '.')
+        guard.set_point(test_point, ".")
         guard.reset()
     return loops
+
 
 def find_loops(input_value):
     """Function to detect and count loops"""
@@ -203,23 +210,23 @@ def find_loops(input_value):
     loop_positions = set()
     # debug counters to see progress
     point_counter = 0
-    point_count = len(stash['visited'])
-    for test_point in stash['visited']:
+    point_count = len(stash["visited"])
+    for test_point in stash["visited"]:
         char = hare.get_point(test_point)
         point_counter += 1
         # progress check
         if point_counter % 100 == 0:
             print(f"{test_point}: {point_counter}/{point_count}")
         # skip already blocked points
-        if char == '#':
+        if char == "#":
             continue
         # skip starting point
         if test_point == start_pos:
             continue
         counter = 0
         # set test point as blocked
-        tortoise.set_point(test_point, '#')
-        hare.set_point(test_point, '#')
+        tortoise.set_point(test_point, "#")
+        hare.set_point(test_point, "#")
         # intersections were occuring before the loop, causing inflated loop count
         # for the test data, ignoring the first intersection worked
         # for the puzzle data, ignoring the second intersection worked
@@ -236,12 +243,13 @@ def find_loops(input_value):
                     loop_positions.add(test_point)
                     break
         # reset test point
-        tortoise.set_point(test_point, '.')
-        hare.set_point(test_point, '.')
+        tortoise.set_point(test_point, ".")
+        hare.set_point(test_point, ".")
         # reset Guards
         hare.reset()
         tortoise.reset()
     return loops
+
 
 def solve(input_value, part):
     """
@@ -254,35 +262,24 @@ def solve(input_value, part):
     guard = Guard(input_value)
     for _ in guard.walk_about():
         pass
-    stash['visited'] = guard.visited
+    stash["visited"] = guard.visited
     return len(guard.visited)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,6)
+    my_aoc = aoc.AdventOfCode(2024, 6)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 5409,
-        2: 2022
-    }
+    correct = {1: 5409, 2: 2022}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -292,6 +289,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

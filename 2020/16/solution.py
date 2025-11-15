@@ -3,14 +3,16 @@ Advent Of Code 2020 day 16
 For once, my initial work wasn't wasted and completely rewritten
 to support part 2 :)
 
-set() and enumerate() ruled the day here.  
+set() and enumerate() ruled the day here.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def rule_match(number, rules):
     """
@@ -21,6 +23,7 @@ def rule_match(number, rules):
         if number in rule:
             matches.append(rule_name)
     return matches
+
 
 def reduce_fields(fields):
     """
@@ -46,6 +49,7 @@ def reduce_fields(fields):
     # to make a more logical return statement in other functions
     return fields
 
+
 def identify_fields(tickets, rules):
     """
     Function to scan ticket data to identify which fields are
@@ -63,28 +67,31 @@ def identify_fields(tickets, rules):
             fields[idx].intersection_update(new_fields)
     return reduce_fields(fields)
 
+
 def parse_rules(rules_string):
     """Function to parse rule strings"""
     rules = {}
     for rule_string in rules_string.splitlines():
-        rule_name, rule = rule_string.split(': ')
-        ranges = rule.split(' or ')
+        rule_name, rule = rule_string.split(": ")
+        ranges = rule.split(" or ")
         rules[rule_name] = set()
         for num_range in ranges:
-            start, end = [int(num) for num in num_range.split('-')]
+            start, end = [int(num) for num in num_range.split("-")]
             for num in range(start, end + 1):
                 rules[rule_name].add(num)
     return rules
 
+
 def parse_input(input_string):
     """Function to parse input file"""
-    rules_str, my_ticket_str, nearby_tickets_str = input_string.split('\n\n')
+    rules_str, my_ticket_str, nearby_tickets_str = input_string.split("\n\n")
     rules = parse_rules(rules_str)
-    my_ticket = [int(num) for num in my_ticket_str.splitlines()[1].split(',')]
+    my_ticket = [int(num) for num in my_ticket_str.splitlines()[1].split(",")]
     nearby_tickets = []
     for ticket in nearby_tickets_str.splitlines()[1:]:
-        nearby_tickets.append([int(num) for num in ticket.split(',')])
+        nearby_tickets.append([int(num) for num in ticket.split(",")])
     return rules, my_ticket, nearby_tickets
+
 
 def get_valid_tickets(my_ticket, tickets, rules):
     """
@@ -105,6 +112,7 @@ def get_valid_tickets(my_ticket, tickets, rules):
             valid_tickets.append(ticket)
     return valid_tickets, invalid_nums
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -118,34 +126,23 @@ def solve(input_value, part):
     product = 1
     for idx, field_set in enumerate(fields):
         field_name = list(field_set)[0]
-        if 'departure' in field_name:
+        if "departure" in field_name:
             # print(idx, field_name, my_ticket[idx])
             product *= my_ticket[idx]
     return product
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,16)
+    my_aoc = aoc.AdventOfCode(2020, 16)
     input_text = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 23954,
-        2: 453459307723
-    }
+    correct = {1: 23954, 2: 453459307723}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -155,6 +152,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -19,13 +19,16 @@ from ~ 15 seconds to 1.6 seconds.  So I'm happy with that update, and feel it wi
 up some past solutions that I wasn't happy with performance on.
 
 """
+
 # import system modules
 import time
-# import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
 
-class Rock():
+# import my modules
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
+
+class Rock:
     """Class to represent a falling rock"""
 
     movements = {
@@ -34,7 +37,7 @@ class Rock():
         "r": (1, 0),
         "v": (0, -1),
         "<": (-1, 0),
-        ">": (1, 0)
+        ">": (1, 0),
     }
 
     def __init__(self, grid, rocks, jets, state):
@@ -50,7 +53,7 @@ class Rock():
         # self.rocks.rotate(-1)
         # self.draw()
 
-    def can_move(self, direction='d'):
+    def can_move(self, direction="d"):
         """Method to check to see if a rock can move"""
         for x_val, y_val in self.points:
             x_val += self.movements[direction][0]
@@ -62,11 +65,11 @@ class Rock():
             if y_val < 0:
                 return False
             # collision?
-            if self.grid.get_point((x_val, y_val)) == '#':
+            if self.grid.get_point((x_val, y_val)) == "#":
                 return False
         return True
 
-    def move(self, direction='d'):
+    def move(self, direction="d"):
         """Method to move a rock"""
         if not self.can_move(direction):
             return False
@@ -81,7 +84,7 @@ class Rock():
     def find_position(self):
         """Method to find initial position of a rock"""
         for point in self.grid:
-            if self.grid.get_point(point) == '#':
+            if self.grid.get_point(point) == "#":
                 return (2, point[1] + 4)
         return (2, 3)
 
@@ -92,7 +95,7 @@ class Rock():
             points.append(tuple([self.position[0] + x_val, self.position[1] + y_val]))
         return points
 
-    def draw(self, char='@'):
+    def draw(self, char="@"):
         """Method to draw a rock"""
         for point in self.points:
             self.grid.set_point(point, char)
@@ -100,11 +103,11 @@ class Rock():
 
     def undraw(self):
         """Method to undraw a rock"""
-        self.draw('.')
+        self.draw(".")
 
     def settle(self):
         """Method to draw settled rock"""
-        self.draw('#')
+        self.draw("#")
 
     def fire_jet(self):
         """Method to fire a jet to blow the rock left or right"""
@@ -115,7 +118,7 @@ class Rock():
         """Method to drop a rock until it settles"""
         self.fire_jet()
         # while it can move down.
-        while self.move('d'):
+        while self.move("d"):
             self.fire_jet()
         self.settle()
 
@@ -129,7 +132,7 @@ def solve(input_value, part):
         ((0, 1), (1, 0), (1, 1), (1, 2), (2, 1)),
         ((0, 0), (1, 0), (2, 0), (2, 1), (2, 2)),
         ((0, 0), (0, 1), (0, 2), (0, 3)),
-        ((0, 0), (0, 1), (1, 0), (1, 1))
+        ((0, 0), (0, 1), (1, 0), (1, 1)),
     )
     jets = list(input_value)
     state = {
@@ -141,7 +144,7 @@ def solve(input_value, part):
         type="infinite",
         coordinate_system="cartesian",
         use_overrides=False,
-        default_value="."
+        default_value=".",
     )
     if part == 2:
         # begining of full repeat cycle, identified by manual inspection
@@ -158,7 +161,7 @@ def solve(input_value, part):
         new_iter = iter_count * 1745 + 1908
         for y_val, row in enumerate(reversed(str(grid).splitlines()[:5])):
             for x_val, char in enumerate(row):
-                if char == '#':
+                if char == "#":
                     grid.set_point((x_val, new_y_val - 4 + y_val), char)
         grid.update()
         # print(new_y_val, new_iter)
@@ -186,32 +189,21 @@ def solve(input_value, part):
         rock.drop()
     return grid.cfg["max"][1] + 1
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,17)
+    my_aoc = aoc.AdventOfCode(2022, 17)
     input_data = my_aoc.load_text()
     # print(input_text)
     # input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 3224,
-        2: 1595988538691
-    }
+    correct = {1: 3224, 2: 1595988538691}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -221,6 +213,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

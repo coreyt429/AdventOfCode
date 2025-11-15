@@ -4,17 +4,19 @@ Advent Of Code 2020 day 18
 Part 1 was smooth.  Part 2, I had a small hitch in string replacements, noted below.
 
 """
+
 # import system modules
 import time
 import re
 import operator
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-pattern_group = re.compile(r'\(([^\(\)]*)\)')
-pattern_addition = re.compile(r'(\d+ \+ \d+)')
-pattern_digits = re.compile(r'\d+')
+pattern_group = re.compile(r"\(([^\(\)]*)\)")
+pattern_addition = re.compile(r"(\d+ \+ \d+)")
+pattern_digits = re.compile(r"\d+")
+
 
 def simplify_addition(exp_string, part):
     """
@@ -51,33 +53,34 @@ def simplify_addition(exp_string, part):
                 break
     return exp_string
 
+
 def replace_parentheses(exp_string, part=1):
     """
     Function to simplify parehthese statements"""
     # print(f"replace_parentheses({exp_string}, {part})")
-    while '(' in exp_string:
+    while "(" in exp_string:
         matches = pattern_group.findall(exp_string)
         if matches:
             for match in matches:
-                exp_string = exp_string.replace(f"({match})", simplify_expression(match, part))
+                exp_string = exp_string.replace(
+                    f"({match})", simplify_expression(match, part)
+                )
     return exp_string
+
 
 def simplify_expression(exp_string, part=1):
     """
     Function to simplify expression string
     """
     # print(f"simplify_expression({exp_string}, {part})")
-    while '+' in exp_string or '*' in exp_string:
+    while "+" in exp_string or "*" in exp_string:
         exp_string = replace_parentheses(exp_string, part)
-        if part == 2 and '+' in exp_string:
+        if part == 2 and "+" in exp_string:
             exp_string = simplify_addition(exp_string, part)
             continue
         total = 0
-        operand=''
-        operators = {
-            '+': operator.iadd,
-            '*': operator.imul
-        }
+        operand = ""
+        operators = {"+": operator.iadd, "*": operator.imul}
         oper = None
         char = None
         for char in exp_string:
@@ -90,8 +93,8 @@ def simplify_expression(exp_string, part=1):
                 else:
                     total = operators[oper](total, int(operand))
                 oper = char
-                operand=''
-            elif char == ' ':
+                operand = ""
+            elif char == " ":
                 pass
             else:
                 pass
@@ -104,6 +107,7 @@ def simplify_expression(exp_string, part=1):
                 oper = char
         exp_string = str(total)
     return exp_string
+
 
 def solve(input_value, part):
     """
@@ -119,29 +123,18 @@ def solve(input_value, part):
     # 2: 201376568795521
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,18)
+    my_aoc = aoc.AdventOfCode(2020, 18)
     input_lines = my_aoc.load_lines()
     # parts dict to looper
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 29839238838303,
-        2: 201376568795521
-    }
+    correct = {1: 29839238838303, 2: 201376568795521}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # looper parts
     for my_part in parts:
         # log start time
@@ -151,6 +144,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

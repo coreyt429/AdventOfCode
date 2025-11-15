@@ -2,21 +2,24 @@
 Advent Of Code 2018 day 25
 
 """
+
 # import system modules
 import time
 from collections import deque
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import manhattan_distance  # pylint: disable=import-error
+
 
 def parse_data(lines):
     """parse input data"""
     points = []
     for line in lines:
-        data = [int(num) for num in line.split(',')]
+        data = [int(num) for num in line.split(",")]
         points.append(tuple(data))
     return points
+
 
 def group_points(points, distance_threshold=3):
     """
@@ -44,8 +47,10 @@ def group_points(points, distance_threshold=3):
 
             # Check all other points to see if they are within the threshold distance
             for neighbor in points:
-                if (neighbor not in visited and
-                    manhattan_distance(point, neighbor) <= distance_threshold):
+                if (
+                    neighbor not in visited
+                    and manhattan_distance(point, neighbor) <= distance_threshold
+                ):
                     queue.append(neighbor)
         return group
 
@@ -60,6 +65,7 @@ def group_points(points, distance_threshold=3):
 
     return groups
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -69,24 +75,16 @@ def solve(input_value, part):
     constellations = group_points(parse_data(input_value))
     return len(constellations)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,25)
+    my_aoc = aoc.AdventOfCode(2018, 25)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -96,4 +94,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

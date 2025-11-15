@@ -8,11 +8,13 @@ In part two, I realized this was just too slow, and we only needed
 the fish count in the end.  So I switched to just counting the
 number of fish in each state each day.
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def spawn_fish(start, days):
     """
@@ -37,6 +39,7 @@ def spawn_fish(start, days):
         fishes.extend(new_fishes)
         # print(f"After {day:2} days:  {','.join((str(fish) for fish in fishes))}")
     return fishes
+
 
 def spawn_fish_2(start_fishes, days):
     """
@@ -63,11 +66,12 @@ def spawn_fish_2(start_fishes, days):
     # return fish counts
     return sum(fishes.values())
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    initial_fishes = [int(num) for num in input_value.split(',')]
+    initial_fishes = [int(num) for num in input_value.split(",")]
     # if part == 1:
     #     fishes = spawn_fish(initial_fish, 80)
     #     return len(fishes)
@@ -84,29 +88,18 @@ def solve(input_value, part):
     #     total += counts[num]
     # return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,6)
+    my_aoc = aoc.AdventOfCode(2021, 6)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 388739,
-        2: 1741362314973
-    }
+    correct = {1: 388739, 2: 1741362314973}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -116,6 +109,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

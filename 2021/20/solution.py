@@ -3,15 +3,18 @@ Advent Of Code 2021 day 20
 Grid worked like a charm for this one.  There was some odd behavior in my puzzle input
 with the outside edges.  It took me a few attempts to sort those out.
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 class Image(Grid):
     """Class to represent an image as a Grid"""
+
     def __init__(self, image_data, enhancement_filter):
         """init method"""
         super().__init__(
@@ -19,23 +22,23 @@ class Image(Grid):
             use_overrides=False,
             coordinate_system="cartesian",
             type="infinite",
-            ob_default_value='%',
-            default_value='?'
+            ob_default_value="%",
+            default_value="?",
         )
         self.enhancement_filter = enhancement_filter
 
     def get_pixel_value(self, point):
         """Method to calculate pixel value"""
         neighbors = self.get_neighbors(point=point)
-        value_string = ''
-        neighbors['c'] = point
-        upper_left = tuple(self.cfg['min'])
-        for direction in ['nw', 'n', 'ne', 'w', 'c', 'e', 'sw', 's', 'se']:
-            new_value = self.get_point(neighbors.get(direction,(-1,-1)),'.')
-            if new_value == '%':
+        value_string = ""
+        neighbors["c"] = point
+        upper_left = tuple(self.cfg["min"])
+        for direction in ["nw", "n", "ne", "w", "c", "e", "sw", "s", "se"]:
+            new_value = self.get_point(neighbors.get(direction, (-1, -1)), ".")
+            if new_value == "%":
                 new_value = self.get_point(upper_left)
             value_string += new_value
-        binary_string = value_string.replace('.', '0').replace('#', '1')
+        binary_string = value_string.replace(".", "0").replace("#", "1")
         value = int(binary_string, 2)
         return value
 
@@ -45,14 +48,15 @@ class Image(Grid):
 
     def enhance(self):
         """Method to enhance an image and return the new image"""
-        new_image = Image(['.'], self.enhancement_filter)
+        new_image = Image(["."], self.enhancement_filter)
         pad = 2
-        for x_val in range(self.cfg['min'][0] - pad, self.cfg['max'][0] + 1 + pad):
-            for y_val in range(self.cfg['min'][1] - pad, self.cfg['max'][1] + 1 + pad):
+        for x_val in range(self.cfg["min"][0] - pad, self.cfg["max"][0] + 1 + pad):
+            for y_val in range(self.cfg["min"][1] - pad, self.cfg["max"][1] + 1 + pad):
                 point = (x_val, y_val)
                 new_image.set_pixel(point, self.get_pixel_value(point))
         new_image.update()
         return new_image
+
 
 def solve(input_value, part):
     """
@@ -85,31 +89,20 @@ def solve(input_value, part):
     # if they are missing, use the value of the upper left hand corner of the
     # source instead of always .
     # 18074 Bingo!
-    return str(enhanced_image).count('#')
+    return str(enhanced_image).count("#")
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,20)
+    my_aoc = aoc.AdventOfCode(2021, 20)
     input_data = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 5044,
-        2: 18074
-    }
+    correct = {1: 5044, 2: 18074}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -119,6 +112,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

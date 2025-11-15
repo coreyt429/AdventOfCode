@@ -9,25 +9,27 @@ were rounded to the line.  I just had to check them to be sure they were "exactl
 collinnear.  Luckily I already had a function in my grid module for that.
 
 """
+
 # import system modules
 import time
 from collections import defaultdict
 from itertools import combinations
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid, linear_distance, are_collinear # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid, linear_distance, are_collinear  # pylint: disable=import-error
+
 
 def get_line(p_1, p_2, grid):
     """Function to get the points colinear to two points"""
     # calculate slope
     d_x = p_2[0] - p_1[0]
     d_y = p_2[1] - p_1[1]
-    slope = d_y/d_x
+    slope = d_y / d_x
     # calculate intercept
     intercept = p_1[1] - slope * p_1[0]
-    x_range = (grid.cfg['min'][0], grid.cfg['max'][0])
-    y_range = (grid.cfg['min'][1], grid.cfg['max'][1])
+    x_range = (grid.cfg["min"][0], grid.cfg["max"][0])
+    y_range = (grid.cfg["min"][1], grid.cfg["max"][1])
     points = []
     # iterate over range of x_values in grid
     for x_val in range(x_range[0], x_range[1] + 1):
@@ -42,6 +44,7 @@ def get_line(p_1, p_2, grid):
             points.append((x_val, y_val))
     return points
 
+
 def is_antinode(point, pair):
     """Function to check if a point is an antinode for a pair"""
     # points in our pair can't be antinodes, and letting it go further
@@ -52,7 +55,8 @@ def is_antinode(point, pair):
     for node in pair:
         distances.append(linear_distance(point, node))
     distances.sort()
-    return abs(distances[1]/distances[0]) == 2
+    return abs(distances[1] / distances[0]) == 2
+
 
 def solve(input_value, part):
     """
@@ -62,7 +66,7 @@ def solve(input_value, part):
     signal_points = defaultdict(set)
     # get the points emitting each signal
     for point, char in grid.items():
-        if char != '.':
+        if char != ".":
             signal_points[char].add(point)
 
     antinodes = set()
@@ -82,32 +86,21 @@ def solve(input_value, part):
                     # check and it worked
     return len(antinodes)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,8)
+    my_aoc = aoc.AdventOfCode(2024, 8)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 252,
-        2: 839
-    }
+    correct = {1: 252, 2: 839}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -117,6 +110,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -4,11 +4,13 @@ Advent Of Code 2022 day 1
 Easy start.  This was fun.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def solve(input_value, part):
     """
@@ -24,29 +26,18 @@ def solve(input_value, part):
         return sum(sorted((sum(elf) for elf in elves))[-3:])
     return max_calories
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,1)
+    my_aoc = aoc.AdventOfCode(2022, 1)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 71780,
-        2: 212489
-    }
+    correct = {1: 71780, 2: 212489}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -56,6 +47,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

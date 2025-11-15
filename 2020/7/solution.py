@@ -8,29 +8,32 @@ elegant for the parsing, but this method works.
 
 
 """
+
 # import system modules
 import time
 from collections import defaultdict
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def parse_bag_rules(bag_rules):
     """Function to parse input into defaultdict"""
     rules = defaultdict(dict)
     for rule in bag_rules:
-        bag_type, contents = rule.split(' bags contain ')
-        for inner_bag in contents.split(', '):
+        bag_type, contents = rule.split(" bags contain ")
+        for inner_bag in contents.split(", "):
             if "no other bags" in inner_bag:
                 rules[bag_type] = {}
             else:
-                count, inner_bag_type = inner_bag.split(' ', 1)
-                inner_bag_type = inner_bag_type.replace(' bags', '')
-                inner_bag_type = inner_bag_type.replace(' bag', '')
-                inner_bag_type = inner_bag_type.replace('.', '')
+                count, inner_bag_type = inner_bag.split(" ", 1)
+                inner_bag_type = inner_bag_type.replace(" bags", "")
+                inner_bag_type = inner_bag_type.replace(" bag", "")
+                inner_bag_type = inner_bag_type.replace(".", "")
                 # print(f"count: {count}, inner_bag_type: {inner_bag_type}")
-                rules[bag_type][inner_bag_type] = int(count.replace(' ',''))
+                rules[bag_type][inner_bag_type] = int(count.replace(" ", ""))
     return rules
+
 
 def can_contain(outer, inner, rules):
     """
@@ -45,6 +48,7 @@ def can_contain(outer, inner, rules):
             return True
     return False
 
+
 def bags_needed(bag_type, qty, rules):
     """
     Recursive function to identify the number of bags needed
@@ -56,6 +60,7 @@ def bags_needed(bag_type, qty, rules):
             total += bags_needed(inner_bag_type, inner_qty, rules)
     # print(f"bags_needed({bag_type}, {qty}, rules): {total}")
     return total
+
 
 def solve(input_value, part):
     """
@@ -69,7 +74,7 @@ def solve(input_value, part):
             # print(f"Trying {bag_type}")
             if can_contain(bag_type, target, rules):
                 # print('Yes')
-                count+=1
+                count += 1
         # How many bag colors can eventually contain at least one shiny gold bag?
         return count
     # part 2
@@ -77,29 +82,18 @@ def solve(input_value, part):
     # -1 because we don't count the shiny gold bag
     return bags_needed(target, 1, rules) - 1
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,7)
+    my_aoc = aoc.AdventOfCode(2020, 7)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 226,
-        2: 9569
-    }
+    correct = {1: 226, 2: 9569}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -109,6 +103,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

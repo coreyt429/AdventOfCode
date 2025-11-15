@@ -4,36 +4,41 @@ Advent Of Code 2021 day 8
 
 
 """
+
 # import system modules
 import time
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 digits = {
-    0: 'abcefg',
-    1: 'cf',
-    2: 'acdeg',
-    3: 'acdfg',
-    4: 'bcdf',
-    5: 'abdfg',
-    6: 'abdefg',
-    7: 'acf',
-    8: 'abcdefg',
-    9: 'abcdfg'
+    0: "abcefg",
+    1: "cf",
+    2: "acdeg",
+    3: "acdfg",
+    4: "bcdf",
+    5: "abdfg",
+    6: "abdefg",
+    7: "acf",
+    8: "abcdefg",
+    9: "abcdfg",
 }
+
 
 def parse_input(lines):
     """Function to parse puzzle input"""
     values = []
     for line in lines:
-        signal_patterns, output_value = line.split(' | ')
-        values.append({
-            'signal_patterns': signal_patterns.split(' '),
-            'output_value': output_value.split(' '),
-            })
+        signal_patterns, output_value = line.split(" | ")
+        values.append(
+            {
+                "signal_patterns": signal_patterns.split(" "),
+                "output_value": output_value.split(" "),
+            }
+        )
     return values
+
 
 def matching_segments(pattern_a, pattern_b):
     """Count the matching characters in two strings"""
@@ -41,13 +46,14 @@ def matching_segments(pattern_a, pattern_b):
     set_b = set(pattern_b)
     return len(set_a.intersection(set_b))
 
+
 def map_wires(signal_patterns):
-    """ Function to map wire signals to values"""
+    """Function to map wire signals to values"""
     heap = []
     for pattern in signal_patterns:
         heappush(heap, (0, len(pattern), pattern))
 
-    unique_lengths = {2:1, 3:7, 4:4, 7:8}
+    unique_lengths = {2: 1, 3: 7, 4: 4, 7: 8}
     wire_map = {}
     while heap:
         turn, length, pattern = heappop(heap)
@@ -92,9 +98,10 @@ def map_wires(signal_patterns):
 
     # add reverse map
     for key, value in list(wire_map.items()):
-        wire_map[''.join(sorted(value))] = key
+        wire_map["".join(sorted(value))] = key
 
     return wire_map
+
 
 def solve(input_value, part):
     """
@@ -104,42 +111,33 @@ def solve(input_value, part):
     if part == 2:
         total = 0
         for datum in data:
-            wire_map = map_wires(datum['signal_patterns'])
-            result_list = [wire_map[''.join(sorted(pattern))] for pattern in datum['output_value']]
-            total += int(''.join(map(str, result_list)))
+            wire_map = map_wires(datum["signal_patterns"])
+            result_list = [
+                wire_map["".join(sorted(pattern))] for pattern in datum["output_value"]
+            ]
+            total += int("".join(map(str, result_list)))
         return total
 
     target_lengths = [2, 3, 4, 7]
     counter = 0
     for datum in data:
-        for value in datum['output_value']:
+        for value in datum["output_value"]:
             if len(value) in target_lengths:
                 counter += 1
     return counter
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,8)
+    my_aoc = aoc.AdventOfCode(2021, 8)
     input_data = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 369,
-        2: 1031553
-    }
+    correct = {1: 369, 2: 1031553}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -149,6 +147,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

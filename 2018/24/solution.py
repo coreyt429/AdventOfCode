@@ -1,7 +1,7 @@
 """
 Advent Of Code 2018 day 24
 
-Part 1 went pretty smoothly, but ran a bit slow. 
+Part 1 went pretty smoothly, but ran a bit slow.
 
 I tripped up on the stalemates in part 2, and overlooked it for a while.
 
@@ -10,22 +10,26 @@ the right boost.
 
 minimized sorts to speed things up, and it runs pretty well now.
 """
+
 # import system modules
 import time
 import re
-# import my modules
-import aoc # pylint: disable=import-error
 
-class Combatants():
+# import my modules
+import aoc  # pylint: disable=import-error
+
+
+class Combatants:
     """
     Player container class, but they aren't really playing
     """
+
     def __init__(self):
         """Init combatants"""
         # init empty set
         self.armies = set()
         # init phase
-        self.phase = 'idle'
+        self.phase = "idle"
         self.groups = {}
 
     def add_army(self, army):
@@ -39,44 +43,44 @@ class Combatants():
         """
         Update group list caches
         """
-        for key in ['all', 'alive', 'selection', 'attack', 'idle']:
+        for key in ["all", "alive", "selection", "attack", "idle"]:
             self.groups[key] = []
         for army in self.armies:
             # walk groups
             for group in army.groups:
                 # add group
-                self.groups['all'].append(group)
+                self.groups["all"].append(group)
                 if any((unit.alive for unit in group.units)):
-                    self.groups['alive'].append(group)
-                    self.groups['selection'].append(group)
-                    self.groups['attack'].append(group)
-        self.groups['selection'].sort(
-            key=lambda g: (g.stats['effective_power'], g.stats['initiative']),
-            reverse=True
+                    self.groups["alive"].append(group)
+                    self.groups["selection"].append(group)
+                    self.groups["attack"].append(group)
+        self.groups["selection"].sort(
+            key=lambda g: (g.stats["effective_power"], g.stats["initiative"]),
+            reverse=True,
         )
-        self.groups['attack'].sort(key=lambda g: (g.stats['initiative']), reverse=True)
+        self.groups["attack"].sort(key=lambda g: (g.stats["initiative"]), reverse=True)
 
     def selection_phase(self):
         """run selection phase"""
         # set phase to selection
-        self.phase = 'selection'
+        self.phase = "selection"
         # walk groups, not selection phase sorting occurs in __iter__
         for group in self:
             # select target
             group.select_target()
         # return phase to idle
-        self.phase = 'idle'
+        self.phase = "idle"
 
     def attack_phase(self):
         """run attack phase"""
         # set phase to attack
-        self.phase = 'attack'
+        self.phase = "attack"
         # walk groups
         for group in self:
             # attack
             group.attack()
         # return phase to idle
-        self.phase = 'idle'
+        self.phase = "idle"
 
     def battle(self):
         """fight a battle"""
@@ -115,12 +119,12 @@ class Combatants():
             immunities[team] = set()
             can_win[team] = False
         # walk groups
-        for group in self.groups['alive']:
+        for group in self.groups["alive"]:
             # populate attacks and immunities
-            attacks[group.army.team].add(group.stats['attack_type'])
-            immunities[group.army.team].update(group.mods['immunities'])
+            attacks[group.army.team].add(group.stats["attack_type"])
+            immunities[group.army.team].update(group.mods["immunities"])
         # walk groups
-        for group in self.groups['alive']:
+        for group in self.groups["alive"]:
             # get opposing team
             opponent = [team for team in teams if team != group.army.team][0]
             # walk attacks
@@ -145,8 +149,8 @@ class Combatants():
             counter += 1
             # print(f"{'-'*50}\nAfter battle {counter}:\n{self}")
             # if counter > 3500:
-                # print("Counter break")
-                # break
+            # print("Counter break")
+            # break
             # get scores after battle
             scores = [army.units_remaining() for army in self]
             # if there are only 3 scores between previous_scores and scores
@@ -155,7 +159,7 @@ class Combatants():
                 idle_counter += 1
                 if idle_counter > 1:
                     if self.stalemate():
-                        return Army(team='stalemate')
+                        return Army(team="stalemate")
                     # print("Only one team losing units")
                     for army in self:
                         # print(f"{army.team}: {army.units_remaining()} in {previous_scores}")
@@ -177,12 +181,12 @@ class Combatants():
     def __iter__(self):
         """
         Iterate Combatants
-        
+
         this is the magic to getting the order right
 
         We adjust the sorting rules based on phase.
         """
-        if self.phase == 'idle':
+        if self.phase == "idle":
             return iter(self.armies)
         return iter(self.groups[self.phase])
 
@@ -191,9 +195,9 @@ class Combatants():
         # save phase, in case the caller needs it back
         phase = self.phase
         # set to idle so we get armies when we iterate instead of groups
-        self.phase = 'idle'
+        self.phase = "idle"
         # init my_string
-        my_string = ''
+        my_string = ""
         # walk armies
         for army in self:
             # add army to string
@@ -203,10 +207,12 @@ class Combatants():
         # return result
         return my_string
 
-class Army():
+
+class Army:
     """
     Container class for groups
     """
+
     def __init__(self, team=None):
         """Init Function"""
         self.team = team
@@ -233,7 +239,7 @@ class Army():
         # walk groups
         for group in self.groups:
             # if group has live units
-            if group.stats['unit_count'] > 0:
+            if group.stats["unit_count"] > 0:
                 # increment
                 remaining += 1
         # return
@@ -248,7 +254,7 @@ class Army():
         # walk groups
         for group in self.groups:
             # increment
-            remaining += group.stats['unit_count']
+            remaining += group.stats["unit_count"]
         return remaining
 
     def __str__(self):
@@ -260,9 +266,9 @@ class Army():
             # add group data
             my_string += f"{group}: {group.stats['unit_count']} units each with "
             my_string += f"{group.stats['hit_points']} hit_points ("
-            if group.mods['immunities']:
+            if group.mods["immunities"]:
                 my_string += f"immune to {', '.join(group.mods['immunities'])}; "
-            if group.mods['weaknesses']:
+            if group.mods["weaknesses"]:
                 my_string += f"weak to {', '.join(group.mods['weaknesses'])}"
             my_string += f")  with an attack that does {group.stats['attack_damage']} "
             my_string += f"{group.stats['attack_type']} "
@@ -271,35 +277,34 @@ class Army():
         # return
         return my_string
 
-class Group():
+
+class Group:
     """
     Container class for Units
     """
+
     def __init__(self, **kwargs):
         """Init Function"""
         self.g_id = None
         self.units = []
         self.army = None
         self.stats = {}
-        self.stats['hit_points'] = kwargs.get('hit_points')
-        self.stats['attack_damage'] = kwargs.get('attack_damage')
-        self.stats['attack_type'] = kwargs.get('attack_type')
-        self.stats['initiative'] = kwargs.get('initiative')
-        self.stats['unit_count'] = 0
-        self.mods = {
-            "weaknesses": [],
-            "immunities": []
-        }
+        self.stats["hit_points"] = kwargs.get("hit_points")
+        self.stats["attack_damage"] = kwargs.get("attack_damage")
+        self.stats["attack_type"] = kwargs.get("attack_type")
+        self.stats["initiative"] = kwargs.get("initiative")
+        self.stats["unit_count"] = 0
+        self.mods = {"weaknesses": [], "immunities": []}
         self.attacking = None
         self.defending = None
-        mods = kwargs.get('mods').split('; ')
+        mods = kwargs.get("mods").split("; ")
         # walk mods
         for mod in mods:
-            if mod.startswith('weak'):
-                self.mods['weaknesses'] = mod.split(' to ')[1].split(', ')
-            if mod.startswith('immune'):
-                self.mods['immunities'] = mod.split(' to ')[1].split(', ')
-        for _ in range(kwargs.get('units')):
+            if mod.startswith("weak"):
+                self.mods["weaknesses"] = mod.split(" to ")[1].split(", ")
+            if mod.startswith("immune"):
+                self.mods["immunities"] = mod.split(" to ")[1].split(", ")
+        for _ in range(kwargs.get("units")):
             self.add_unit(Unit())
 
     def add_unit(self, unit):
@@ -309,7 +314,7 @@ class Group():
         # add unit
         self.units.append(unit)
         # increment unit count
-        self.stats['unit_count'] += 1
+        self.stats["unit_count"] += 1
         # recalc effective_power
         self.update_effective_power()
 
@@ -320,30 +325,33 @@ class Group():
 
     def update_effective_power(self):
         """calculate effective_power"""
-        self.stats['effective_power'] = self.stats['unit_count'] * self.stats['attack_damage']
+        self.stats["effective_power"] = (
+            self.stats["unit_count"] * self.stats["attack_damage"]
+        )
 
     def get_enemies(self):
         """find enemies"""
         # Filter out same team groups using filter
         enemy_groups = list(
             filter(
-                lambda group: group.army.team != self.army.team, self.army.parent.groups['alive']
+                lambda group: group.army.team != self.army.team,
+                self.army.parent.groups["alive"],
             )
         )
         return enemy_groups
 
     def calc_attack(self, enemy):
         """calculate attack"""
-        if self.stats['attack_type'] in enemy.mods['immunities']:
+        if self.stats["attack_type"] in enemy.mods["immunities"]:
             return 0
         # init effective_damage
-        effective_damage = self.stats['effective_power']
+        effective_damage = self.stats["effective_power"]
         # However, if the defending group is immune to the attacking group's attack type,
         # the defending group instead takes no damage;
 
         # if the defending group is weak to the attacking group's attack type, the defending
         # group instead takes double damage.
-        if self.stats['attack_type'] in enemy.mods['weaknesses']:
+        if self.stats["attack_type"] in enemy.mods["weaknesses"]:
             effective_damage *= 2
         # return
         return effective_damage
@@ -362,7 +370,9 @@ class Group():
         """
         # 6) Defending groups can only be chosen as a target by one attacking group.
         # get target groups
-        target_groups = list(filter(lambda group: not group.defending, self.get_enemies()))
+        target_groups = list(
+            filter(lambda group: not group.defending, self.get_enemies())
+        )
 
         # init max values
         max_attack = 0
@@ -383,11 +393,11 @@ class Group():
             if effective_attack == max_attack:
                 max_targets.append(group)
         # if max_attack > 0 and there are targets
-        if  max_attack and max_targets:
+        if max_attack and max_targets:
             # sort targets by effective_power and initiative
             max_targets.sort(
-                key=lambda g: (g.stats['effective_power'], g.stats['initiative']),
-                reverse=True
+                key=lambda g: (g.stats["effective_power"], g.stats["initiative"]),
+                reverse=True,
             )
             # grab the first target
             target = max_targets[0]
@@ -402,7 +412,7 @@ class Group():
         if not self.attacking:
             return
         target = self.attacking
-        if self.stats['unit_count'] == 0:
+        if self.stats["unit_count"] == 0:
             self.attacking = None
             target.defending = None
             return
@@ -421,19 +431,19 @@ class Group():
         # init killed
         killed = 0
         # loop until damage will no longer kill
-        while damage > self.stats['hit_points']:
+        while damage > self.stats["hit_points"]:
             # walk units
             for unit in self.units:
                 if unit.alive:
                     # kill unit
                     killed += 1
                     unit.alive = False
-                    self.stats['unit_count'] -= 1
+                    self.stats["unit_count"] -= 1
                     # recalc effective_power
                     self.update_effective_power()
                     # decrement damage
-                    damage -= self.stats['hit_points']
-                    break # only kill one per pass, so we recheck damage
+                    damage -= self.stats["hit_points"]
+                    break  # only kill one per pass, so we recheck damage
             # if all units are dead, break the loop
             if not any((unit.alive for unit in self.units)):
                 break
@@ -445,7 +455,8 @@ class Group():
         my_string = f"{self.army.team} group {self.g_id}"
         return my_string
 
-class Unit():
+
+class Unit:
     """
     Class for fighting units
     Units within a group all have the same hit points (amount of damage a unit can take
@@ -456,6 +467,7 @@ class Unit():
     Note, I should probably do away with this class, and use a dict for Unit, but it works
     so here it is.
     """
+
     def __init__(self):
         """Init"""
         self.alive = True
@@ -469,13 +481,16 @@ class Unit():
         """useless method 2 to make pylint happy"""
         return self.group
 
+
 def parse_data(lines):
     """Parse input data"""
     # init combatants
     combatants = Combatants()
     # init regexes
-    pattern_army = re.compile(r'(.*):')
-    pg_str = r'(\d+) uni.*th (\d+) h.*ts\s*\(?([^)]*?)\)?\s*wi.*es (\d+) (\w+) da.*ve (\d+)'
+    pattern_army = re.compile(r"(.*):")
+    pg_str = (
+        r"(\d+) uni.*th (\d+) h.*ts\s*\(?([^)]*?)\)?\s*wi.*es (\d+) (\w+) da.*ve (\d+)"
+    )
     pattern_group = re.compile(pg_str)
     # walk lines
     for line in lines:
@@ -492,16 +507,17 @@ def parse_data(lines):
             # add new group
             current_army.add_group(
                 Group(
-                    units = int(match.group(1)),
-                    hit_points = int(match.group(2)),
-                    mods = match.group(3),
-                    attack_damage = int(match.group(4)),
-                    attack_type = match.group(5),
-                    initiative = int(match.group(6))
+                    units=int(match.group(1)),
+                    hit_points=int(match.group(2)),
+                    mods=match.group(3),
+                    attack_damage=int(match.group(4)),
+                    attack_type=match.group(5),
+                    initiative=int(match.group(6)),
                 )
             )
     # return
     return combatants
+
 
 def solve(input_value, part):
     """
@@ -530,10 +546,10 @@ def solve(input_value, part):
             armies = parse_data(input_value)
             armies.update()
             for army in armies:
-                if army.team == 'Immune System':
+                if army.team == "Immune System":
                     # print(f"Boosting {army.team} by {boost} with {army.units_remaining()} units")
                     for group in army.groups:
-                        group.stats['attack_damage'] += boost
+                        group.stats["attack_damage"] += boost
                         group.update_effective_power()
                         # print(f"{group}: {group.stats['attack_damage']}")
                     # print()
@@ -547,26 +563,17 @@ def solve(input_value, part):
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,24)
-    #input_text = my_aoc.load_text()
-    #print(input_text)
+    my_aoc = aoc.AdventOfCode(2018, 24)
+    # input_text = my_aoc.load_text()
+    # print(input_text)
     input_lines = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -576,4 +583,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

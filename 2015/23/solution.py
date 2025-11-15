@@ -24,6 +24,7 @@ REGISTERS = {"a": 0, "b": 0}
 INSTRUCTIONS = ["hlf", "tpl", "inc", "jmp", "jie", "jio"]
 PROGRAM = []
 
+
 def parse_input(lines):
     """
     Function to read filename and parse the program instructions

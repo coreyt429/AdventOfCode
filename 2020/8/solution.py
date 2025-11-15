@@ -6,11 +6,13 @@ is we will see this code again.  So I made it a class I can move to
 another module when we do.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 class GameConsole:
     """Class to represent a handheld game console"""
@@ -20,11 +22,7 @@ class GameConsole:
         self.program = self.load_program(program)
         self.ptr = 0
         self.accumulator = 0
-        self.function_map = {
-            "nop": self.nop,
-            "acc": self.acc,
-            "jmp": self.jmp
-        }
+        self.function_map = {"nop": self.nop, "acc": self.acc, "jmp": self.jmp}
 
     def load_program(self, program):
         """method to load program instructions"""
@@ -33,13 +31,8 @@ class GameConsole:
         if isinstance(program, str):
             program = program.splitlines()
         for line in program:
-            instruction, value = line.split(' ')
-            self.program.append(
-                {
-                    "instruction": instruction,
-                    "value": int(value)
-                }
-            )
+            instruction, value = line.split(" ")
+            self.program.append({"instruction": instruction, "value": int(value)})
         return self.program
 
     def nop(self, value):
@@ -62,6 +55,7 @@ class GameConsole:
         value = self.program[self.ptr]["value"]
         self.function_map[instruction](value)
 
+
 def test_loop(program):
     """Function to test a program for infinite loops"""
     hgc = GameConsole(program)
@@ -77,6 +71,7 @@ def test_loop(program):
     # print("Program exited")
     # What is the value of the accumulator after the program terminates?
     return hgc.accumulator
+
 
 def solve(input_value, part):
     """
@@ -95,15 +90,15 @@ def solve(input_value, part):
     # part 2
     for idx, line in enumerate(input_value):
         # No acc instructions were harmed in the corruption of this boot code.
-        if 'acc' in line:
+        if "acc" in line:
             continue
         test_program = list(input_value)
         # By changing exactly one jmp or nop, you can repair the boot code and
         # make it terminate correctly.
         if "nop" in line:
-            test_program[idx] = test_program[idx].replace('nop', 'jmp')
+            test_program[idx] = test_program[idx].replace("nop", "jmp")
         else:
-            test_program[idx] = test_program[idx].replace('jmp', 'nop')
+            test_program[idx] = test_program[idx].replace("jmp", "nop")
         result = test_loop(test_program)
         if result:
             # What is the value of the accumulator after the program terminates?
@@ -111,29 +106,18 @@ def solve(input_value, part):
     # this shouldn't be possible, but needed to make pylint happy
     return part
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,8)
+    my_aoc = aoc.AdventOfCode(2020, 8)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 1200,
-        2: 1023
-    }
+    correct = {1: 1200, 2: 1023}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -143,6 +127,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

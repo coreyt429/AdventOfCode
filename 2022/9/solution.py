@@ -12,32 +12,30 @@ I'm glad I didn't try to work this into Grid() instead first, that
 would have been more complex.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import linear_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import linear_distance  # pylint: disable=import-error
+
 
 class Knot:
     """class to represent a knot"""
+
     def __init__(self, knot_id=0, parent=None, children=0):
         self.knot_id = knot_id
         self.parent = parent
         self.child = None
         self.position = (0, 0)
-        self.history = [(0,0)]
+        self.history = [(0, 0)]
         if children > 0:
             self.child = Knot(knot_id + 1, self, children - 1)
 
     def move(self, direction):
         """Method to move head"""
-        moves = {
-            'u': ( 0,  1),
-            'd': ( 0, -1),
-            'l': (-1,  0),
-            'r': ( 1,  0)
-        }
+        moves = {"u": (0, 1), "d": (0, -1), "l": (-1, 0), "r": (1, 0)}
         self.position = (
             self.position[0] + moves[direction][0],
             self.position[1] + moves[direction][1],
@@ -68,12 +66,13 @@ class Knot:
             if self.child is not None:
                 self.child.check()
 
+
 class Rope:
     """Class to represent a rope"""
 
     def __init__(self, segments=2):
         """Init method"""
-        self.head = Knot(children=segments-1)
+        self.head = Knot(children=segments - 1)
         current = self.head
         self.segments = segments
         while current.child is not None:
@@ -82,7 +81,7 @@ class Rope:
 
     def make_move(self, move_str):
         """Function to make a move like U 4"""
-        direction, count = move_str.split(' ')
+        direction, count = move_str.split(" ")
         count = int(count)
         direction = direction.lower()
         for _ in range(count):
@@ -92,6 +91,7 @@ class Rope:
         """string method"""
         my_string = f"Head: {self.head.position}, Tail: {self.tail.position}"
         return my_string
+
 
 def solve(input_value, part):
     """
@@ -105,32 +105,21 @@ def solve(input_value, part):
         rope.make_move(move)
     return len(set(rope.tail.history))
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,9)
+    my_aoc = aoc.AdventOfCode(2022, 9)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 6087,
-        2: 2493
-    }
+    correct = {1: 6087, 2: 2493}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -140,6 +129,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

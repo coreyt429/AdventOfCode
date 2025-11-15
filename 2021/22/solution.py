@@ -23,6 +23,7 @@ The only other thing in this solution that I was totally overlooking in my attem
 the instructions so you don't have to keep track of the stack below the current cube.
 
 """
+
 # import system modules
 import time
 import re
@@ -33,14 +34,16 @@ import collections
 
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 
 Point = collections.namedtuple("Point", ["x", "y", "z"])
 Instruction = collections.namedtuple("Instruction", ["value", "cuboid"])
 
+
 class Cuboid:
     """Class to represent a Cuboid"""
+
     def __init__(self, corner1: Point, corner2: Point):
         """Init method"""
         self.corner_1: Point = corner1
@@ -52,9 +55,7 @@ class Cuboid:
 
     def is_valid(self) -> bool:
         """Method to determine if a Cuboid is ordered correctly"""
-        return all(
-            (c_1 < c_2 for c_1, c_2 in zip(self.corner_1, self.corner_2))
-        )
+        return all((c_1 < c_2 for c_1, c_2 in zip(self.corner_1, self.corner_2)))
 
     @property
     def volume(self):
@@ -62,6 +63,7 @@ class Cuboid:
         return math.prod(
             (c_2 - c_1 + 1 for c_1, c_2 in zip(self.corner_1, self.corner_2))
         )
+
 
 def cuboid_get_overlap(cube_a: Cuboid, cube_b: Cuboid) -> Cuboid or None:
     """Function to compare two Cuboids and return the overlapping Cuboid"""
@@ -75,17 +77,20 @@ def cuboid_get_overlap(cube_a: Cuboid, cube_b: Cuboid) -> Cuboid or None:
         Point(
             max(cube_a.corner_1.x, cube_b.corner_1.x),
             max(cube_a.corner_1.y, cube_b.corner_1.y),
-            max(cube_a.corner_1.z, cube_b.corner_1.z)),
+            max(cube_a.corner_1.z, cube_b.corner_1.z),
+        ),
         Point(
             min(cube_a.corner_2.x, cube_b.corner_2.x),
             min(cube_a.corner_2.y, cube_b.corner_2.y),
-            min(cube_a.corner_2.z, cube_b.corner_2.z))
+            min(cube_a.corner_2.z, cube_b.corner_2.z),
+        ),
     )
     return overlap if overlap.is_valid() else None
 
+
 pattern_input = re.compile(
-    r'(on|off) x=(\-*\d+)\.\.(\-*\d+),y=(\-*\d+)\.\.(\-*\d+),z=(\-*\d+)\.\.(\-*\d+)'
-    )
+    r"(on|off) x=(\-*\d+)\.\.(\-*\d+),y=(\-*\d+)\.\.(\-*\d+),z=(\-*\d+)\.\.(\-*\d+)"
+)
 
 
 def parse_data(lines):
@@ -93,18 +98,21 @@ def parse_data(lines):
     data = []
     for line in lines:
         values = pattern_input.findall(line)[0]
-        data.append({
-            'state': values[0],
-            'x_range': (int(values[1]), int(values[2])),
-            'y_range': (int(values[3]), int(values[4])),
-            'z_range': (int(values[5]), int(values[6])),
-            'points': points_in_cube(
+        data.append(
+            {
+                "state": values[0],
+                "x_range": (int(values[1]), int(values[2])),
+                "y_range": (int(values[3]), int(values[4])),
+                "z_range": (int(values[5]), int(values[6])),
+                "points": points_in_cube(
                     (int(values[1]), int(values[2])),
                     (int(values[3]), int(values[4])),
-                    (int(values[5]), int(values[6]))
-            )
-        })
+                    (int(values[5]), int(values[6])),
+                ),
+            }
+        )
     return data
+
 
 def parse_input(lines: list) -> list[Instruction]:
     """function to parse input for part 2"""
@@ -117,13 +125,15 @@ def parse_input(lines: list) -> list[Instruction]:
             # nice check to be sure the input is what we expected.  I was just using
             # min/max everywhere, but this lets us trust the input
             assert point_1 == Point(
-                min(point_1.x, point_2.x), min(point_1.y, point_2.y), min(point_1.z, point_2.z)
-                ), \
-                "Input data ordering doesn't comply with expected min..max format"
+                min(point_1.x, point_2.x),
+                min(point_1.y, point_2.y),
+                min(point_1.z, point_2.z),
+            ), "Input data ordering doesn't comply with expected min..max format"
             assert point_2 == Point(
-                max(point_1.x, point_2.x), max(point_1.y, point_2.y), max(point_1.z, point_2.z)
-                ), \
-                "Input data ordering doesn't comply with expected min..max format"
+                max(point_1.x, point_2.x),
+                max(point_1.y, point_2.y),
+                max(point_1.z, point_2.z),
+            ), "Input data ordering doesn't comply with expected min..max format"
             # Commented this out, because I don't agree that the +1 should be here
             # added it in the volume calculation instead
             # point_2 = Point(point_2.x + 1, point_2.y + 1, point_2.z + 1)
@@ -132,12 +142,16 @@ def parse_input(lines: list) -> list[Instruction]:
         else:
             # Complain if the assumption regarding the order of inputs is violated so those
             # values aren't just silently discarded.
-            assert False, f"Error reading line: {line} -- are the coordinates out of order?"
+            assert False, (
+                f"Error reading line: {line} -- are the coordinates out of order?"
+            )
     return instructions
+
 
 def points_in_cube(*ranges):
     """Function to count the points in a cube"""
     return math.prod((abs(operator.sub(*range)) + 1 for range in ranges))
+
 
 def cubes_overlap(c_1, c_2):
     """Function to determine if two cubes overlap"""
@@ -146,20 +160,20 @@ def cubes_overlap(c_1, c_2):
         return False
     return True
 
+
 def get_overlap(c_1, c_2):
     """Function to return the overlap of two cubes"""
     overlap = {}
-    for dim in ['x_range', 'y_range', 'z_range']:
-        if (
-            min(c_1[dim]) <= max(c_2[dim]) and max(c_1[dim]) >= min(c_2[dim])
-        ):
+    for dim in ["x_range", "y_range", "z_range"]:
+        if min(c_1[dim]) <= max(c_2[dim]) and max(c_1[dim]) >= min(c_2[dim]):
             overlap[dim] = (
                 max(min(c_1[dim]), min(c_2[dim])),
-                min(max(c_1[dim]), max(c_2[dim]))
+                min(max(c_1[dim]), max(c_2[dim])),
             )
         else:
             return {}
     return overlap
+
 
 def find_overlapping_cubes(cubes):
     """Function to find overlapping cubes from a cube list"""
@@ -168,33 +182,31 @@ def find_overlapping_cubes(cubes):
         if cubes_overlap(cubes[c_1], cubes[c_2]):
             overlap = get_overlap(cubes[c_1], cubes[c_2])
             overlap_id = tuple(sorted((c_1, c_2)))
-            overlap['points'] = points_in_cube(
-                overlap['x_range'],
-                overlap['y_range'],
-                overlap['z_range']
+            overlap["points"] = points_in_cube(
+                overlap["x_range"], overlap["y_range"], overlap["z_range"]
             )
             overlaps[overlap_id] = overlap
     return overlaps
 
+
 def initialization_test(cubes):
     """Function to run intialization test (part 1)"""
-    target = {
-        "x_range": (-50, 50),
-        "y_range": (-50, 50),
-        "z_range": (-50, 50)
-    }
+    target = {"x_range": (-50, 50), "y_range": (-50, 50), "z_range": (-50, 50)}
 
     answer_cube = {}
     for cube in cubes:
         if not cubes_overlap(cube, target):
             continue
         overlap = get_overlap(cube, target)
-        for x_val in range(min(overlap['x_range']), max(overlap['x_range']) + 1):
-            for y_val in range(min(overlap['y_range']), max(overlap['y_range']) + 1):
-                for z_val in range(min(overlap['z_range']), max(overlap['z_range']) + 1):
-                    answer_cube[(x_val, y_val, z_val)] = cube['state']
+        for x_val in range(min(overlap["x_range"]), max(overlap["x_range"]) + 1):
+            for y_val in range(min(overlap["y_range"]), max(overlap["y_range"]) + 1):
+                for z_val in range(
+                    min(overlap["z_range"]), max(overlap["z_range"]) + 1
+                ):
+                    answer_cube[(x_val, y_val, z_val)] = cube["state"]
     counter = collections.Counter(answer_cube.values())
-    return counter.get('on')
+    return counter.get("on")
+
 
 def run_instructions(instructions: list[Instruction]):
     """Function to execut instruction list.  Mostly untouched rom borrowed solution"""
@@ -244,32 +256,21 @@ def solve(input_value, part):
     instructions = parse_input(input_value)
     return run_instructions(instructions)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,22)
+    my_aoc = aoc.AdventOfCode(2021, 22)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: 577205,
-        2: 1197308251666843
-    }
+    answer = {1: 577205, 2: 1197308251666843}
     # correct answers once solved, to validate changes
-    correct = {
-        1: None,
-        2: None
-    }
+    correct = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -279,6 +280,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

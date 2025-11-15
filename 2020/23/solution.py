@@ -21,12 +21,14 @@ and added = False statements at the end of the loop to reset the flags after the
 I'm at a consistent < 40 seconds now, and I'm happy with that for this one.
 
 """
+
 # import system modules
 import time
 import numpy as np
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def move_cups_numpy(cups, current_cup):
     """Functions to move cups 1 turn"""
@@ -105,6 +107,7 @@ def move_cups_linked_list(cups, moves):
         pickup_flags[[pickup1, pickup2, pickup3]] = False
     return linked_list
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -127,47 +130,36 @@ def solve(input_value, part):
         # ten million (10000000) moves!
         moves = 10000000
         # moves = 1000000
-    linked_list =  move_cups_linked_list(my_cups, moves)
+    linked_list = move_cups_linked_list(my_cups, moves)
     cup = 1
     if part == 1:
         # What are the labels on the cups after cup 1
-        cup_string = ''
+        cup_string = ""
         for _ in range(len(my_cups)):
             cup_string += f"{cup}"
             cup = linked_list[cup]
-        return int(cup_string.replace('1',''))
+        return int(cup_string.replace("1", ""))
 
     nums = []
     # Determine which two cups will end up immediately clockwise of cup 1.
-    for _ in (1,2):
+    for _ in (1, 2):
         cup = linked_list[cup]
         nums.append(cup)
     # What do you get if you multiply their labels together?
     return np.prod(nums, dtype=object)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,23)
+    my_aoc = aoc.AdventOfCode(2020, 23)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 43769582,
-        2: 264692662390
-    }
+    correct = {1: 43769582, 2: 264692662390}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -177,6 +169,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

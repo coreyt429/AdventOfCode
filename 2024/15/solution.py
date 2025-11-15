@@ -20,22 +20,25 @@ which was causing a scenario where some boxes got moved twice.  Updated
 to use a set instead, so they would only be considered once.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def parse_input(text):
     """Function to parse input data"""
-    map_text, directions_text  = text.split("\n\n")
-    directions_text = directions_text.replace("\n","")
+    map_text, directions_text = text.split("\n\n")
+    directions_text = directions_text.replace("\n", "")
     return map_text, directions_text
 
 
 class WareHouse(Grid):
     """Class to represent a warehouse"""
+
     def __init__(self, map_text):
         super().__init__(map_text, use_overrides=False)
         self.boxes = []
@@ -45,12 +48,12 @@ class WareHouse(Grid):
     def load_items(self):
         """Method to load robot and box items"""
         for point, symbol in self.items():
-            if symbol == '@':
+            if symbol == "@":
                 self.robot = Item(symbol, point, self)
-            elif symbol == 'O':
+            elif symbol == "O":
                 self.add_item(symbol, point)
-            elif symbol == '[':
-                self.add_item('[]', point)
+            elif symbol == "[":
+                self.add_item("[]", point)
 
     def get_item(self, position):
         """method to get item at position"""
@@ -65,14 +68,11 @@ class WareHouse(Grid):
         self.boxes.append(item)
         return item
 
-class Item():
+
+class Item:
     """Class to represent wharehouse items"""
-    direction_map = {
-        '^': 'n',
-        '>': 'e',
-        'v': 's',
-        '<': 'w'
-    }
+
+    direction_map = {"^": "n", ">": "e", "v": "s", "<": "w"}
 
     def __init__(self, symbol, position, parent):
         self.parent = parent
@@ -81,11 +81,11 @@ class Item():
         self.positions = [position]
         last_pos = position
         for _ in range(len(symbol[1:])):
-            neighbors = self.parent.get_neighbors(point=last_pos,directions=['e'])
+            neighbors = self.parent.get_neighbors(point=last_pos, directions=["e"])
             # safety condition, this should always be true
-            if 'e' in neighbors:
-                self.positions.append(neighbors['e'])
-                last_pos = neighbors['e']
+            if "e" in neighbors:
+                self.positions.append(neighbors["e"])
+                last_pos = neighbors["e"]
 
     def move(self, instruction, test=False):
         """Method to move an item"""
@@ -93,12 +93,14 @@ class Item():
         targets = []
         states = []
         for position in self.positions:
-            neighbors = self.parent.get_neighbors(point=position, directions=[direction])
+            neighbors = self.parent.get_neighbors(
+                point=position, directions=[direction]
+            )
             targets.append(neighbors[direction])
             states.append(self.parent.get_point(point=neighbors[direction]))
 
         # if any position is a wall, we can't move
-        if '#' in states:
+        if "#" in states:
             return False
         others = set()
         # check to see if we can move
@@ -106,7 +108,7 @@ class Item():
             # don't consider our other half as an obstacle
             if target in self.positions:
                 continue
-            if states[idx] == '.':
+            if states[idx] == ".":
                 # . doesn't change our ability to move
                 continue
             other = self.parent.get_item(position=target)
@@ -121,7 +123,7 @@ class Item():
         for position in self.positions:
             # blank current positions, so we don't have to worry
             # about order
-            self.parent.set_point(position, '.')
+            self.parent.set_point(position, ".")
         for other in others:
             other.move(instruction)
         for idx, target in enumerate(targets):
@@ -132,6 +134,7 @@ class Item():
     def __str__(self):
         """String method"""
         return f"{self.symbol}: {self.position}"
+
 
 def expand_map(map_text):
     """Function to expand map (part 2)"""
@@ -144,16 +147,17 @@ def expand_map(map_text):
             new_map_text += char
             continue
         # If the tile is O, the new map contains [] instead.
-        if char == 'O':
-            new_map_text += '[]'
+        if char == "O":
+            new_map_text += "[]"
             continue
         # If the tile is @, the new map contains @. instead.
-        if char == '@':
-            new_map_text += '@.'
+        if char == "@":
+            new_map_text += "@."
             continue
         # \n
         new_map_text += char
     return new_map_text
+
 
 def solve(input_value, part):
     """
@@ -174,29 +178,18 @@ def solve(input_value, part):
 
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,15)
+    my_aoc = aoc.AdventOfCode(2024, 15)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 1429911,
-        2: 1453087
-    }
+    correct = {1: 1429911, 2: 1453087}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -206,6 +199,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

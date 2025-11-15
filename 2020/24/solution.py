@@ -8,24 +8,27 @@ I had to expand the hex grids capabilities for this one.
 Fun puzzle though.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
-class Hex():
+
+class Hex:
     """
     Class to represent a hex tile
     """
+
     # define direction offsets
     directions = {
-        "e": (1, -1, 0),   # East
-        "w": (-1, 1, 0),   # West
+        "e": (1, -1, 0),  # East
+        "w": (-1, 1, 0),  # West
         "ne": (0, -1, 1),  # Northeast
         "nw": (-1, 0, 1),  # Northwest
         "se": (1, 0, -1),  # Southeast
-        "sw": (0, 1, -1)   # Southwest
+        "sw": (0, 1, -1),  # Southwest
     }
 
     def __init__(self, parent, x_val, y_val, z_val):
@@ -61,7 +64,7 @@ class Hex():
         sequence = list(sequence)
         while sequence:
             direction = sequence.pop(0)
-            if sequence and direction in ['n', 's'] and sequence[0] in ['e', 'w']:
+            if sequence and direction in ["n", "s"] and sequence[0] in ["e", "w"]:
                 direction += sequence.pop(0)
             tile = tile.step(direction)
         return tile
@@ -74,9 +77,7 @@ class Hex():
         dx_val, dy_val, dz_val = self.directions[direction]
         # ask HexGrid for our neighbor, why return, who knows what I was thinking
         return self.parent.get_neighbor(
-            self.x_val + dx_val,
-            self.y_val + dy_val,
-            self.z_val + dz_val
+            self.x_val + dx_val, self.y_val + dy_val, self.z_val + dz_val
         )
 
     def flip(self):
@@ -86,33 +87,34 @@ class Hex():
         else:
             self.color = "white"
 
-class HexGrid():
+
+class HexGrid:
     """
     Class to represent a grid of hex tiles
     """
+
     # define direction offsets
     directions = {
-        "e": (1, -1, 0),   # East
-        "w": (-1, 1, 0),   # West
+        "e": (1, -1, 0),  # East
+        "w": (-1, 1, 0),  # West
         "ne": (0, -1, 1),  # Northeast
         "nw": (-1, 0, 1),  # Northwest
         "se": (1, 0, -1),  # Southeast
-        "sw": (0, 1, -1)   # Southwest
+        "sw": (0, 1, -1),  # Southwest
     }
+
     def __init__(self):
         """
         Init grid
         """
         # store tiles, and create start tile
-        self.tiles = {
-            (0,0,0): Hex(self, 0,0,0)
-        }
+        self.tiles = {(0, 0, 0): Hex(self, 0, 0, 0)}
         # init start
-        self.start = self.tiles[(0,0,0)]
+        self.start = self.tiles[(0, 0, 0)]
         # init current as start
-        self.current = self.tiles[(0,0,0)]
+        self.current = self.tiles[(0, 0, 0)]
 
-    def get_neighbor(self, x_val ,y_val, z_val):
+    def get_neighbor(self, x_val, y_val, z_val):
         """
         Function to get neighbor
         """
@@ -145,10 +147,10 @@ class HexGrid():
         else:
             x_val, y_val, z_val = pos
         # calculate distance
-        return  0.5 * (
-            abs(x_val - self.start.x_val) +
-            abs(y_val - self.start.y_val) +
-            abs(z_val - self.start.z_val)
+        return 0.5 * (
+            abs(x_val - self.start.x_val)
+            + abs(y_val - self.start.y_val)
+            + abs(z_val - self.start.z_val)
         )
 
     def get_neighbors(self, pos):
@@ -163,15 +165,12 @@ class HexGrid():
 
     def expand(self):
         """Method to expand grid one layer"""
-        max_distance = {
-            "white": 0,
-            "black": 0
-        }
+        max_distance = {"white": 0, "black": 0}
         for pos, tile in self.tiles.items():
             max_distance[tile.color] = max(max_distance[tile.color], tile.radius)
         # print(f"max_distance: {max_distance}")
         # 6 is the biggest radius for the first map
-        if max_distance['white'] < max_distance["black"] + 6:
+        if max_distance["white"] < max_distance["black"] + 6:
             current_pos = list(self.tiles)
             for pos in current_pos:
                 self.get_neighbors(pos)
@@ -212,10 +211,11 @@ class HexGrid():
 
     def __str__(self):
         """string representation"""
-        my_str = ''
+        my_str = ""
         for tile in self.tiles.values():
             my_str += str(tile) + "\n"
         return my_str
+
 
 def solve(input_value, part):
     """
@@ -234,29 +234,18 @@ def solve(input_value, part):
         # print(f"Day {day}: {grid.black_tiles()}")
     return grid.black_tiles()
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,24)
+    my_aoc = aoc.AdventOfCode(2020, 24)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 307,
-        2: 3787
-    }
+    correct = {1: 307, 2: 3787}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -266,6 +255,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

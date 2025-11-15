@@ -18,14 +18,16 @@ My understanding of the logic is to collapse the 3d structure to a line, and ide
 point in that line that is inside the most circles.
 
 """
+
 # import system modules
 import time
 import re
 from queue import PriorityQueue
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import manhattan_distance  # pylint: disable=import-error
+
 
 def parse_input(lines):
     """
@@ -36,7 +38,7 @@ def parse_input(lines):
         bots: dict() keyed on tuple(x,y,z)
     """
     # regex to parse input
-    pattern_input = re.compile(r'pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)')
+    pattern_input = re.compile(r"pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)")
 
     bots = {}
     for line in lines:
@@ -46,6 +48,7 @@ def parse_input(lines):
             pos_x, pos_y, pos_z, radius = [int(num) for num in match[0]]
             bots[(pos_x, pos_y, pos_z)] = radius
     return bots
+
 
 def closest_max_intersection(points, origin=(0, 0, 0)):
     """
@@ -85,6 +88,7 @@ def closest_max_intersection(points, origin=(0, 0, 0)):
             max_count = count
     return result
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -104,25 +108,17 @@ def solve(input_value, part):
     # part 2:
     return closest_max_intersection(nanobots)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018,23)
+    my_aoc = aoc.AdventOfCode(2018, 23)
     # grab input
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -132,4 +128,6 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )

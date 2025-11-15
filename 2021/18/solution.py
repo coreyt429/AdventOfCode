@@ -2,35 +2,39 @@
 Advent Of Code 2021 day 18
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
 
 
-pattern_digit = re.compile(r'(\d+)')
-pattern_pair = re.compile(r'\[(\d+),(\d+)\]')
+pattern_digit = re.compile(r"(\d+)")
+pattern_pair = re.compile(r"\[(\d+),(\d+)\]")
+
 
 def add_snail_numbers(left, right):
     """Function to add two snail numbers"""
     return f"[{left},{right}]"
+
 
 def can_explode(string):
     """Function to identify the exploding pair if any"""
     max_depth = 0
     depth = 0
     for idx, char in enumerate(string):
-        if char == '[':
+        if char == "[":
             depth += 1
             max_depth = max(depth, max_depth)
             if max_depth > 4:
                 return True, idx
             continue
-        if char == ']':
+        if char == "]":
             depth -= 1
     return False, 0
+
 
 def add_explode_num(string, num, left=False):
     """Function to replace the first digit"""
@@ -45,21 +49,25 @@ def add_explode_num(string, num, left=False):
     if left:
         last_index = string.rfind(target_num)
         if last_index != -1:
-            new_string = string[:last_index] + new_num + string[last_index + len(target_num):]
+            new_string = (
+                string[:last_index] + new_num + string[last_index + len(target_num) :]
+            )
     return new_string
+
 
 def explode_snail_number(string, idx):
     """Function to exlode a pair"""
     left = string[:idx]
     right = string[idx:]
-    exp_pair = right[:right.index(']') + 1]
-    right = right[len(exp_pair):]
+    exp_pair = right[: right.index("]") + 1]
+    right = right[len(exp_pair) :]
     exp_pair = [int(num) for num in pattern_digit.findall(exp_pair)]
     # the pair's left value is added to the first regular number to the
     # left of the exploding pair (if any)
     left = add_explode_num(left, exp_pair[0], True)
     right = add_explode_num(right, exp_pair[1])
-    return left + '0' + right
+    return left + "0" + right
+
 
 def can_split(string):
     """Function to determine if a snail number can be split"""
@@ -70,6 +78,7 @@ def can_split(string):
             return True, str(num)
     return False, -1
 
+
 def split_snail_number(string, num):
     """Function to split a snail number"""
     # To split a regular number, replace it with a pair; the left element of
@@ -79,10 +88,11 @@ def split_snail_number(string, num):
     # 12": [6,6], and so on.
     idx = string.index(num)
     left = string[:idx]
-    right = string[idx + len(num):]
+    right = string[idx + len(num) :]
     num = int(num)
-    middle = f"[{num//2},{num - (num //2)}]"
+    middle = f"[{num // 2},{num - (num // 2)}]"
     return left + middle + right
+
 
 def reduce_snail_number(string):
     """Function to reduce a snail number"""
@@ -102,6 +112,7 @@ def reduce_snail_number(string):
             continue
     return working_string
 
+
 def calc_magnitude(string):
     """Function to calculate magnitude"""
     working_string = string
@@ -109,10 +120,10 @@ def calc_magnitude(string):
     magnitude = 0
     while match:
         span = match.span()
-        left = working_string[:span[0]]
-        right = working_string[span[1]:]
+        left = working_string[: span[0]]
+        right = working_string[span[1] :]
         pair = [int(num) for num in match.groups()]
-        magnitude = pair[0]*3 + pair[1]*2
+        magnitude = pair[0] * 3 + pair[1] * 2
         working_string = left + str(magnitude) + right
         match = pattern_pair.search(working_string)
     return int(working_string)
@@ -140,32 +151,21 @@ def solve(input_value, part):
         working_number = reduce_snail_number(working_number)
     return calc_magnitude(working_number)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,18)
+    my_aoc = aoc.AdventOfCode(2021, 18)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 4433,
-        2: 4559
-    }
+    correct = {1: 4433, 2: 4559}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -175,6 +175,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

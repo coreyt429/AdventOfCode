@@ -5,11 +5,13 @@ nice simple puzzle to end.  Nice win after the brutality of the 24th.
 
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def move_sea_cucumbers(in_map):
     """Function to move sea cucumbers one step"""
@@ -19,44 +21,46 @@ def move_sea_cucumbers(in_map):
     # there is a sea cucumber in the adjacent location it's facing (even another sea cucumber
     # facing the same direction), and then every sea cucumber facing an empty location
     # simultaneously moves into that location.
-    out_map = [['.']*len(line) for line in in_map]
+    out_map = [["."] * len(line) for line in in_map]
     row_count = len(in_map)
     col_count = len(in_map[0])
     move_count = 0
     # move east
     for row, line in enumerate(in_map):
         for col, char in enumerate(line):
-            if char == '>':
-                if line[(col + 1) % col_count] == '.':
-                    out_map[row][(col + 1) % col_count] = '>'
-                    out_map[row][col] = '.'
+            if char == ">":
+                if line[(col + 1) % col_count] == ".":
+                    out_map[row][(col + 1) % col_count] = ">"
+                    out_map[row][col] = "."
                     move_count += 1
                 else:
-                    out_map[row][col] = '>'
+                    out_map[row][col] = ">"
     # move south
     for row, line in enumerate(in_map):
         for col, char in enumerate(line):
-            if char == 'v':
+            if char == "v":
                 # if slot is open in the current map, and not already occupied in the new map
                 if all(
                     [
-                        in_map[(row + 1) % row_count][col] != 'v',
-                        out_map[(row + 1) % row_count][col] == '.'
+                        in_map[(row + 1) % row_count][col] != "v",
+                        out_map[(row + 1) % row_count][col] == ".",
                     ]
                 ):
-                    out_map[(row + 1) % row_count][col] = 'v'
-                    out_map[row][col] = '.'
+                    out_map[(row + 1) % row_count][col] = "v"
+                    out_map[row][col] = "."
                     move_count += 1
                 else:
-                    out_map[row][col] = 'v'
+                    out_map[row][col] = "v"
     return move_count, out_map
+
 
 def print_map(in_map, title):
     """Function to print map for debug"""
     print(f"{title}:")
     for line in in_map:
-        print(''.join(line))
+        print("".join(line))
     print()
+
 
 def solve(input_value, part):
     """
@@ -79,32 +83,21 @@ def solve(input_value, part):
         #     ess = ''
         # print_map(current_map, f"After {idx} step{ess}")
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,25)
+    my_aoc = aoc.AdventOfCode(2021, 25)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 471,
-        2: "Remote Start Sleigh"
-    }
+    correct = {1: 471, 2: "Remote Start Sleigh"}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -114,6 +107,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

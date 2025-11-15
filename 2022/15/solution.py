@@ -10,23 +10,31 @@ using manhattan_distance, and the resulting area was diamond shaped.
 
 
 """
+
 # import system modules
 import time
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import manhattan_distance # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import manhattan_distance  # pylint: disable=import-error
 
-class Sensor():
+
+class Sensor:
     """Class to represent a sensor"""
 
     def __init__(self, position, beacon):
         self.position = position
         self.beacon = beacon
         self.scan_range = self.distance(beacon)
-        self.min = (self.position[0] - self.scan_range, self.position[1] - self.scan_range)
-        self.max = (self.position[0] + self.scan_range, self.position[1] + self.scan_range)
+        self.min = (
+            self.position[0] - self.scan_range,
+            self.position[1] - self.scan_range,
+        )
+        self.max = (
+            self.position[0] + self.scan_range,
+            self.position[1] + self.scan_range,
+        )
 
     def distance(self, point):
         """method to calculate distance between a sensor and a point"""
@@ -57,11 +65,14 @@ class Sensor():
             y_candidates = [y_s + d_y, y_s - d_y]
             for x_c in x_candidates:
                 for y_c in y_candidates:
-                    yield((x_c, y_c))
+                    yield ((x_c, y_c))
 
     def __str__(self):
         """String Method"""
-        return f"Sensor: {self.position}, range: {self.scan_range}, beacon: {self.beacon}"
+        return (
+            f"Sensor: {self.position}, range: {self.scan_range}, beacon: {self.beacon}"
+        )
+
 
 def find_uncovered_point(sensors, max_x, max_y):
     """Function to find the point that is not covered by a sensor"""
@@ -78,24 +89,26 @@ def find_uncovered_point(sensors, max_x, max_y):
                 # if all(manhattan_distance(point, s.position) > s.scan_range for s in sensors):
                 #     return point
                 if all(
-                        abs(
-                            point[0] - s.position[0]
-                        ) + abs(
-                            point[1] - s.position[1]
-                        ) > s.scan_range for s in sensors
-                    ):
+                    abs(point[0] - s.position[0]) + abs(point[1] - s.position[1])
+                    > s.scan_range
+                    for s in sensors
+                ):
                     # Found the uncovered point
                     return point
     return None  # If no point is found
 
+
 def parse_input(lines):
     """Function to read sensor data from input lines"""
-    pattern_input = re.compile(r'S.* x=(\-?\d+), y=(\-?\d+): c.*t x=(\-?\d+), y=(\-?\d+)')
+    pattern_input = re.compile(
+        r"S.* x=(\-?\d+), y=(\-?\d+): c.*t x=(\-?\d+), y=(\-?\d+)"
+    )
     sensors = []
     for line in lines:
         values = [int(num) for num in pattern_input.findall(line)[0]]
         sensors.append(Sensor(tuple(values[:2]), tuple(values[2:])))
     return sensors
+
 
 def solve(input_value, part, y_val=None):
     """
@@ -106,11 +119,11 @@ def solve(input_value, part, y_val=None):
         if y_val is None:
             y_val = 4000000
         point = find_uncovered_point(sensors, y_val, y_val)
-        return point[0]*4000000 + point[1]
+        return point[0] * 4000000 + point[1]
     if y_val is None:
         y_val = 2000000
     # part 1
-    min_x = float('infinity')
+    min_x = float("infinity")
     max_x = 0
     beacons = set()
     no_beacons = set()
@@ -132,32 +145,21 @@ def solve(input_value, part, y_val=None):
     # 105958 - extended search to max_range, still too low
     return len(no_beacons)
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022,15)
+    my_aoc = aoc.AdventOfCode(2022, 15)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 4876693,
-        2: 11645454855041
-    }
+    correct = {1: 4876693, 2: 11645454855041}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -167,6 +169,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

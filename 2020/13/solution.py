@@ -10,17 +10,19 @@ feel like I understand it a bit.  Will I remember this in the future
 probably not :(
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def find_next_departure(input_value):
     """function to solve part 1"""
     start_minute = int(input_value[0])
-    busses = [int(bus) for bus in input_value[1].split(',') if bus != 'x']
-    min_next_depart = float('infinity')
+    busses = [int(bus) for bus in input_value[1].split(",") if bus != "x"]
+    min_next_depart = float("infinity")
     min_bus = None
     for bus in busses:
         last_depart = (start_minute // bus) * bus
@@ -35,12 +37,13 @@ def find_next_departure(input_value):
             min_bus = bus
     return (min_next_depart - start_minute) * min_bus
 
+
 def find_cascading_departure(bus_string):
     """function to solve part 2"""
     busses = {}
     generators = {}
     current = {}
-    for idx, bus in enumerate(bus_string.split(',')):
+    for idx, bus in enumerate(bus_string.split(",")):
         if bus.isdigit():
             busses[idx] = int(bus)
             generators[idx] = departure_generator(int(bus))
@@ -60,6 +63,7 @@ def find_cascading_departure(bus_string):
         if cascade:
             return departure
 
+
 def departure_generator(bus_id):
     """Generator function for departure times"""
     idx = 0
@@ -67,10 +71,11 @@ def departure_generator(bus_id):
         yield idx * bus_id
         idx += 1
 
+
 def find_earliest_cascading_departure(bus_string):
     """Function to solve part2 quickly"""
     busses = {}
-    for idx, bus in enumerate(bus_string.split(',')):
+    for idx, bus in enumerate(bus_string.split(",")):
         if bus.isdigit():
             busses[idx] = int(bus)
     timestamp = 0
@@ -88,6 +93,7 @@ def find_earliest_cascading_departure(bus_string):
 
     return timestamp
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -98,28 +104,16 @@ def solve(input_value, part):
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,13)
+    my_aoc = aoc.AdventOfCode(2020, 13)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 3246,
-        2: 1010182346291467
-    }
+    correct = {1: 3246, 2: 1010182346291467}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -129,6 +123,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

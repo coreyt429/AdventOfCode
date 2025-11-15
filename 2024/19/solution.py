@@ -14,18 +14,22 @@ This let me just pass the remaining design string to the function, and it would
 pickup the towel list from solve().  This was much faster and used less memory.
 
 """
+
 # import system modules
 from functools import lru_cache
+
 # import my modules
 from heapq import heappush, heappop
-from aoc import AdventOfCode # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
 
 def parse_input(input_text):
     """Function to parse input"""
-    towels, designs = input_text.split('\n\n')
-    towels = towels.split(', ')
-    designs = designs.split('\n')
+    towels, designs = input_text.split("\n\n")
+    towels = towels.split(", ")
+    designs = designs.split("\n")
     return towels, designs
+
 
 def find_towel_heap(towels, design, part):
     """
@@ -42,7 +46,7 @@ def find_towel_heap(towels, design, part):
     selection = set()
     while heap:
         _, selected = heappop(heap)
-        selected_string = ''.join(selected)
+        selected_string = "".join(selected)
         if selected in seen:
             continue
         seen.add(selected)
@@ -54,13 +58,14 @@ def find_towel_heap(towels, design, part):
             selection.add(selected)
         for possible_towel in possible_towels:
             new_selected = selected + (possible_towel,)
-            new_selected_string = ''.join(new_selected)
+            new_selected_string = "".join(new_selected)
             if new_selected_string in seen:
                 continue
             if design.startswith(new_selected_string):
                 heappush(heap, (len(design) - len(new_selected_string), new_selected))
 
     return selection
+
 
 def find_towel_recursive(towels, design, current=None):
     """
@@ -71,7 +76,7 @@ def find_towel_recursive(towels, design, current=None):
     if current is None:
         current = []
     print(f"find_towel: {current}")
-    current_string = ''.join(current)
+    current_string = "".join(current)
     if current_string == design:
         return solutions + [current]
     for towel in towels:
@@ -79,21 +84,24 @@ def find_towel_recursive(towels, design, current=None):
             solutions.extend(find_towel_recursive(towels, design, current + [towel]))
     return solutions
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     towels, designs = parse_input(input_value)
     count = 0
+
     @lru_cache(maxsize=None)
     def find_towel_optimized(design):
         solutions = 0
-        if design == '':
+        if design == "":
             return 1
         for towel in towels:
             if design.startswith(towel):
-                solutions += find_towel_optimized(design[len(towel):])
+                solutions += find_towel_optimized(design[len(towel) :])
         return solutions
+
     if part == 1:
         for design in designs:
             if find_towel_optimized(design) > 0:
@@ -104,8 +112,9 @@ def solve(input_value, part):
             count += design_count
     return count
 
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(2024,19)
+    aoc = AdventOfCode(2024, 19)
     aoc.load_text()
     # my_aoc.load_list()
     # correct answers once solved, to validate changes

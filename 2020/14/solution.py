@@ -10,22 +10,25 @@ Oddly, I struggled more on part 1 than part 2.  Though not much of a struggle.
     # 3: 11139573408728 too high, continue was missing on mask condition
     # 4: 9967721333886, bingo
 """
+
 # import system modules
 import time
 from collections import defaultdict
 import re
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def mask_as_string(mask):
     """
     Function to convert mask back to string
     """
-    mask_list = ['X']*36
+    mask_list = ["X"] * 36
     for idx, value in mask.items():
         mask_list[idx] = value
-    return ''.join([str(char) for char in mask_list])
+    return "".join([str(char) for char in mask_list])
+
 
 def apply_mask(value, mask):
     """
@@ -42,26 +45,28 @@ def apply_mask(value, mask):
     # print(f"mask:    {mask_as_string(mask)}")
     for idx, mask_value in mask.items():
         value_list[idx] = mask_value
-    value_str = ''.join([str(num) for num in value_list])
+    value_str = "".join([str(num) for num in value_list])
     # print(f"result:  {value_str}  (decimal {int(value_str, 2)})")
     return int(value_str, 2)
+
 
 def build_mask(mask_str, version=1):
     """
     Funciton to build mask_dict from mask_str"""
     mask_dict = {}
     # convert mask_str to dict of replacement values
-    for idx, value in enumerate(mask_str.split(' = ')[1]):
-        if value != 'X':
+    for idx, value in enumerate(mask_str.split(" = ")[1]):
+        if value != "X":
             mask_dict[idx] = int(value)
         elif version == 2:
             mask_dict[idx] = value
     return mask_dict
 
+
 def mask_address(address, mask):
     """
     Function to mask addresses
-    
+
     If the bitmask bit is 1, the corresponding memory address bit is overwritten with 1.
     If the bitmask bit is X, the corresponding memory address bit is floating.
     """
@@ -71,7 +76,7 @@ def mask_address(address, mask):
     # print(f"address: {address_str}  (decimal {address})")
     # print(f"mask:    {mask_as_string(mask)}")
     address_list = list(address_str)
-    addresses = ['']
+    addresses = [""]
     for idx, value in mask.items():
         # If the bitmask bit is 0, the corresponding memory address bit is unchanged.
         if value == 0:
@@ -83,9 +88,9 @@ def mask_address(address, mask):
         new_addresses = []
         for new_address in addresses:
             # print(new_address)
-            if value == 'X':
-                new_addresses.append(new_address + '0')
-                new_addresses.append(new_address + '1')
+            if value == "X":
+                new_addresses.append(new_address + "0")
+                new_addresses.append(new_address + "1")
             else:
                 new_addresses.append(new_address + value)
         addresses = new_addresses
@@ -93,14 +98,15 @@ def mask_address(address, mask):
     #     print(address_str)
     return [int(address_str, 2) for address_str in addresses]
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     # The entire 36-bit address space begins initialized to the value 0 at every address.
-    memory=defaultdict(int)
+    memory = defaultdict(int)
     # mask = build_mask(input_value[0])
-    pattern_instruction = re.compile(r'(\d+)')
+    pattern_instruction = re.compile(r"(\d+)")
     for instruction in input_value:
         if "mask" in instruction:
             mask = build_mask(instruction, part)
@@ -120,29 +126,18 @@ def solve(input_value, part):
     #     print(idx, value)
     return sum(memory.values())
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020,14)
+    my_aoc = aoc.AdventOfCode(2020, 14)
     input_lines = my_aoc.load_lines()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 9967721333886,
-        2: 4355897790573
-    }
+    correct = {1: 9967721333886, 2: 4355897790573}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -152,6 +147,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

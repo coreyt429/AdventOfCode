@@ -2,17 +2,20 @@
 Advent Of Code 2021 day 11
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def convert_to_ints(grid):
     """convert char to int"""
     for point in grid:
         grid.set_point(point, int(grid.get_point(point)))
+
 
 def run_step(grid):
     """calculate octopus energy for a step"""
@@ -54,6 +57,7 @@ def run_step(grid):
 
     return len(flashed)
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
@@ -74,32 +78,21 @@ def solve(input_value, part):
             # How many total flashes are there after 100 steps?
             return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,11)
+    my_aoc = aoc.AdventOfCode(2021, 11)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 1632,
-        2: 303
-    }
+    correct = {1: 1632, 2: 303}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -109,6 +102,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

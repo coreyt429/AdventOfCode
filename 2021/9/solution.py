@@ -8,29 +8,34 @@ an empty value was using "not value" instead of "value is None".  So when I pass
 Part 1, simply iterate through the points and check to see if any neighbors are
 lower, if not, then it is a low point.
 
-Part 2, used the loop from Part 1 to detect low points, 
+Part 2, used the loop from Part 1 to detect low points,
 
 """
+
 # import system modules
 import time
 import math
 from heapq import heappop, heappush
 
 # import my modules
-import aoc # pylint: disable=import-error
-from grid import Grid # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 
 def is_low_point(point, grid):
     """
     Function to check if a point is a low point
     """
     low_point = True
-    for neighbor in grid.get_neighbors(point=point, directions=['n','s','e','w']).values():
+    for neighbor in grid.get_neighbors(
+        point=point, directions=["n", "s", "e", "w"]
+    ).values():
         value = grid.get_point(point)
         if value >= grid.get_point(neighbor):
             low_point = False
             break
     return low_point
+
 
 def convert_to_ints(grid):
     """convert character digits to integers for mathing"""
@@ -38,12 +43,16 @@ def convert_to_ints(grid):
         value = grid.get_point(point)
         grid.set_point(point, int(value))
 
+
 def calculate_basin_size(point, grid):
     """Function to calculate basin_size for a low_point"""
     heap = []
     basin = set()
-    directions = ['n', 's', 'e', 'w']
-    heappush(heap, (point, list(grid.get_neighbors(point=point, directions=directions).values())))
+    directions = ["n", "s", "e", "w"]
+    heappush(
+        heap,
+        (point, list(grid.get_neighbors(point=point, directions=directions).values())),
+    )
     while heap:
         current, neighbors = heappop(heap)
         current_value = grid.get_point(current)
@@ -68,10 +77,15 @@ def calculate_basin_size(point, grid):
                     heap,
                     (
                         neighbor,
-                        list(grid.get_neighbors(point=neighbor, directions=directions).values())
-                    )
+                        list(
+                            grid.get_neighbors(
+                                point=neighbor, directions=directions
+                            ).values()
+                        ),
+                    ),
                 )
     return len(basin)
+
 
 def solve(input_value, part):
     """
@@ -93,32 +107,21 @@ def solve(input_value, part):
     # 1280 too high  >= not >  this one tripped on 9 not being less than [9, 9, 9, 9]
     return total
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,9)
+    my_aoc = aoc.AdventOfCode(2021, 9)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 480,
-        2: 1045660
-    }
+    correct = {1: 480, 2: 1045660}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -128,6 +131,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

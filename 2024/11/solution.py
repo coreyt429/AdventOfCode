@@ -11,11 +11,14 @@ my code to the new data structure, and solve time is down to 0.04 seconds
 for part 2.
 
 """
+
 # import system modules
 import time
 from functools import lru_cache
+
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 @lru_cache(maxsize=None)
 def split_stone(stone):
@@ -28,6 +31,7 @@ def split_stone(stone):
         split_stones.append(int(stone_str[half:]))
         return True, split_stones
     return False, [stone]
+
 
 @lru_cache(maxsize=None)
 def change_stone(stone):
@@ -47,12 +51,13 @@ def change_stone(stone):
     # the old stone's number multiplied by 2024 is engraved on the new stone.
     return [stone * 2024]
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
     stones = {}
-    for stone in (int(num) for num in input_value.split(' ')):
+    for stone in (int(num) for num in input_value.split(" ")):
         stones[stone] = stones.get(stone, 0) + 1
     blinks = 25
     if part == 2:
@@ -69,29 +74,18 @@ def solve(input_value, part):
             stones[key] = value
     return sum(stones.values())
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024,11)
+    my_aoc = aoc.AdventOfCode(2024, 11)
     input_data = my_aoc.load_text()
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 235850,
-        2: 279903140844645
-    }
+    correct = {1: 235850, 2: 279903140844645}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -101,6 +95,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]

@@ -13,29 +13,27 @@ to optimize.  I failed my first answer, because I didn't copy scores.sort() from
 my test code to solve() function.
 
 """
+
 # import system modules
 import time
 
 # import my modules
-import aoc # pylint: disable=import-error
+import aoc  # pylint: disable=import-error
+
 
 def score_auto_complete(auto_complete_list):
     """Function to score an auto complete ending"""
-    points = {
-        ')': 1,
-        ']': 2,
-        '}': 3,
-        '>': 4
-    }
+    points = {")": 1, "]": 2, "}": 3, ">": 4}
     score = 0
     for char in auto_complete_list:
         score *= 5
         score += points[char]
     return score
 
+
 def auto_complete(line):
     """Function to auto complete the chunk closing"""
-    opens = {'(': ')', '[': ']', '{': '}', '<': '>'}
+    opens = {"(": ")", "[": "]", "{": "}", "<": ">"}
     expecting = []
     for _, char in enumerate(line):
         if char in opens:
@@ -49,6 +47,7 @@ def auto_complete(line):
     auto_complete_list = list(reversed(expecting))
     return auto_complete_list, score_auto_complete(auto_complete_list)
 
+
 def is_corrupted(line):
     """Function to identify corrupted lines"""
     # this initially failed because it was too simplistic.
@@ -58,7 +57,7 @@ def is_corrupted(line):
     #          to see if it is the last open set expecting[-1]
     #          also need to prune the last if it is
     # with that added logic, it seems to pass the test data at least.
-    opens = {'(': ')', '[': ']', '{': '}', '<': '>'}
+    opens = {"(": ")", "[": "]", "{": "}", "<": ">"}
     corrupted = False
     expecting = []
     char = None
@@ -80,16 +79,12 @@ def is_corrupted(line):
         break
     return corrupted, char
 
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    points = {
-        ')': 3,
-        ']': 57,
-        '}': 1197,
-        '>': 25137
-    }
+    points = {")": 3, "]": 57, "}": 1197, ">": 25137}
     score = 0
     scores = []
     for line in input_value:
@@ -109,32 +104,21 @@ def solve(input_value, part):
     # What is the total syntax error score for those errors?
     return score
 
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2021,10)
+    my_aoc = aoc.AdventOfCode(2021, 10)
     # input_data = my_aoc.load_text()
     # print(input_text)
     input_data = my_aoc.load_lines()
     # print(input_lines)
     # parts dict to loop
-    parts = {
-        1: 1,
-        2: 2
-    }
+    parts = {1: 1, 2: 2}
     # dict to store answers
-    answer = {
-        1: None,
-        2: None
-    }
+    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
-    correct = {
-        1: 411471,
-        2: 3122628974
-    }
+    correct = {1: 411471, 2: 3122628974}
     # dict to map functions
-    funcs = {
-        1: solve,
-        2: solve
-    }
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
@@ -144,6 +128,8 @@ if __name__ == "__main__":
         # log end time
         end_time = time.time()
         # print results
-        print(f"Part {my_part}: {answer[my_part]}, took {end_time-start_time} seconds")
+        print(
+            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
+        )
         if correct[my_part]:
             assert correct[my_part] == answer[my_part]
