@@ -107,6 +107,7 @@ def solve(input_value, part):
     memory = defaultdict(int)
     # mask = build_mask(input_value[0])
     pattern_instruction = re.compile(r"(\d+)")
+    mask = {}
     for instruction in input_value:
         if "mask" in instruction:
             mask = build_mask(instruction, part)

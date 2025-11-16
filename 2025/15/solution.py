@@ -5,7 +5,8 @@ Advent Of Code 2025 day 15
 # import system modules
 
 # import my modules
-from aoc import AdventOfCode # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
 
 def solve(input_value, part):
     """
@@ -13,8 +14,9 @@ def solve(input_value, part):
     """
     return part
 
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(2025,15)
+    aoc = AdventOfCode(2025, 15)
     aoc.load_text()
     # aoc.load_list()
     # correct answers once solved, to validate changes

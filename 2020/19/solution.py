@@ -9,7 +9,7 @@ Part 1 works.  Part 2 still needs some guardrails or a new strategy
 # import system modules
 import time
 from functools import lru_cache
-from heapq import heappop, heappush
+# from heapq import heappop, heappush
 # import sys
 # sys.setrecursionlimit(20000)
 
@@ -18,6 +18,7 @@ import aoc  # pylint: disable=import-error
 
 
 def parse_rule(rule_text):
+    """Parse a rule string into a tuple of options."""
     result = []
     options = rule_text.split(" | ")
     for option in options:
@@ -27,6 +28,7 @@ def parse_rule(rule_text):
 
 
 def parse_input(text):
+    """Parse input text into rules and messages."""
     rules_text, messages_text = text.split("\n\n")
     messages = messages_text.splitlines()
     rules_dict = {}
@@ -45,6 +47,7 @@ def parse_input(text):
 
 @lru_cache(maxsize=None)
 def strings_for_rule(rule, rules, part, recursion_depth=0):
+    """Generate all possible strings for a given rule."""
     # print(f"strings_for_rule({rule}, rules, {recursion_depth})")
     if recursion_depth > 20:
         return [""]
@@ -77,6 +80,7 @@ def strings_for_rule(rule, rules, part, recursion_depth=0):
 
 @lru_cache(maxsize=None)
 def match_rule_orig(message, rule_id, rules, part):
+    """Original matching function using precomputed strings."""
     if message in strings_for_rule(rules[rule_id], rules, part):
         return True
     return False
@@ -84,6 +88,7 @@ def match_rule_orig(message, rule_id, rules, part):
 
 @lru_cache(maxsize=None)
 def match_rule(message, rule_id, rules, part, recursion_depth=0):
+    """Recursive matching function."""
     if recursion_depth > 20:  # Limit recursion depth to avoid infinite loops
         return False
 
@@ -108,9 +113,6 @@ def match_rule(message, rule_id, rules, part, recursion_depth=0):
             return False
 
     # Standard recursive match for other rules
-    print(
-        f"{any(match_sequence(message, tuple(option), rules, part, recursion_depth + 1) for option in rule)}"
-    )
     return any(
         match_sequence(message, tuple(option), rules, part, recursion_depth + 1)
         for option in rule
@@ -119,6 +121,7 @@ def match_rule(message, rule_id, rules, part, recursion_depth=0):
 
 @lru_cache(maxsize=None)
 def match_sequence(message, rule_ids, rules, part, recursion_depth=0):
+    """Match a sequence of rules against the message."""
     if not rule_ids:
         return message == ""
 
@@ -151,7 +154,7 @@ def solve(input_value, part):
         rules = tuple(rules)
         # return part
     counter = 0
-    for idx, message in enumerate(messages):
+    for message in messages:
         matches = match_rule(message, 0, rules, part)
         if matches:
             counter += 1

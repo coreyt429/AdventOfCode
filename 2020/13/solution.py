@@ -62,6 +62,7 @@ def find_cascading_departure(bus_string):
                 cascade = False
         if cascade:
             return departure
+    raise RuntimeError("No cascading departure found")
 
 
 def departure_generator(bus_id):

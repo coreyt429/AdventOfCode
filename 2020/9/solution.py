@@ -18,6 +18,9 @@ from itertools import combinations
 # import my modules
 import aoc  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def find_first_invalid(numbers, preamble_size):
     """
@@ -103,8 +106,6 @@ if __name__ == "__main__":
     input_lines = my_aoc.load_lines()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
     correct = {1: 26134589, 2: 3535124}
     # dict to map functions
