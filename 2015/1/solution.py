@@ -10,27 +10,20 @@ import time
 import aoc  # pylint: disable=import-error
 
 
-# 0 0 3 3 3 -1 -1 -3
-def part1(data):
+def solve(input_value, part):
     """
-    Function to solve part 1
-    """
-    retval = 0
-    for char in data:
-        if char == "(":
-            retval += 1
-        elif char == ")":
-            retval -= 1
-    return retval
-
-
-def part2(data):
-    """
-    Function to solve part 2
+    Function to solve puzzle
     """
     retval = 0
+    if part == 1:
+        for char in input_value:
+            if char == "(":
+                retval += 1
+            elif char == ")":
+                retval -= 1
+        return retval
     floor = 0
-    for i, char in enumerate(data):
+    for i, char in enumerate(input_value):
         if char == "(":
             floor += 1
         elif char == ")":
@@ -52,13 +45,13 @@ if __name__ == "__main__":
     # dict to store answers
     answer = {1: None, 2: None}
     # dict to map functions
-    funcs = {1: part1, 2: part2}
+    funcs = {1: solve, 2: solve}
     # loop parts
     for my_part in parts:
         # log start time
         start_time = time.time()
         # get answer
-        answer[my_part] = funcs[my_part](input_text)
+        answer[my_part] = funcs[my_part](input_text, my_part)
         # log end time
         end_time = time.time()
         # print results
