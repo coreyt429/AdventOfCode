@@ -210,7 +210,7 @@ def run_program(program):
         )
 
 
-def solve(input_value):
+def solve(input_value, part=1):
     """
     Function to solve puzzle
     """
@@ -236,12 +236,12 @@ if __name__ == "__main__":
     # dict to map functions
     funcs = {1: solve, 2: solve}
     # loop parts
-    for part in parts:
+    for current_part in parts:
         # log start time
         start = time.time()
         # get answer
-        answer[part] = funcs[part](input_text)
+        answer[current_part] = funcs[current_part](input_text, part=current_part)
         # log end time
         end = time.time()
         # print results
-        print(f"Part {part}: {answer[part]}, took {end - start} seconds")
+        print(f"Part {current_part}: {answer[current_part]}, took {end - start} seconds")

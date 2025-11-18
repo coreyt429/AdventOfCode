@@ -42,9 +42,9 @@ this is the last bug for this one.
 
 Yes, part 1 finished after 3 days. At least I have more faith in Grid() now!
 
-Still a bit slow on part 1 (36 seconds), maybe revisit the first step selection.  Instead of starting
-at the penultimate step, let's try starting with the second step, and move out until we
-we have multiple first steps or we reach the penultimate step.
+Still a bit slow on part 1 (36 seconds), maybe revisit the first step selection.
+Instead of starting at the penultimate step, let's try starting with the second step,
+and move out until we have multiple first steps or we reach the penultimate step.
 
 Part 2, solution works for test case 1.
 
@@ -84,7 +84,6 @@ import networkx
 import aoc  # pylint: disable=import-error
 from grid import Grid, manhattan_distance  # pylint: disable=import-error
 
-debug = False
 test_games = [
     """#######
 #.G...#
@@ -134,6 +133,8 @@ test_games = [
 
 
 class PlayerIterator:
+    """Iterator for players that skips dead players"""
+
     def __init__(self, players):
         self.players = players
         self.iter_index = -1
@@ -153,13 +154,17 @@ class PlayerIterator:
 
 
 class Players:
+    """Container for players"""
+
     def __init__(self):
         self.players = []
 
     def append(self, player):
+        """Add a player to the container"""
         self.players.append(player)
 
     def sort(self):
+        """Sort players by reading order"""
         self.players.sort()
 
     def __len__(self):
@@ -169,62 +174,70 @@ class Players:
         return PlayerIterator(self.players)
 
     def __str__(self):
-        my_string = "Players:\n"
-        for player in self:
-            my_string += f"  {player}\n"
-        return my_string
+        return "Players:\n" + "\n".join(f"  {player}" for player in self) + "\n"
 
 
 class Player:
+    """Class to represent a player"""
+
     directions = ["n", "w", "e", "s"]
 
     def __init__(self, container, grid, team, pos, attack=3, hit_points=200):
         self.player_id = len(container)
         self.grid = grid
         self.team = team
-        self.opponent = "E" if team == "G" else "G"
         self.pos = pos
-        self.attack = attack
-        self.hit_points = hit_points
+        self.stats = {
+            "attack": attack,
+            "hit_points": hit_points,
+            "alive": True,
+        }
         self.grid.map[pos] = "."
         self.grid.overrides[pos] = self.team
         self.graph = None
         self.container = container
-        self.alive = True
+
+    @property
+    def alive(self):
+        """Get alive status"""
+        return self.stats["alive"]
+
+    @property
+    def opponent(self):
+        """Get opponent team"""
+        return "E" if self.team == "G" else "G"
 
     def can_attack(self):
+        """Determine if we can attack from current position"""
         return self.square_can_attack(self.pos)
 
     def opponent_by_position(self, pos):
+        """Get opponent by position"""
         for opponent in self.container:
             if opponent.pos == pos:
                 return opponent
         return None
 
     def square_can_attack(self, pos=None):
+        """Determine if we can attack from specified position"""
         can_attack = False
         targets = set()
         if not pos:
             pos = self.pos
-        # if debug: print(f"square_can_attack({pos})")
         neighbors = self.grid.get_neighbors(
             point=pos, directions=self.directions, invalid=["#"]
         )
-        # if debug: print(f"neighbors({neighbors})")
         # walk neighbors
         for neighbor in neighbors.values():
-            # if debug: print(f"neighbor({neighbor})")
             # is neighbor opponent
-            # if debug: print(f"self.grid.get_point(neighbor)({self.grid.get_point(neighbor)})")
             if self.grid.get_point(neighbor) == self.opponent:
-                # if debug: print(f"{pos} can attack {neighbor}")
                 # we can attack!
                 can_attack = True
                 targets.add(self.opponent_by_position(neighbor))
-        # if debug: print(f"returning {can_attack}, {[target for target in targets]}")
         return can_attack, targets
 
     def find_opponents(self):
+        """Find all opponents"""
         opponents = []
         for other in self.container:
             if other.team == self.opponent:
@@ -233,6 +246,7 @@ class Player:
         return opponents
 
     def open_squares(self):
+        """Find all open squares"""
         empty = set()
         for point in self.grid:
             if self.grid.get_point(point=point) == ".":
@@ -240,6 +254,7 @@ class Player:
         return empty
 
     def build_graph(self):
+        """Build movement graph"""
         weights = {"n": 0.01, "w": 0.02, "e": 0.03, "s": 0.04}
         self.graph = networkx.DiGraph()
         empty = self.open_squares()
@@ -259,6 +274,7 @@ class Player:
                         self.graph.add_edge(point, neighbor, weight=1)
 
     def find_open_squares(self, opponents):
+        """Find all open squares adjacent to opponents"""
         open_squares = []
         for other in opponents:
             # that are in range of each target; these are the squares which are adjacent
@@ -272,72 +288,30 @@ class Player:
                     open_squares.append(neighbor)
         return open_squares
 
-    # def find_shortest_paths(self, open_squares, limit=None, **kwargs):
-    #     debug = kwargs.get('debug', False)
-
-    #     #if debug: print(f"find_shortest_paths({open_squares})")
-    #     if not open_squares:
-    #         return []
-    #     if isinstance(open_squares, set):
-    #         open_squares = list(open_squares)
-    #     if isinstance(open_squares[0], int):
-    #         open_squares = [open_squares]
-    #     #if debug: print(f"open_squares: {open_squares}")
-    #     shortest_paths = []
-    #     shortest_path_length = float('infinity')
-    #     open_squares.sort(key=lambda open_square: manhattan_distance(self.pos, open_square))
-    #     for open_square in open_squares:
-    #         #if debug: print(f"{self}:  trying open_square: {open_square}")
-    #         # I have a feeling that we are also going to need to pass self.grid.overrides.keys() to prevent
-    #         # moving through another player, but we'll see.  the shortest_path function will have to be updated to handle that.
-    #         # this may be resolved with modifications to get_neighbors
-    #         # paths = self.grid.shortest_paths(self.pos, open_square, directions=self.directions, invalid=['#','G','E'], max_paths=10, limit=shortest_path_length, debug=debug)
-    #         paths = self.grid.shortest_paths(self.pos, open_square, directions=self.directions, invalid=['#','G','E'], max_paths=10, limit=shortest_path_length)
-
-    #         #if debug: print(f"paths: {paths}")
-    #         # no path?
-    #         if not paths:
-    #             continue
-    #         for path in paths:
-    #             # first or tie?
-    #             if not shortest_paths or len(path) == shortest_path_length:
-    #                 shortest_paths.append(path)
-    #                 shortest_path_length = len(path)
-    #             # new shortest
-    #             if len(path) < shortest_path_length:
-    #                 shortest_paths = [path]
-    #                 shortest_path_length = len(path)
-    #     return shortest_paths
-
     def move(self, pos):
+        """Move to specified position"""
         self.grid.overrides.pop(self.pos, None)
         self.pos = pos
         self.grid.overrides[self.pos] = self.team
 
     def eval_points(self, points):
-        ##if debug: print(f"eval_points({points})")
+        """Evaluate points to find the one that comes first in reading order"""
         if isinstance(points, set):
             points = list(points)
-        ##if debug: print(f"eval_points({points})")
         if not points:
             return None
         choice = points[0]
         for point in points:
-            ##if debug: print(f"before point:{point}, choice: {choice}")
             if point[1] < choice[1]:
-                ##if debug: print("Y is smaller")
                 choice = point
             elif point[1] == choice[1] and point[0] < choice[0]:
-                ##if debug: print("X is smaller")
                 choice = point
-        ##if debug: print(f"after point:{point}, choice: {choice}")
-        ##if debug: print(f"return: {choice}")
         return choice
 
-    def attempt_move(self, opponents, debug=False):
-        # if debug: print(self.grid)
-        # if debug: print(f"attempt_move({self}{[opponent.pos for opponent in opponents]})")
-        # Then, the unit identifies all of the open squares (.)   If the unit is not already in range of a target,
+    def attempt_move(self, opponents):
+        """Attempt to move towards closest opponent"""
+        # Then, the unit identifies all of the open squares (.)
+        # If the unit is not already in range of a target,
         # and there are no open squares which are in range of a target, the unit ends its turn.
         self.build_graph()
         closest_distance = float("infinity")
@@ -358,12 +332,10 @@ class Player:
                 shortest_paths.append(path)
         # not any, then we can't move, no problem, end turn
         if not shortest_paths:
-            # if debug: print(f"{self}:\n    Can't move")
             return True
 
         # identify nearest targets from shortest paths
         nearest_targets = [path[-1] for path in shortest_paths]
-        # if debug: print(f"nearest_targets: {nearest_targets}")
         # choose the target that comes first in the original order
         opponent_set = set()
         opponent_dict = {}
@@ -374,7 +346,6 @@ class Player:
             opponent_set.update([opponent.pos for opponent in opponents])
         # get the closest opponent
         nearest_opponent = self.eval_points(opponent_set)
-        # if debug: print(f"nearest_opponent: {nearest_opponent}")
         # find targets that can attack nearest opponent
         possible_targets = set()
         for target in nearest_targets:
@@ -382,9 +353,7 @@ class Player:
                 if opponent.pos == nearest_opponent:
                     possible_targets.add(target)
         # which target matches our selection rule
-        # if debug: print(f"possible_targets: {possible_targets}")
         target = self.eval_points(possible_targets)
-        # if debug: print(f"target: {target}")
         self.graph.add_node(target)
         neighbors = self.grid.get_neighbors(
             point=target, directions=self.directions, invalid=["#", "G", "E"]
@@ -399,23 +368,13 @@ class Player:
         except networkx.exception.NetworkXNoPath:
             print(f"No path from {self.pos} to {target}")
             self.graph.remove_node(target)
-            return
+            return False
         self.graph.remove_node(target)
-        # shortest_paths = self.find_shortest_paths(target)
-        # if debug: print(f"I see {len(shortest_paths)} paths to {target}")
-        # while shortest_paths and len(shortest_paths[0]) > 2:
-        #     last_steps = set([path[-2] for path in shortest_paths])
-        #     #if debug: print(f"last_steps: {last_steps}")
-        #     shortest_paths = self.find_shortest_paths(last_steps)
-        #     #if debug: print(f"shortest_paths: {shortest_paths}")
-
-        # first_steps = set([path[1] for path in shortest_paths])
-        # #if debug: print(f"first_steps: {first_steps}")
-        # next_step = self.eval_points(first_steps)
-        # #if debug: print(f"next_step: {next_step}")
         self.move(path[1])
+        return True
 
     def do_attack(self, targets):
+        """Perform attack on target"""
         if isinstance(targets, set):
             targets = list(targets)
         # To attack, the unit first determines all of the targets that are in range
@@ -427,10 +386,10 @@ class Player:
         if len(targets) == 1:
             target = targets[0]
         # Otherwise, the adjacent target with the fewest hit points is selected;
-        hit_points = [target.hit_points for target in targets]
+        hit_points = [target.stats["hit_points"] for target in targets]
         min_hit_points = min(hit_points)
         min_targets = [
-            target for target in targets if target.hit_points == min_hit_points
+            target for target in targets if target.stats["hit_points"] == min_hit_points
         ]
         # in a tie, the adjacent target with the fewest hit points which is first in
         # reading order is selected.
@@ -440,17 +399,19 @@ class Player:
         # The unit deals damage equal to its attack power to the selected target, reducing
         # its hit points by that amount.
         # print(f"{self} attacks {target}")
-        target.hit_points -= self.attack
-        if target.hit_points <= 0:
+        target.stats["hit_points"] -= self.stats["attack"]
+        if target.stats["hit_points"] <= 0:
             target.death()
         return True
 
     def death(self):
-        self.alive = False
+        """Handle death of player"""
+        self.stats["alive"] = False
         self.grid.overrides.pop(self.pos, None)
         # self.container.pop(self.container.index(self))
 
     def play_turn(self):
+        """Play a turn for this player"""
         # Each unit begins its turn by identifying all possible targets (enemy units).
         # print(f"{self}: find_opponents")
         opponents = self.find_opponents()
@@ -483,10 +444,13 @@ class Player:
         return False
 
     def __str__(self):
-        return f"{self.player_id}: {self.team} @ {self.pos} [{self.hit_points}]"
+        return (
+            f"{self.player_id}: {self.team} @ {self.pos} [{self.stats['hit_points']}]"
+        )
 
 
 def play_game(game, elf_attack=3):
+    """Function to play the game"""
     players = Players()
     my_map = Grid(game)
     for point in my_map:
@@ -494,10 +458,8 @@ def play_game(game, elf_attack=3):
         if team in ["G", "E"]:
             new_player = Player(players, my_map, team, point)
             if new_player.team == "E":
-                new_player.attack = elf_attack
+                new_player.stats["attack"] = elf_attack
             players.append(new_player)
-    # print(my_map)
-    # print(f"Initial: {[player.hit_points for player in players]}")
     completed_turns = 0
     game_over = False
     while not game_over:
@@ -514,26 +476,26 @@ def play_game(game, elf_attack=3):
         if game_over:
             break
         completed_turns += 1
-        # print(f"Turn {completed_turns}: {[player.hit_points for player in players]}")
         players.sort()
-        # print(completed_turns)
         map_list = str(my_map).splitlines()
         for line in map_list:
             line += "    "
-        # print(my_map)
         for player in players:
-            map_list[player.pos[1]] += f" {player.hit_points}"
+            map_list[player.pos[1]] += f" {player.stats['hit_points']}"
         for line in map_list:
             line = line.replace("     ", "    ")
         # print('\n'.join(map_list))
         # part 2 short circuit on first elf death
         for player in players.players:
-            if player.team == "E" and player.attack > 3 and not player.alive:
+            if (
+                player.team == "E"
+                and player.stats["attack"] > 3
+                and not player.stats["alive"]
+            ):
                 game_over = True
 
     winner = next(iter(players)).team
-    remaining_hit_points = [player.hit_points for player in players]
-    result = completed_turns * sum(remaining_hit_points)
+    remaining_hit_points = [player.stats["hit_points"] for player in players]
     # print(f"Team {winner} wins!")
     # print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
     # for player in players.players:
@@ -545,7 +507,7 @@ def play_game(game, elf_attack=3):
             if player.team == "E" and not player.alive
         ]
     )
-    return result, winner, elf_losses
+    return completed_turns * sum(remaining_hit_points), winner, elf_losses
 
 
 def solve(input_value, part):
@@ -554,18 +516,17 @@ def solve(input_value, part):
     """
     if part == 1:
         # return None
-        score, winner, elf_losses = play_game(input_value)
+        score, _, elf_losses = play_game(input_value)
         return score
 
     if part == 2:
         elf_power = 34
-        winner = ""
         elf_losses = -1
         while elf_losses != 0:
             elf_power += 1
-            score, winner, elf_losses = play_game(input_value, elf_power)
-            # print(f"Elf Power: {elf_power}, score: {score}, winner: {winner}, elf_losses: {elf_losses}")
+            score, _, elf_losses = play_game(input_value, elf_power)
         return score
+    raise ValueError(f"Invalid part specified: {part}")
 
 
 if __name__ == "__main__":

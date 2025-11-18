@@ -10,6 +10,17 @@ import math
 # import my modules
 import aoc  # pylint: disable=import-error
 
+
+def execute_packet(packet):
+    """Function to execute packets recursively"""
+    if packet["packet_type"] in func_map:
+        return func_map[packet["packet_type"]](packet["packets"])
+    # Packets with type ID 4 are Literal values - represent a single number as described above
+    if packet["packet_type"] == 4:
+        return packet["value"]
+    return -1
+
+
 func_map = {
     # Packets with type ID 0 are sum packets - their value is the sum of the values of their
     # sub-packets. If they only have a single sub-packet, their value is the value of the
@@ -46,16 +57,6 @@ func_map = {
     if execute_packet(packets[0]) == execute_packet(packets[1])
     else 0,
 }
-
-
-def execute_packet(packet):
-    """Function to execute packets recursively"""
-    if packet["packet_type"] in func_map:
-        return func_map[packet["packet_type"]](packet["packets"])
-    # Packets with type ID 4 are Literal values - represent a single number as described above
-    if packet["packet_type"] == 4:
-        return packet["value"]
-    return -1
 
 
 def hex_to_binary(hex_string):

@@ -5,15 +5,20 @@ Advent Of Code 2022 day 19
 
 # import system modules
 import time
+import logging
 
 # import my modules
 import aoc  # pylint: disable=import-error
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
+    logger.info(input_value)
     return part
 
 

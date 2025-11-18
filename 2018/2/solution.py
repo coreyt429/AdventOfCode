@@ -9,6 +9,8 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 
+input_lines = []
+
 
 def check_sum(box_ids):
     """

@@ -56,6 +56,7 @@ def solve(input_value, part):
     # store first loop tuple, init to None
     loop_tuple = None
     # infinite loop
+    last_counter = 0
     while True:
         # if we have already seen this tuple
         if current_tuple in seen:

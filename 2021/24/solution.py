@@ -38,6 +38,7 @@ class Alu:
         }
 
     def load(self, program):
+        """method to load a program into instructions"""
         instructions = []
         for line in program:
             data = line.split(" ")
@@ -53,6 +54,7 @@ class Alu:
         return instructions
 
     def value(self, item):
+        """method to get the value of an item"""
         if isinstance(item, int):
             return item
         return self.registers[item]
@@ -87,14 +89,17 @@ class Alu:
 
     def eql(self, a, b):
         """eql method - sets a to 1 if a == b, otherwise 0"""
-        # eql a b - If the value of a and b are equal, then store the value 1 in variable a. Otherwise, store the value 0 in variable a.
+        # eql a b - If the value of a and b are equal, then store the value 1 in variable a.
+        # Otherwise, store the value 0 in variable a.
         if self.value(a) == self.value(b):
             self.registers[a] = 1
         else:
             self.registers[a] = 0
 
-    def reset(self, inputs=[]):
+    def reset(self, inputs=None):
         """method to reset the Alu"""
+        if inputs is None:
+            inputs = []
         for key in self.registers:
             self.registers[key] = 0
         self.inputs = inputs
@@ -116,7 +121,7 @@ def solve(input_value, part):
         return None
     alu = Alu(input_value)
     num = 11111111111111
-    increment = 11
+    # increment = 11
     digits = set()
     while True:
         print(len(str(num)))
@@ -129,251 +134,251 @@ def solve(input_value, part):
         print(alu.registers)
         break
 
-        if alu.registers["z"] == 0:
-            break
-        # break
-        alu.reset()
-        num += increment
-        num_string = str(num).replace("0", "1")
-        # the last two digits must be 18 or 29
-        test_num = int(num_string[-2:])
-        if test_num < 18:
-            num_string = num_string[:-2] + "18"
-        if test_num > 29:
-            num_string = num_string[:-2] + "18"
-            num = int(num_string)
-            num += 100
-            num_string = str(num)
-        if 18 < test_num < 29:
-            num_string = num_string[:-2] + "29"
-        if num_string[5] != num_string[6]:
-            num_string = num_string[:5] + num_string[6] + num_string[6:]
-        valid_set = {"60", "40", "30", "18", "20", "50", "29", "00"}
-        while num_string[-4:-2] not in valid_set:
-            num = int(num_string)
-            num += 100
-            num_string = str(num)
-        valid_set = {
-            "19",
-            "77",
-            "85",
-            "87",
-            "64",
-            "67",
-            "68",
-            "89",
-            "65",
-            "84",
-            "86",
-            "79",
-            "63",
-            "62",
-            "93",
-            "73",
-            "76",
-            "81",
-            "91",
-            "66",
-            "69",
-            "72",
-            "61",
-            "82",
-            "98",
-            "83",
-            "71",
-            "96",
-            "95",
-            "88",
-            "94",
-            "97",
-            "92",
-            "74",
-            "78",
-            "99",
-            "75",
-        }
-        while num_string[-6:-4] not in valid_set:
-            num = int(num_string)
-            num += 10000
-            num_string = str(num)
-        valid_set = {
-            "26",
-            "19",
-            "65",
-            "66",
-            "76",
-            "45",
-            "59",
-            "24",
-            "44",
-            "14",
-            "16",
-            "78",
-            "32",
-            "63",
-            "39",
-            "51",
-            "62",
-            "33",
-            "69",
-            "64",
-            "68",
-            "58",
-            "28",
-            "85",
-            "18",
-            "31",
-            "74",
-            "36",
-            "15",
-            "93",
-            "38",
-            "42",
-            "35",
-            "46",
-            "79",
-            "25",
-            "95",
-            "57",
-            "82",
-            "17",
-            "49",
-            "98",
-            "21",
-            "47",
-            "91",
-            "12",
-            "27",
-            "37",
-            "22",
-            "88",
-            "71",
-            "00",
-            "99",
-            "11",
-            "41",
-            "48",
-            "29",
-            "72",
-            "96",
-            "87",
-            "92",
-            "61",
-            "52",
-            "73",
-            "23",
-            "34",
-            "67",
-            "77",
-            "13",
-            "83",
-            "54",
-            "55",
-            "43",
-            "86",
-            "84",
-            "81",
-            "75",
-            "56",
-            "89",
-            "53",
-            "94",
-            "97",
-        }
-        while num_string[-8:-6] not in valid_set:
-            num = int(num_string)
-            num += 1000000
-            num_string = str(num)
-        valid_set = {
-            "97",
-            "29",
-            "64",
-            "56",
-            "47",
-            "22",
-            "77",
-            "46",
-            "28",
-            "86",
-            "85",
-            "38",
-            "83",
-            "14",
-            "26",
-            "11",
-            "62",
-            "23",
-            "33",
-            "93",
-            "32",
-            "12",
-            "57",
-            "81",
-            "68",
-            "15",
-            "90",
-            "17",
-            "21",
-            "41",
-            "95",
-            "61",
-            "63",
-            "88",
-            "82",
-            "36",
-            "58",
-            "55",
-            "16",
-            "35",
-            "34",
-            "52",
-            "44",
-            "24",
-            "66",
-            "67",
-            "72",
-            "94",
-            "89",
-            "74",
-            "37",
-            "25",
-            "92",
-            "99",
-            "59",
-            "75",
-            "48",
-            "54",
-            "31",
-            "98",
-            "73",
-            "43",
-            "69",
-            "78",
-            "76",
-            "42",
-            "79",
-            "27",
-            "39",
-            "96",
-            "91",
-            "18",
-            "45",
-            "13",
-            "71",
-            "87",
-            "19",
-            "84",
-            "65",
-            "51",
-            "49",
-            "53",
-        }
-        while num_string[-10:-8] not in valid_set:
-            num = int(num_string)
-            num += 100000000
-            num_string = str(num)
+        # if alu.registers["z"] == 0:
+        #     break
+        # # break
+        # alu.reset()
+        # num += increment
+        # num_string = str(num).replace("0", "1")
+        # # the last two digits must be 18 or 29
+        # test_num = int(num_string[-2:])
+        # if test_num < 18:
+        #     num_string = num_string[:-2] + "18"
+        # if test_num > 29:
+        #     num_string = num_string[:-2] + "18"
+        #     num = int(num_string)
+        #     num += 100
+        #     num_string = str(num)
+        # if 18 < test_num < 29:
+        #     num_string = num_string[:-2] + "29"
+        # if num_string[5] != num_string[6]:
+        #     num_string = num_string[:5] + num_string[6] + num_string[6:]
+        # valid_set = {"60", "40", "30", "18", "20", "50", "29", "00"}
+        # while num_string[-4:-2] not in valid_set:
+        #     num = int(num_string)
+        #     num += 100
+        #     num_string = str(num)
+        # valid_set = {
+        #     "19",
+        #     "77",
+        #     "85",
+        #     "87",
+        #     "64",
+        #     "67",
+        #     "68",
+        #     "89",
+        #     "65",
+        #     "84",
+        #     "86",
+        #     "79",
+        #     "63",
+        #     "62",
+        #     "93",
+        #     "73",
+        #     "76",
+        #     "81",
+        #     "91",
+        #     "66",
+        #     "69",
+        #     "72",
+        #     "61",
+        #     "82",
+        #     "98",
+        #     "83",
+        #     "71",
+        #     "96",
+        #     "95",
+        #     "88",
+        #     "94",
+        #     "97",
+        #     "92",
+        #     "74",
+        #     "78",
+        #     "99",
+        #     "75",
+        # }
+        # while num_string[-6:-4] not in valid_set:
+        #     num = int(num_string)
+        #     num += 10000
+        #     num_string = str(num)
+        # valid_set = {
+        #     "26",
+        #     "19",
+        #     "65",
+        #     "66",
+        #     "76",
+        #     "45",
+        #     "59",
+        #     "24",
+        #     "44",
+        #     "14",
+        #     "16",
+        #     "78",
+        #     "32",
+        #     "63",
+        #     "39",
+        #     "51",
+        #     "62",
+        #     "33",
+        #     "69",
+        #     "64",
+        #     "68",
+        #     "58",
+        #     "28",
+        #     "85",
+        #     "18",
+        #     "31",
+        #     "74",
+        #     "36",
+        #     "15",
+        #     "93",
+        #     "38",
+        #     "42",
+        #     "35",
+        #     "46",
+        #     "79",
+        #     "25",
+        #     "95",
+        #     "57",
+        #     "82",
+        #     "17",
+        #     "49",
+        #     "98",
+        #     "21",
+        #     "47",
+        #     "91",
+        #     "12",
+        #     "27",
+        #     "37",
+        #     "22",
+        #     "88",
+        #     "71",
+        #     "00",
+        #     "99",
+        #     "11",
+        #     "41",
+        #     "48",
+        #     "29",
+        #     "72",
+        #     "96",
+        #     "87",
+        #     "92",
+        #     "61",
+        #     "52",
+        #     "73",
+        #     "23",
+        #     "34",
+        #     "67",
+        #     "77",
+        #     "13",
+        #     "83",
+        #     "54",
+        #     "55",
+        #     "43",
+        #     "86",
+        #     "84",
+        #     "81",
+        #     "75",
+        #     "56",
+        #     "89",
+        #     "53",
+        #     "94",
+        #     "97",
+        # }
+        # while num_string[-8:-6] not in valid_set:
+        #     num = int(num_string)
+        #     num += 1000000
+        #     num_string = str(num)
+        # valid_set = {
+        #     "97",
+        #     "29",
+        #     "64",
+        #     "56",
+        #     "47",
+        #     "22",
+        #     "77",
+        #     "46",
+        #     "28",
+        #     "86",
+        #     "85",
+        #     "38",
+        #     "83",
+        #     "14",
+        #     "26",
+        #     "11",
+        #     "62",
+        #     "23",
+        #     "33",
+        #     "93",
+        #     "32",
+        #     "12",
+        #     "57",
+        #     "81",
+        #     "68",
+        #     "15",
+        #     "90",
+        #     "17",
+        #     "21",
+        #     "41",
+        #     "95",
+        #     "61",
+        #     "63",
+        #     "88",
+        #     "82",
+        #     "36",
+        #     "58",
+        #     "55",
+        #     "16",
+        #     "35",
+        #     "34",
+        #     "52",
+        #     "44",
+        #     "24",
+        #     "66",
+        #     "67",
+        #     "72",
+        #     "94",
+        #     "89",
+        #     "74",
+        #     "37",
+        #     "25",
+        #     "92",
+        #     "99",
+        #     "59",
+        #     "75",
+        #     "48",
+        #     "54",
+        #     "31",
+        #     "98",
+        #     "73",
+        #     "43",
+        #     "69",
+        #     "78",
+        #     "76",
+        #     "42",
+        #     "79",
+        #     "27",
+        #     "39",
+        #     "96",
+        #     "91",
+        #     "18",
+        #     "45",
+        #     "13",
+        #     "71",
+        #     "87",
+        #     "19",
+        #     "84",
+        #     "65",
+        #     "51",
+        #     "49",
+        #     "53",
+        # }
+        # while num_string[-10:-8] not in valid_set:
+        #     num = int(num_string)
+        #     num += 100000000
+        #     num_string = str(num)
 
-        num = int(num_string)
+        # num = int(num_string)
     return part
 
 

@@ -327,6 +327,7 @@ class Tile:
                         self.flip_edge(edge)
                         self.refresh_mates()
                         self.refresh()
+        return True
 
     def flip_edge(self, edge):
         """method to flip a tlie"""

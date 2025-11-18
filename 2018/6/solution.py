@@ -12,6 +12,9 @@ import itertools
 import aoc  # pylint: disable=import-error
 from grid import manhattan_distance  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: 0}
+
 labels = [
     "A",
     "B",
@@ -111,6 +114,7 @@ def find_range_size(points, part):
         min_distance = float("infinity")
         count = 0
         distances[current_point] = 0
+        min_label = None
         # iterate over points
         for point, label in points.items():
             # get manhattan distance
@@ -167,8 +171,6 @@ if __name__ == "__main__":
     input_lines = my_aoc.load_lines()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: 0}
     # dict to map functions
     funcs = {1: solve, 2: solve}
     # loop parts

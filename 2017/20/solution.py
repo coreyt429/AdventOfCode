@@ -165,6 +165,7 @@ def run_simulation(particles):
                 particle,
             ),
         )
+    raise RuntimeError("Shouldn't get here")
 
 
 def find_collisions(particles):

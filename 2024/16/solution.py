@@ -11,6 +11,9 @@ from heapq import heappop, heappush
 import aoc  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def has_duplicates(test_tup):
     """Function to check for duplicates"""
@@ -124,8 +127,6 @@ if __name__ == "__main__":
     # print(input_lines)
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
     correct = {1: 123540, 2: 665}
     # dict to map functions

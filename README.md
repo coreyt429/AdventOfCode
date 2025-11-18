@@ -21,3 +21,36 @@ Notes on my solutions:
   - Early solutions (2023 and 2015) were made with no real python training, and may not be pretty
   - I'm a VoIP Engineer who likes to code, not a computer scientist. I'm really good at functional code, and weaker on creative mathmatical solutions.
   
+
+# 2025 code cleanup status
+
+Timed-out runs (> 30s):
+  2015.22.solution
+  2016.11.solution
+  2017.17.solution
+  2018.21.solution
+  2020.19.solution
+  2020.23.solution
+  2022.16.solution
+
+Failed runs:
+  2017.3.solution (exit code 1)
+  2017.14.solution (exit code 1)
+  2017.20.solution (exit code 1)
+  2018.19.solution (exit code 1)
+  2021.24.solution (exit code 1)
+  2024.18.solution (exit code 1)
+  2024.20.solution (exit code 1)
+
+Pylint < 10:
+  2016.1.solution: 8.91
+  2016.6.solution: 8.48
+  2016.10.solution: 9.43
+  2016.13.solution: 9.81
+  2016.15.solution: 8.61
+  2016.16.solution: 9.31
+  2016.20.solution: 9.76
+
+  2017.3.solution: 8.68 # Broken, needs to use grid
+  2017.14.solution: 7.85 # Broken,needs to use grid
+  2018.15.solution: 8.56 # needs refactoring

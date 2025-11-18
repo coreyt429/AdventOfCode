@@ -19,6 +19,9 @@ from heapq import heappop, heappush
 import aoc  # pylint: disable=import-error
 from grid import Grid, manhattan_distance  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def group_points(grid):
     """Function to group points by value"""
@@ -366,8 +369,6 @@ if __name__ == "__main__":
     input_data = my_aoc.load_lines()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
     correct = {1: 1451030, 2: None}
     # dict to map functions

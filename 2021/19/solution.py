@@ -19,6 +19,9 @@ import numpy as np
 import aoc  # pylint: disable=import-error
 from grid import manhattan_distance  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 class Scanner:
     """Class to represent a scanner"""
@@ -221,8 +224,6 @@ if __name__ == "__main__":
     input_data = my_aoc.load_text()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
     correct = {1: 318, 2: 12166}
     # dict to map functions

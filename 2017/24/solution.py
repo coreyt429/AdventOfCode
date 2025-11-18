@@ -10,6 +10,9 @@ import re
 # import my modules
 import aoc  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def parse_input(lines):
     """
@@ -112,9 +115,7 @@ def solve(input_value, part):
         # get strength
         strength = bridge_strength(bridge)
         # new max?
-        if strength > max_strength:
-            # max_bridge = bridge
-            max_strength = strength
+        max_strength = max(strength, max_strength)
         # new longest?
         if len(bridge) > len(longest_bridge) or (
             len(bridge) == len(longest_bridge) and strength > longest_strength
@@ -136,8 +137,6 @@ if __name__ == "__main__":
     # print(input_lines)
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # dict to map functions
     funcs = {1: solve, 2: solve}
     # loop parts

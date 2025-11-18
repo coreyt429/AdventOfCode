@@ -100,8 +100,7 @@ class Carts:
             distance = manhattan_distance(pos_1, pos_2)
             if distance < threshold:
                 return distance
-            if distance < min_distance:
-                min_distance = distance
+            min_distance = min(min_distance, distance)
         return min_distance
 
     def detect_collision(self):

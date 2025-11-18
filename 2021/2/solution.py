@@ -16,6 +16,9 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def parse_data(lines):
     """function to parse data"""
@@ -64,8 +67,6 @@ if __name__ == "__main__":
     input_lines = my_aoc.load_lines()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # correct answers once solved, to validate changes
     correct = {1: 2070300, 2: 2078985210}
     # dict to map functions

@@ -2,16 +2,21 @@
 Advent Of Code 2024 day 21
 
 """
+
 # import system modules
+import logging
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
+
+logger = logging.getLogger(__name__)
 
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
+    logger.info(input_value)
     return part
 
 

@@ -14,8 +14,12 @@ X = 0
 Y = 1
 pattern_nums = re.compile(r"(-*\d+)")
 
+# dict to store answers
+answer = {1: None, 2: None}
+
 
 def parse_data(lines):
+    """Parse input data into list of points with position and velocity"""
     points = []
     for line in lines:
         data = [int(datum) for datum in pattern_nums.findall(line)]
@@ -25,6 +29,7 @@ def parse_data(lines):
 
 
 def advance_points(points, reverse=False):
+    """Advance points by one time step"""
     for point in points:
         position = list(point["position"])
         velocity = point["velocity"]
@@ -38,6 +43,7 @@ def advance_points(points, reverse=False):
 
 
 def string_lights(points, message="lights"):
+    """Return string representation of lights"""
     retval = f"{message:}\n"
     x_values = [point["position"][X] for point in points]
     y_values = [point["position"][Y] for point in points]
@@ -58,6 +64,7 @@ def string_lights(points, message="lights"):
 
 
 def print_lights(points, message="lights"):
+    """Print representation of lights"""
     print(f"{message:}")
     x_values = [point["position"][X] for point in points]
     y_values = [point["position"][Y] for point in points]
@@ -98,11 +105,6 @@ def solve(input_value, part):
         # points are moving back apart
         if diff_y > last_diff_y:
             break
-        # print(f"seconds: {seconds}, max_x: {max_x}, min_x: {min_x}, diff: {max_x - min_x}")
-        # print(f"seconds: {seconds}, max_y: {max_y}, min_y: {min_y}, diff: {max_y - min_y}")
-        # print(f"second: {seconds}, max_y_count: {max([y_values.count(y_value) for y_value in y_values])}")
-        # print(f"second: {seconds}, max_x_count: {max([x_values.count(x_value) for x_value in x_values])}")
-        # print_lights(points, f"{seconds} seconds")
         points = advance_points(points)
         last_diff_y = diff_y
         last_seconds = seconds
@@ -122,8 +124,6 @@ if __name__ == "__main__":
     # print(input_lines)
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # dict to map functions
     funcs = {1: solve, 2: solve}
     # loop parts
