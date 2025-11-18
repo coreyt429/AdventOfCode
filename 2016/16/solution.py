@@ -49,13 +49,12 @@ if __name__ == "__main__":
     for part in [1, 2]:
         start = time.time()
         # get initial dragon curve
-        new_string = dragon_curve(input_data)
-        while len(new_string) < size[part]:
+        NEW_STRING = dragon_curve(input_data)
+        while len(NEW_STRING) < size[part]:
             # keep regenerating until we reach target size
-            new_string = dragon_curve(new_string)
+            NEW_STRING = dragon_curve(NEW_STRING)
         # truncate string to target size
-        new_string = new_string[: size[part]]
+        NEW_STRING = NEW_STRING[: size[part]]
         # get checksum
-        new_string_checksum = checksum(new_string)
         end = time.time()
-        print(f"Part {part}: {new_string_checksum}, took {end - start} seconds")
+        print(f"Part {part}: {checksum(NEW_STRING)}, took {end - start} seconds")

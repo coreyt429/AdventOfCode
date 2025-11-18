@@ -17,7 +17,7 @@ Notes on chatGPT and these solutions:
 
 Notes on my solutions:
   - I'm attempting to make these solutions easy to read and understand, and will update documentation on previous solutions to meet this goal
-  - This is a learning excersise for me, so I will vary coding style, and tools to push myself
+  - This is a learning excercise for me, so I will vary coding style, and tools to push myself
   - Early solutions (2023 and 2015) were made with no real python training, and may not be pretty
   - I'm a VoIP Engineer who likes to code, not a computer scientist. I'm really good at functional code, and weaker on creative mathmatical solutions.
   
@@ -43,14 +43,6 @@ Failed runs:
   2024.20.solution (exit code 1)
 
 Pylint < 10:
-  2016.1.solution: 8.91
-  2016.6.solution: 8.48
-  2016.10.solution: 9.43
-  2016.13.solution: 9.81
-  2016.15.solution: 8.61
-  2016.16.solution: 9.31
-  2016.20.solution: 9.76
-
   2017.3.solution: 8.68 # Broken, needs to use grid
   2017.14.solution: 7.85 # Broken,needs to use grid
   2018.15.solution: 8.56 # needs refactoring

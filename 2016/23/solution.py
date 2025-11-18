@@ -244,4 +244,6 @@ if __name__ == "__main__":
         # log end time
         end = time.time()
         # print results
-        print(f"Part {current_part}: {answer[current_part]}, took {end - start} seconds")
+        print(
+            f"Part {current_part}: {answer[current_part]}, took {end - start} seconds"
+        )

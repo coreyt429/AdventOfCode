@@ -21,6 +21,9 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 
+# global state
+state = {"bot": {}, "output": {}}
+
 
 class Bin:
     """
@@ -189,8 +192,6 @@ def solve(lines, part):
 
 
 if __name__ == "__main__":
-    # global state
-    state = {"bot": {}, "output": {}}
     my_aoc = aoc.AdventOfCode(2016, 10)
     input_lines = my_aoc.load_lines()
     # parts dict to loop

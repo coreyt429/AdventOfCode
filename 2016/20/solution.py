@@ -68,9 +68,7 @@ def solve(lines):
                     # add to remaining for next pass
                     remaining.append(line)
                 # does this rule extend the blocked range
-                if end > max_blocked:
-                    # update max_blocked
-                    max_blocked = end
+                max_blocked = max(max_blocked, end)
     # lastly, were there any addresses after the last block
     for addr in range(max_blocked + 1, max_value + 1):
         allowed.add(addr)

@@ -62,13 +62,12 @@ def solve(seed, part):
             continue
         visited.add(point)
         if point == target:
-            if steps < min_steps:
-                min_steps = steps
-        else:
-            new_path = tuple(list(path) + [point])
-            for neighbor in neighbors(point, seed):
-                if neighbor not in visited:
-                    heappush(heap, (steps + 1, neighbor, new_path))
+            min_steps = min(steps, min_steps)
+            continue
+        new_path = tuple(list(path) + [point])
+        for neighbor in neighbors(point, seed):
+            if neighbor not in visited:
+                heappush(heap, (steps + 1, neighbor, new_path))
     if part == 1:
         return min_steps
     # part 2

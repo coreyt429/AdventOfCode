@@ -23,8 +23,10 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
+
 # dict to store answers
 answer = {1: None, 2: None}
+
 
 class Packet:
     """

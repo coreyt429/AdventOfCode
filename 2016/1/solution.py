@@ -11,6 +11,10 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 
+# dict to store answers
+answer = {1: None, 2: None}
+
+
 HEADING_DIRECTIONS = {
     "N": {"L": "W", "R": "E"},
     "S": {"L": "E", "R": "W"},
@@ -78,8 +82,6 @@ if __name__ == "__main__":
     input_text = my_aoc.load_text()
     # parts dict to loop
     parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
     # dict to map functions
     funcs = {1: solve, 2: solve}
     # loop parts

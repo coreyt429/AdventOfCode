@@ -10,6 +10,8 @@ import re
 import time
 import aoc  # pylint: disable=import-error
 
+disks = []
+
 
 def parse_input(input_string):
     """
