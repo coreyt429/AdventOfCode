@@ -2,10 +2,17 @@
 Advent Of Code YEAR day DAY
 
 """
+
 # import system modules
+import sys
+import logging
 
 # import my modules
-from aoc import AdventOfCode # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def solve(input_value, part):
     """
@@ -13,13 +20,24 @@ def solve(input_value, part):
     """
     return part
 
+
+year = YEAR
+day = DAY
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+submit = False
+
+if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
+    submit = True
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(YEAR,DAY)
-    aoc.load_text()
-    # aoc.load_list()
-    # correct answers once solved, to validate changes
-    aoc.correct[1] = None
-    aoc.correct[2] = None
-    aoc.funcs[1] = solve
-    aoc.funcs[2] = solve
-    aoc.run()
+    aoc = AdventOfCode(year=year, day=day, input_formats=input_format, funcs=funcs)
+    aoc.run(submit=submit)

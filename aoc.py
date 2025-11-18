@@ -5,6 +5,7 @@ contains utility functions for working AdventOfCode puzzles
 
 import sys
 import json
+import re
 import logging
 from datetime import datetime
 import subprocess
@@ -30,6 +31,7 @@ class AdventOfCodeSession:
         self.day = day or today.day
         self.year = year or today.year
         self.session = self.init_session()
+        self.start_time = time.time()
 
     def init_session(self):
         """Initialize session, using stored/ENV session id or prompting the user."""
@@ -62,6 +64,10 @@ class AdventOfCodeSession:
     def get(self, url):
         """get url using session"""
         return self.session.get(url)
+
+    def post(self, url, data=None):
+        """post to url using session"""
+        return self.session.post(url, data=data)
 
     def test(self):
         """test session to see if valid"""
@@ -126,35 +132,300 @@ class AdventOfCode:
     Advent of Code class to handle common functions for solving puzzles
     """
 
-    def __init__(self, year=None, day=None):
+    def __init__(self, year=None, day=None, input_formats=None, funcs=None):
         self.session = AdventOfCodeSession(os.getenv("AOC_SESSION_ID"), year, day)
-        self.input_data = None
-        self.start_time = time.time()
         self.parts = {1: 1, 2: 2}
         self.answer = {1: None, 2: None}
-        self.correct = {1: 0, 2: 0}
-        self.funcs = {1: None, 2: None}
+        self.correct = {1: None, 2: None}
+        self.funcs = funcs or {1: None, 2: None}
+        input_formats = input_formats or {1: "lines", 2: "lines"}
+        self.inputs = {}
+        for k, v in input_formats.items():
+            if v == "lines":
+                self.inputs[k] = self.load_lines()
+            elif v == "integers":
+                self.inputs[k] = self.load_integers()
+            elif v == "grid":
+                self.inputs[k] = self.load_grid()
+            elif v == "text":
+                self.inputs[k] = self.load_text()
+            else:
+                raise ValueError(f"Unknown input format: {v}")
+        self.fetch_answers()
 
-    def run(self):
+    def _parse_submit_status(self, html_text):
+        """
+        Parse the HTML response from an answer submission to determine the result.
+        """
+        status = "unknown"
+        message = ""
+        # Heuristics based on AoC response texts.
+        if "That's the right answer" in html_text:
+            status = "correct"
+            message = "That's the right answer!"
+        elif "That's not the right answer" in html_text:
+            status = "incorrect"
+            if "too low" in html_text:
+                status = "too_low"
+                message = "That's not the right answer; your answer is too low."
+            elif "too high" in html_text:
+                status = "too_high"
+                message = "That's not the right answer; your answer is too high."
+            else:
+                message = "That's not the right answer."
+        elif "You gave an answer too recently" in html_text:
+            status = "wait"
+            # AoC usually tells you how long to wait in the same paragraph.
+            message = (
+                "You submitted too recently; AoC wants you to wait before trying again."
+            )
+        elif (
+            "You already completed it" in html_text
+            or "Did you already complete it" in html_text
+        ):
+            status = "already_solved"
+            message = "This puzzle level is already marked as solved."
+        elif "You don't seem to be solving the right level" in html_text:
+            status = "bad_level"
+            message = "This answer was submitted for the wrong level."
+        else:
+            message = "Submission response could not be classified; check the AoC page for details."
+
+        return status, message
+
+    def submit(self, part=1, answer=None):
+        """
+        Submit an answer for the given part to Advent of Code.
+
+        If `answer` is not provided, the value from self.answer[part] is used.
+
+        Behavior:
+        - POSTs the answer to AoC.
+        - Parses the HTML for feedback (right/wrong, too high/low, wait, etc.).
+        - If correct, updates self.correct[part] and answers.json cache.
+
+        Returns:
+            dict: {
+                "status": one of
+                    "correct", "incorrect", "too_high", "too_low",
+                    "wait", "already_solved", "bad_level", "error", "unknown",
+                "message": short human-readable message (str),
+            }
+        """
+        if part not in self.parts:
+            raise ValueError(
+                f"Invalid part: {part!r}. Expected one of {sorted(self.parts)}"
+            )
+
+        if answer is None:
+            answer = self.answer.get(part)
+
+        if answer is None:
+            raise ValueError(
+                f"No answer available for part {part}; pass answer=... or run your solver first."
+            )
+
+        url = f"https://adventofcode.com/{self.session.year}/day/{self.session.day}/answer"
+        payload = {"level": str(part), "answer": str(answer)}
+        logger.debug("url: %s payload: %s", url, payload)
+        try:
+            response = self.session.post(url, data=payload)
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.warning("Failed to submit answer to %s: %s", url, exc)
+            return {"status": "error", "message": f"Submission failed: {exc}"}
+
+        if response.status_code != 200:
+            msg = f"Unexpected status {response.status_code} when submitting answer."
+            logger.warning(msg)
+            return {"status": "error", "message": msg}
+
+        text = response.text
+        logger.debug("Submission response text: %s", text)
+        status, message = self._parse_submit_status(text)
+
+        # If correct (or AoC says already solved and we provided a value),
+        # update in-memory correct answers and the answers.json cache.
+        if status in {"correct", "already_solved"} and self.correct.get(part) is None:
+            self.correct[part] = answer
+
+            # Persist into {year}/{day}/answers.json
+            dir_path = os.path.join(str(self.session.year), str(self.session.day))
+            answers_path = os.path.join(dir_path, "answers.json")
+            try:
+                os.makedirs(dir_path, exist_ok=True)
+                cached = {}
+                if os.path.exists(answers_path):
+                    try:
+                        with open(answers_path, "r", encoding="utf-8") as f:
+                            cached = json.load(f)
+                    except json.JSONDecodeError as exc:  # corrupt cache, start over
+                        logger.warning(
+                            "Failed to parse %s as JSON (%s); recreating cache",
+                            answers_path,
+                            exc,
+                        )
+                        cached = {}
+                cached[str(part)] = answer
+                with open(answers_path, "w", encoding="utf-8") as f:
+                    json.dump(cached, f, ensure_ascii=False, indent=2)
+                logger.info(
+                    "Updated cached answer for year %s day %s part %s in %s",
+                    self.session.year,
+                    self.session.day,
+                    part,
+                    answers_path,
+                )
+            except OSError as exc:
+                logger.warning(
+                    "Failed to write answers cache %s: %s", answers_path, exc
+                )
+
+        logger.info(
+            "Submit result for year %s day %s part %s: %s",
+            self.session.year,
+            self.session.day,
+            part,
+            status,
+        )
+
+        if message:
+            print(message)
+
+        return {"status": status, "message": message}
+
+    def fetch_answers(self):
+        """
+        Attempt to fetch the known answers for this puzzle from the Advent of Code
+        web page for the current year/day, caching them in answers.json so we
+        don't have to scrape the page every time.
+
+        Any parts found will be stored in self.correct[part]. Parts not found
+        will be set to None.
+
+        Returns:
+            dict: A mapping from part number (1, 2) to the extracted answer
+                  (string or int), or None if not available.
+        """
+        # Default all parts to None up front
+        for part in self.parts:
+            self.correct[part] = None
+
+        # Path for cached answers: {year}/{day}/answers.json
+        dir_path = os.path.join(str(self.session.year), str(self.session.day))
+        answers_path = os.path.join(dir_path, "answers.json")
+
+        # Try to load cached answers first
+        try:
+            with open(answers_path, "r", encoding="utf-8") as f:
+                cached = json.load(f)
+            # cached is expected to be a dict with string keys "1", "2"
+            for part in self.parts:
+                key = str(part)
+                if key in cached:
+                    self.correct[part] = cached[key]
+            logger.info(
+                "Loaded cached answers for year %s day %s from %s",
+                self.session.year,
+                self.session.day,
+                answers_path,
+            )
+            return self.correct
+        except FileNotFoundError:
+            # No cache yet; we'll fetch from the web
+            pass
+        except json.JSONDecodeError as exc:
+            logger.warning(
+                "Failed to parse %s as JSON (%s); ignoring cache and refetching",
+                answers_path,
+                exc,
+            )
+
+        # No usable cache; fetch from the AoC puzzle page
+        url = f"https://adventofcode.com/{self.session.year}/day/{self.session.day}"
+        try:
+            response = self.session.get(url)
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.warning("Failed to fetch puzzle page %s: %s", url, exc)
+            return self.correct
+
+        if response.status_code != 200:
+            logger.warning(
+                "Unexpected status %s while fetching puzzle page %s",
+                response.status_code,
+                url,
+            )
+            return self.correct
+
+        # AoC typically embeds solved answers like:
+        #   "Your puzzle answer was <code>12345</code>."
+        # (One occurrence per solved part, part 1 first, then part 2.)
+        matches = re.findall(
+            r"Your puzzle answer was <code>(.*?)</code>",
+            response.text,
+        )
+
+        for idx, raw_answer in enumerate(matches, start=1):
+            if idx not in self.parts:
+                # Ignore any unexpected extras
+                continue
+            # Store as int when possible, otherwise keep as string.
+            ans_value = raw_answer.strip()
+            try:
+                ans_value = int(ans_value)
+            except ValueError:
+                # Non-numeric answers (occasionally appear) stay as strings.
+                pass
+            self.correct[idx] = ans_value
+            logger.info(
+                "Fetched AoC answer for year %s day %s part %s: %r",
+                self.session.year,
+                self.session.day,
+                idx,
+                ans_value,
+            )
+
+        # Persist answers to answers.json so we don't need to re-fetch
+        try:
+            os.makedirs(dir_path, exist_ok=True)
+            cache_payload = {str(part): self.correct[part] for part in self.parts}
+            with open(answers_path, "w", encoding="utf-8") as f:
+                json.dump(cache_payload, f, ensure_ascii=False, indent=2)
+            logger.info(
+                "Cached answers for year %s day %s to %s",
+                self.session.year,
+                self.session.day,
+                answers_path,
+            )
+        except OSError as exc:
+            logger.warning("Failed to write answers cache %s: %s", answers_path, exc)
+
+        return self.correct
+
+    def run(self, submit=False):
         """
         Function to run the functions for each part
         """
         # loop parts
-        for my_part in self.parts:
+        for part in self.parts:
             # log start time
-            self.start_time = time.time()
+            self.session.start_time = time.time()
             # get answer
-            self.answer[my_part] = self.funcs[my_part](self.input_data, my_part)
+            self.answer[part] = self.funcs[part](self.inputs[part], part)
             # log end time
             end_time = time.time()
             logger.info(
-                "Part %s: %s, took %s seconds",
-                my_part,
-                self.answer[my_part],
-                end_time - self.start_time,
+                "Part %s: %s, took %.5f seconds",
+                part,
+                self.answer[part],
+                end_time - self.session.start_time,
             )
-            if self.correct[my_part]:
-                assert self.correct[my_part] == self.answer[my_part]
+            if submit:
+                result = self.submit(part=part, answer=self.answer[part])
+                if result["status"] == "correct":
+                    logger.info("Part %s submitted successfully.", part)
+                else:
+                    logger.info("Part %s submission result: %s", part, result["status"])
+            assert self.correct[part] == self.answer[part]
 
     def get_input(self):
         """get input from advent of code site"""

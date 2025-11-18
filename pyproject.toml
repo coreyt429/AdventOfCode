@@ -14,5 +14,7 @@ dependencies = [
     "dotenv",
     "sympy",
     "colorama",
-    "networkx"
+    "networkx",
+    "rich",
+    "pyyaml"
 ]

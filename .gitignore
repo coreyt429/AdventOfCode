@@ -25,6 +25,7 @@ build/
 .aoc.*
 .reminder
 input.txt
+answers.json
 
 # Lint/test caches
 .mypy_cache/

@@ -35,15 +35,14 @@ import math
 from copy import deepcopy
 from collections import deque
 
-class OpCode():
+
+class OpCode:
     """
     Class to represent an operation
     """
+
     # parameter modes, more a reminder for me, not sure this will get used
-    parameter_modes = {
-        0: 'position',
-        1: 'immediate'
-    }
+    parameter_modes = {0: "position", 1: "immediate"}
 
     def __init__(self, op_code, parent):
         """init method"""
@@ -67,7 +66,7 @@ class OpCode():
             6: self.jump_if_false,
             7: self.is_less_than,
             8: self.is_equals,
-            9: self.adjust_relative_base
+            9: self.adjust_relative_base,
         }
         self.execute = self.opcode_func_map[self.op_code]
 
@@ -100,7 +99,7 @@ class OpCode():
                 values.append(program.get(params[idx] + offset, 0))
             else:
                 # we shouldn't see this
-                raise IndexError(f'Invalid parameter mode: {mode}')
+                raise IndexError(f"Invalid parameter mode: {mode}")
         # return value list
         return values
 
@@ -206,6 +205,7 @@ class OpCode():
             program[param] = 1
         else:
             program[param] = 0
+
     def adjust_relative_base(self, param_modes, params):
         """
         Opcode 9 adjusts the relative base by the value of its only parameter. The relative
@@ -216,20 +216,20 @@ class OpCode():
         values = self.get_param_values(param_modes, params)
         parent.relative_base += values[0]
 
-class IntCodeComputer():
+
+class IntCodeComputer:
     """
     Class to simulate an IntCode Computer
     intcode.py:195:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
     combine some into a cfg dict
     """
+
     def __init__(self, program, input_val=None, relative_base=0):
         """init method"""
         # parse program
         self.source = program
         # self.program = dict(zip(enumerate(int(num) for num in program.split(','))))
-        self.program = {
-            key:int(value) for key, value in enumerate(program.split(','))
-            }
+        self.program = {key: int(value) for key, value in enumerate(program.split(","))}
         self.program_backup = deepcopy(self.program)
         # init pointer
         self.ptr = 0
@@ -322,7 +322,7 @@ class IntCodeComputer():
         if op_code == 99:
             self.ptr = -1
             # self.running = False
-            #99 means that the program is finished and should immediately halt
+            # 99 means that the program is finished and should immediately halt
             return 99
         # waiting on input
         if op_code == 3 and len(self.inputs) == 0:
@@ -364,7 +364,7 @@ class IntCodeComputer():
     def __str__(self) -> str:
         """string"""
         # my_string = f"program: {self.source}\n"
-        memory = ', '.join((f"{key}:{value}" for key, value in self.program.items()))
+        memory = ", ".join((f"{key}:{value}" for key, value in self.program.items()))
         my_string = f"ptr: {self.ptr}, relative: {self.relative_base},"
         my_string += f"inputs: {self.inputs}, outputs: {self.output}, mem: {memory}"
         # my_string += f"Memory:\n"
