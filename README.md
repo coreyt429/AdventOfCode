@@ -34,7 +34,6 @@ Timed-out runs (> 30s):
   2022.16.solution
 
 Failed runs:
-  2017.3.solution (exit code 1)
   2017.14.solution (exit code 1)
   2017.20.solution (exit code 1)
   2018.19.solution (exit code 1)
@@ -43,6 +42,5 @@ Failed runs:
   2024.20.solution (exit code 1)
 
 Pylint < 10:
-  2017.3.solution: 8.68 # Broken, needs to use grid
   2017.14.solution: 7.85 # Broken,needs to use grid
   2018.15.solution: 8.56 # needs refactoring
