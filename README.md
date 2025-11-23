@@ -25,7 +25,6 @@ Notes on my solutions:
 # 2025 code cleanup status
 
 Timed-out runs (> 30s):
-  2015.22.solution
   2016.11.solution
   2017.17.solution
   2018.21.solution
@@ -34,7 +33,6 @@ Timed-out runs (> 30s):
   2022.16.solution
 
 Failed runs:
-  2017.14.solution (exit code 1)
   2017.20.solution (exit code 1)
   2018.19.solution (exit code 1)
   2021.24.solution (exit code 1)
@@ -42,5 +40,4 @@ Failed runs:
   2024.20.solution (exit code 1)
 
 Pylint < 10:
-  2017.14.solution: 7.85 # Broken,needs to use grid
   2018.15.solution: 8.56 # needs refactoring

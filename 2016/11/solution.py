@@ -276,7 +276,6 @@ def anonymize(floors):
             if element in elements_seen:
                 anonymized_floor.append(item.replace(element, elements_seen[element]))
         anonymized_floors.append(anonymized_floor)
-
     # Convert back to tuples before returning
     return tuple(tuple(floor) for floor in anonymized_floors)
 
