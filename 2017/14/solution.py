@@ -4,15 +4,23 @@ Advent Of Code 2017 day 14
 """
 
 # import system modules
-import time
+# import system modules
+import sys
+import logging
+
 from collections import deque
 from functools import reduce
 from heapq import heappop, heappush
-import grid
 
-# FIXME: this is broken now, need to be converted to use grid.py
+# import my modules
+from aoc import AdventOfCode  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
+
 # import my modules
 import aoc  # pylint: disable=import-error
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def hash_list(some_list, queue, skip, total_rotate=0):
@@ -85,6 +93,7 @@ def map_region(grid, position):
     """
     Map a region based on a start string
     """
+    logger.debug("mapping region from position %s", position)
     # init region
     region = set()
     # init heap with start position
@@ -92,6 +101,7 @@ def map_region(grid, position):
     heappush(heap, position)
     # process heap
     while heap:
+        logger.debug("processing heap, current size: %d", len(heap))
         # get current
         current = heappop(heap)
         # already in region? next
@@ -100,49 +110,47 @@ def map_region(grid, position):
         # add to region
         region.add(current)
         # get n, e, s, and w neighbors (diagonals not allowed!)
-        for neighbor in my_aoc.get_neighbors(
-            grid, current, directions=["n", "s", "e", "w"]
-        ):
+        for neighbor in grid.get_neighbors(
+            point=current, directions=["n", "s", "e", "w"]
+        ).values():
+            logger.debug("checking neighbor: %s", neighbor)
             # if neighbor is filled
-            if grid[neighbor[0]][neighbor[1]] == "#":
+            if grid.map.get(neighbor) == "#":
                 # add neighbor to heap
                 heappush(heap, neighbor)
     # return region when all possibilities have been exhausted
+    logger.debug("region mapped: %s", region)
     return region
 
 
-def find_regions(grid):
+def find_regions(grid_map):
     """
     Function to find regions
     """
-    # init regions and already_seen
     regions = []
     already_seen = set()
-    # counter was used as part of a visiual when I was getting a wrong answer
-    # see note above to not include diagonals
-    # counter = 0
-    # walk rows
-    for idx, row in enumerate(grid):
-        # walk columns (chars)
-        for idx2, char in enumerate(row):
-            # if slot is filled
-            if char == "#":
-                # init position
-                position = (idx, idx2)
-                # if not already seen, lets check it out
-                if not position in already_seen:
-                    # map the region
-                    new_region = map_region(grid, position)
-                    # append new_region to regions
-                    regions.append(new_region)
-                    # update already_seen with region, so we can skip them
-                    already_seen.update(new_region)
-                    # This commented section was to update the individual regions
-                    # to different characters to see how they were mapped
-                    # for position in new_region:
-                    #    grid[position[0]][position[1]] = chr(counter + 32)
-                    # counter += 1
+    grid = Grid(grid_map=grid_map)
+    for position in grid:
+        char = grid.map.get(position)
+        # if slot is filled
+        logger.debug("char at position %s: %s", position, char)
+        if char == "#":
+            # if not already seen, lets check it out
+            if not position in already_seen:
+                logger.debug("mapping new region from position %s", position)
+                # map the region
+                new_region = map_region(grid, position)
+                # append new_region to regions
+                regions.append(new_region)
+                # update already_seen with region, so we can skip them
+                already_seen.update(new_region)
+                # This commented section was to update the individual regions
+                # to different characters to see how they were mapped
+                # for position in new_region:
+                #    grid[position[0]][position[1]] = chr(counter + 32)
+                # counter += 1
     # return the count of regions
+    logger.debug("regions found: %s", regions)
     return len(regions)
 
 
@@ -164,10 +172,6 @@ def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # short circuit for part 2
-    if part == 2:
-        # we already calculated this in part 1
-        return answer[2]
     total = 0
     drive = []
     for idx in range(128):
@@ -175,28 +179,29 @@ def solve(input_value, part):
         data = data.replace("1", "#").replace("0", ".")
         total += data.count("#")
         drive.append(list(data))
-    answer[2] = find_regions(drive)
+    if part == 2:
+        logger.debug("Finding regions")
+        return find_regions(drive)
     return total
 
 
+YEAR = 2017
+DAY = 14
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+SUBMIT = False
+
+if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
+    SUBMIT = True
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017, 14)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    aoc = AdventOfCode(year=YEAR, day=DAY, input_formats=input_format, funcs=funcs)
+    aoc.run(submit=SUBMIT)

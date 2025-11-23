@@ -33,11 +33,11 @@ funcs = {
     2: solve,
 }
 
-submit = False
+SUBMIT = False
 
 if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
-    submit = True
+    SUBMIT = True
 
 if __name__ == "__main__":
     aoc = AdventOfCode(year=year, day=day, input_formats=input_format, funcs=funcs)
-    aoc.run(submit=submit)
+    aoc.run(submit=SUBMIT)
