@@ -25,11 +25,9 @@ Notes on my solutions:
 # 2025 code cleanup status
 
 Timed-out runs (> 30s):
-  2017.17.solution
-  2018.21.solution
-  2020.19.solution
-  2020.23.solution
-  2022.16.solution
+  2018.21.solution, read notes, something is broken here
+  2020.19.solution, part 1 slow, part2 broken
+  2022.16.solution, lots of heap processing, pruning needed?
 
 Failed runs:
   2017.20.solution (exit code 1)

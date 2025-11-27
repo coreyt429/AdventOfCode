@@ -71,6 +71,8 @@ magic_number = int(open("input.txt", "r").readlines()[8].split()[1])
 print(run_activation_system(magic_number, True))
 print(run_activation_system(magic_number, False))
 
+
+2025.11.27: cleaned up a bit, part 2 is slow
 """
 
 # import system modules
@@ -79,7 +81,7 @@ import time
 # import my modules
 import aoc  # pylint: disable=import-error
 
-registers = [0, 0, 0, 0, 0, 0]
+registers = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
 ops_map = {}
 ops = {
     "addr": lambda a, b: registers[a] + registers[b],
@@ -102,6 +104,7 @@ ops = {
 
 
 def parse_input(lines):
+    """parse input into instructions"""
     ip = 0
     instructions = []
     for line in lines:
@@ -117,6 +120,7 @@ def parse_input(lines):
 
 
 def execute(ip, instructions):
+    """execute one instruction"""
     instruction = instructions[registers[ip]]
     output = f"ip={registers[ip]} {registers} {instruction['op']}"
     output += f" {instruction['a']} {instruction['b']} {instruction['c']}"
@@ -132,6 +136,7 @@ def execute(ip, instructions):
 
 
 def detect_loop_old(sequence_generator):
+    """detect loops in sequence generator"""
     seen = []
     for i, num in enumerate(sequence_generator):
         seen.append(str(num))
@@ -146,9 +151,10 @@ def detect_loop_old(sequence_generator):
 
 
 def detect_loop(sequence_generator):
+    """detect loops in sequence generator"""
     seen = []
     loop_size = 0  # Variable to store the size of the loop
-
+    i = None
     for i, num in enumerate(sequence_generator):
         seen.append(str(num))
         all_seen = ",".join(seen)
@@ -157,12 +163,11 @@ def detect_loop(sequence_generator):
             pattern = ",".join(seen[-window_size:])
             count = all_seen.count(pattern)
             if count > 1:  # Pattern repeats
-                if window_size > loop_size:
-                    loop_size = window_size
+                loop_size = max(loop_size, window_size)
 
             # Stop searching if we find a pattern repeating more than 10 times
             if count > 1000:
-                return True, int(pattern.split(",")[0])
+                return True, int(pattern.split(",", maxsplit=1)[0])
 
         if i > 100000:
             return True, -1
@@ -171,19 +176,19 @@ def detect_loop(sequence_generator):
 
 
 def run_program(ip, instructions):
+    """execute program generator"""
     while True:
         if registers[ip] < 0 or registers[ip] >= len(instructions):
             return
         execute(ip, instructions)
-        yield (registers[ip])
+        yield registers[ip]
 
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    global registers
-    registers = [0, 0, 0, 0, 0, 0]
+    registers.update({0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0})
     ptr, program = parse_input(input_value.splitlines())
     loop = True
     # 11513432 was determined by watching the value of registers[5]
@@ -194,8 +199,9 @@ def solve(input_value, part):
         counter = 7434231 - 1
     while loop:
         counter += 1
-        registers = [counter, 0, 0, 0, 0, 0]
-        loop, retval = detect_loop(run_program(ptr, program))
+        registers[0] = counter
+        print(counter)
+        loop, _ = detect_loop(run_program(ptr, program))
     return counter
 
 
