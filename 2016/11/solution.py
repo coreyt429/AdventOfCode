@@ -42,13 +42,15 @@ was faster, maybe I'll revisit another day:
   part 1: 0.53 seconds
   part 2: 261 seconds
 
-
+11/27/25 revisit.  converted to heapq, removed lru_cache from functions that don't get cache hits.
+  Part 1: 47, took 0.23032712936401367 seconds 
+  Part 2: 71, took 77.16478490829468 seconds
 """
 
 import time
 import logging
 import re
-from queue import PriorityQueue
+from heapq import heappop, heappush
 import itertools
 import sys
 from functools import lru_cache
@@ -71,6 +73,7 @@ class Node:
         self.h_score = h_score
         self.f_score = g_score + h_score
         self.threshold = float("infinity")
+        self.min_stops_remaining = None
 
     def __gt__(self, other):
         """
@@ -98,6 +101,43 @@ class Node:
         my_string += "\n"
         return my_string
 
+# @lru_cache(maxsize=None)
+def calc_h_score(floors, stops, threshold):
+    """
+    Function to calculate hscore
+    gives one point for each item for each move it must make to get to 4
+    penalizes if we can't reach solution before min_solved
+    rewards empty lower floors and 4th floor more loaded than third
+
+    """
+    score = min_stops_remaining(floors)
+    # if it will take more elevator stops to complete than we have left
+    # before min_solved, then we aren't on the right track, so lets bump
+    # score up to deprioritize this route
+    if stops // 2 + score > threshold:
+        score *= 1000
+    else:
+        score *= 100
+
+    if len(floors[0]) == 0:
+        score -= 1000
+        if len(floors[1]) == 0:
+            score -= 2000
+            if len(floors[3]) > len(floors[2]):
+                score -= 3000
+    return score
+
+
+@lru_cache(maxsize=None)
+def min_stops_remaining(floors):
+    """
+    Calculate the stops needed to get all elements to the top
+    if we could move them at will
+    """
+    score = 0
+    for idx, floor in enumerate(floors):
+        score += (3 - idx) * len(floor)
+    return score // 2
 
 # overkill for the puzzle, but chatGPT was more than happy to generate this,
 # and it was faster than me looking up a few elements I didn't know
@@ -249,6 +289,11 @@ def parse_notes(input_string):
             else:
                 pass
 
+def normalize_floors(floors):
+    """
+    Return a canonical floors representation: tuple of sorted tuples.
+    """
+    return tuple(tuple(sorted(floor)) for floor in floors)
 
 @lru_cache(maxsize=None)
 def anonymize(floors):
@@ -306,7 +351,7 @@ def anonymize_old(floors):
     return tuple(tuple(list(floor)) for floor in list_floors)
 
 
-@lru_cache(maxsize=None)
+# @lru_cache(maxsize=None)
 def is_valid(floor):
     """
     Function to test validity of a floor configuration
@@ -331,7 +376,7 @@ def is_valid(floor):
     return True
 
 
-@lru_cache(maxsize=None)
+# @lru_cache(maxsize=None)
 def is_solved(current_floor, floors):
     """
     Function to test for solved puzzles
@@ -397,7 +442,7 @@ def next_floors(current):
     return next_floor_list
 
 
-@lru_cache(maxsize=None)
+# @lru_cache(maxsize=None)
 def try_move(current_node, items, new_floor):
     """
     Function to try moves and return new heap entries
@@ -418,6 +463,7 @@ def try_move(current_node, items, new_floor):
         new_floors[current_node.floor].remove(item)
         new_floors[new_floor].append(item)
     floors_tuple = tuple(tuple(floor) for floor in new_floors)
+    # floors_tuple = normalize_floors(new_floors)
     # if both floors are still valid
     if is_valid(floors_tuple[current_node.floor]) and is_valid(floors_tuple[new_floor]):
         # add to new_nodes
@@ -471,43 +517,7 @@ def h_score_simple(floors, stops, threshold):
     return score
 
 
-@lru_cache(maxsize=None)
-def calc_h_score(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    penalizes if we can't reach solution before min_solved
-    rewards empty lower floors and 4th floor more loaded than third
 
-    """
-    score = min_stops_remaining(floors)
-    # if it will take more elevator stops to complete than we have left
-    # before min_solved, then we aren't on the right track, so lets bump
-    # score up to deprioritize this route
-    if stops // 2 + score > threshold:
-        score *= 1000
-    else:
-        score *= 100
-
-    if len(floors[0]) == 0:
-        score -= 1000
-        if len(floors[1]) == 0:
-            score -= 2000
-            if len(floors[3]) > len(floors[2]):
-                score -= 3000
-    return score
-
-
-@lru_cache(maxsize=None)
-def min_stops_remaining(floors):
-    """
-    Calculate the stops needed to get all elements to the top
-    if we could move them at will
-    """
-    score = 0
-    for idx, floor in enumerate(floors):
-        score += (3 - idx) * len(floor)
-    return score // 2
 
 
 def h_score_percentage(floors, stops, threshold):
@@ -530,11 +540,11 @@ def h_score_percentage(floors, stops, threshold):
     return score
 
 
-@lru_cache(maxsize=None)
+# @lru_cache(maxsize=None)
 def init_goal(floors):
     """
     Function to initialize goal
-    I ended up not using, this, bur preseving for now
+    I ended up not using, this, but preserving for now
     """
     goal = 0
     # sum items as goal
@@ -573,25 +583,31 @@ def solve_a_star(floors):
     # min_solved = float('infinity')
     # educated guess
     min_solved = 100
+    # start_floors = normalize_floors(tuple(tuple(list(floor)) for floor in floors))
+    # start_node = Node(
+    #     0,
+    #     start_floors,
+    #     0,
+    #     calc_h_score(start_floors, 0, min_solved),
+    # )
     start_node = Node(
         0,
         tuple(tuple(list(floor)) for floor in floors),
         0,
         calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved),
     )
-    # initialize PriorityQueue
-    open_set = PriorityQueue()
+    open_set = []
     # add start_node to priority_queue (f_score, node)
-    open_set.put((start_node.f_score, start_node))
+    heappush(open_set, (start_node.f_score, start_node))
     # initialize closed set
     closed_set = {}
 
     # process open set
     counter = 0
-    while not open_set.empty():
+    while  open_set:
         counter += 1
         # get current node
-        current_node = open_set.get()[1]
+        current_node = heappop(open_set)[1]
         # useless check for min_solved that isn't gettign updated
         if current_node.g_score >= min_solved:
             continue
@@ -617,7 +633,8 @@ def solve_a_star(floors):
             #    return min_solved
             # continue
         # is it possible to beat current score?
-        if min_stops_remaining(current_node.floors) + current_node.g_score > min_solved:
+        remaining = min_stops_remaining(current_node.floors)
+        if remaining + current_node.g_score > min_solved:
             continue
         # update threshold so children calculate h_score accordingly
         current_node.threshold = min_solved
@@ -626,7 +643,8 @@ def solve_a_star(floors):
             if new_node.g_score < closed_set.get(
                 new_node.anonymized, float("infinity")
             ):
-                open_set.put((new_node.f_score, new_node))
+                heappush(open_set, (new_node.f_score, new_node))
+                
     return None
 
 
@@ -647,6 +665,7 @@ if __name__ == "__main__":
         lines = test_data
     for note in lines:
         parse_notes(note)
+    # building = normalize_floors(building)
 
     # parts dict to loop
     parts = {1: 1, 2: 2}
