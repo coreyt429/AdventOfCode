@@ -43,8 +43,12 @@ was faster, maybe I'll revisit another day:
   part 2: 261 seconds
 
 11/27/25 revisit.  converted to heapq, removed lru_cache from functions that don't get cache hits.
-  Part 1: 47, took 0.23032712936401367 seconds 
+  Part 1: 47, took 0.23032712936401367 seconds
   Part 2: 71, took 77.16478490829468 seconds
+
+11/27/25 revisit.  cleaned up a lot, added checks before spawning nodes:
+  Part 1: 47, took 0.23984408378601074 seconds
+  Part 2: 71, took 13.964895963668823 seconds
 """
 
 import time
@@ -62,18 +66,30 @@ class Node:
     Node class for scoring positions
     """
 
-    def __init__(self, floor, floors, g_score, h_score):
+    def __init__(self, floor, floors, g_score):
         """
         Init node
         """
         self.floor = floor
         self.floors = floors
-        self.anonymized = anonymize(floors)
+        self.counts = floor_counts(floors)
         self.g_score = g_score
-        self.h_score = h_score
-        self.f_score = g_score + h_score
-        self.threshold = float("infinity")
-        self.min_stops_remaining = None
+        self.h_score = calc_h_score(self.counts)
+
+    @property
+    def f_score(self):
+        """
+        Return f_score
+        """
+        return self.g_score + self.h_score
+
+    @property
+    def state_key(self):
+        """
+        Symmetry-aware state key: elevator floor + anonymized floors.
+        States that differ only by renaming elements collapse to the same key.
+        """
+        return (self.floor, anonymize(self.floors))
 
     def __gt__(self, other):
         """
@@ -93,7 +109,7 @@ class Node:
 
     def __str__(self):
         my_string = f"g_score: {self.g_score}, h_score: {self.h_score}, "
-        my_string += f"f_score: {self.f_score}, threshold: {self.threshold}\n"
+        my_string += f"f_score: {self.f_score}\n"
         floor_num = 4
         for floor in reversed(self.floors):
             my_string += f"{floor_num}:" + " ".join(floor) + "\n"
@@ -101,43 +117,40 @@ class Node:
         my_string += "\n"
         return my_string
 
-# @lru_cache(maxsize=None)
-def calc_h_score(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    penalizes if we can't reach solution before min_solved
-    rewards empty lower floors and 4th floor more loaded than third
 
+@lru_cache(maxsize=None)
+def floor_counts(floors):
     """
-    score = min_stops_remaining(floors)
-    # if it will take more elevator stops to complete than we have left
-    # before min_solved, then we aren't on the right track, so lets bump
-    # score up to deprioritize this route
-    if stops // 2 + score > threshold:
-        score *= 1000
-    else:
-        score *= 100
-
-    if len(floors[0]) == 0:
-        score -= 1000
-        if len(floors[1]) == 0:
-            score -= 2000
-            if len(floors[3]) > len(floors[2]):
-                score -= 3000
-    return score
+    Return counts of items on each floor
+    """
+    return tuple(len(floor) for floor in floors)
 
 
 @lru_cache(maxsize=None)
-def min_stops_remaining(floors):
+def calc_h_score(counts):
     """
-    Calculate the stops needed to get all elements to the top
-    if we could move them at will
+    Heuristic score function: min_stops_remaining(counts) with
+    bonuses for empty lower floors.
+    """
+    score = min_stops_remaining(counts)
+    # reward for empty lower floors
+    # if counts[0] == 0:
+    #     score -= 2
+    #     if counts[1] == 0:
+    #         score -= 1
+    return max(score, 0)
+
+
+@lru_cache(maxsize=None)
+def min_stops_remaining(counts):
+    """
+    counts: tuple of ints (number of items on each floor)
     """
     score = 0
-    for idx, floor in enumerate(floors):
-        score += (3 - idx) * len(floor)
+    for idx, n in enumerate(counts):
+        score += (3 - idx) * n
     return score // 2
+
 
 # overkill for the puzzle, but chatGPT was more than happy to generate this,
 # and it was faster than me looking up a few elements I didn't know
@@ -289,11 +302,13 @@ def parse_notes(input_string):
             else:
                 pass
 
+
 def normalize_floors(floors):
     """
     Return a canonical floors representation: tuple of sorted tuples.
     """
     return tuple(tuple(sorted(floor)) for floor in floors)
+
 
 @lru_cache(maxsize=None)
 def anonymize(floors):
@@ -325,55 +340,34 @@ def anonymize(floors):
     return tuple(tuple(floor) for floor in anonymized_floors)
 
 
-def anonymize_old(floors):
-    """
-    Function to anonymize items so symmetrical states are equal
-    """
-    # find the unique elements in the building from the top down
-    elements_seen = []
-    for floor_num in range(3, -1, -1):
-        floor = floors[floor_num]
-        for item in list(floor):
-            if not item[:-1] in elements_seen:
-                elements_seen.append(item[:-1])
-    # convert tuples or sets to list so we can work with them
-    list_floors = [list(floor) for floor in floors]
-    # walk all the items and replace the element with its index
-    # ex:  HG -> 0G, LiM -> 1M
-    for floor in list_floors:
-        # floor_summary = ' '.join(floor)
-        for item, label in enumerate(floor):
-            for idx, element in enumerate(elements_seen):
-                # if floor_summary.count(element) > 1:
-                if element in label:
-                    # print(f"{floor[item]} replace {element} with {str(idx)}")
-                    floor[item] = label.replace(element, str(idx))
-    return tuple(tuple(list(floor)) for floor in list_floors)
-
-
-# @lru_cache(maxsize=None)
+@lru_cache(maxsize=None)
 def is_valid(floor):
     """
-    Function to test validity of a floor configuration
+    A floor is invalid iff:
+      - there is at least one generator, AND
+      - there exists a microchip whose matching generator is not present.
     """
-    # sets to classify generators and micro_chips
-    generators = []
-    micro_chips = []
-    # walk the items in the floor
+    # 0 or 1 item: always safe
+    if len(floor) <= 1:
+        return True
+
+    gens = set()
+    chips = set()
+
     for item in floor:
-        # if item end in G add it's element to generators
+        element = item[:-1]
         if item[-1] == "G":
-            generators.append(item[:-1])
-        else:  # add to micro_chips instead
-            micro_chips.append(item[:-1])
-    # if there are any generators, lets look at the microchips
-    if len(generators) > 0:
-        # walk micro_chips
-        for micro_chip in micro_chips:
-            # if micro_chip doesn't have a matching generator, it is not safe
-            if not micro_chip in generators:
-                return False
-    return True
+            gens.add(element)
+        else:  # microchip
+            chips.add(element)
+
+    # No generators or no chips → nothing can fry
+    if not gens or not chips:
+        return True
+
+    # If there's any chip whose generator isn't present, it's unsafe.
+    # chips - gens is exactly that set.
+    return not chips - gens
 
 
 # @lru_cache(maxsize=None)
@@ -417,40 +411,25 @@ def next_floors_a_star(current_node):
     return next_floor_list
 
 
-def next_floors(current):
-    """
-    Function to return next floors to try
-    """
-    print(f"current: {current}")
-    next_floor_list = []
-    for floor in [current["floor"] + 1, current["floor"] - 1]:
-        # check that floor exists
-        if floor < 0 or floor > 3:
-            continue
-        # check so that we don't go down below all the other items
-        if floor == current["floor"] - 1:
-            empty = True
-            # in each floor, if its length is not 0, set false
-            for lower_floor in range(current["floor"] - 1, -1, -1):
-                if len(current["floors"][lower_floor]) > 0:
-                    empty = False
-                    break
-            # if all the floors below are empty move on, don't process
-            if empty:
-                continue
-        next_floor_list.append(floor)
-    return next_floor_list
-
-
 # @lru_cache(maxsize=None)
 def try_move(current_node, items, new_floor):
     """
     Function to try moves and return new heap entries
     """
     # lets try not going up with an empty slot
-    # this cut part 1 time in half :)
     if None in items and new_floor > current_node.floor:
         return []
+    # lets try not going down with both slots full
+    if None not in items:
+        if new_floor < current_node.floor:
+            return []
+
+        if "G" in items[0] and "M" in items[1]:
+            if items[0][:-1] == items[1][:-1]:
+                return []
+        if "G" in items[1] and "M" in items[0]:
+            if items[0][:-1] == items[1][:-1]:
+                return []
     new_nodes = []
     # clone current['floors']
     new_floors = []
@@ -462,8 +441,11 @@ def try_move(current_node, items, new_floor):
     for item in filtered_items:
         new_floors[current_node.floor].remove(item)
         new_floors[new_floor].append(item)
-    floors_tuple = tuple(tuple(floor) for floor in new_floors)
-    # floors_tuple = normalize_floors(new_floors)
+    # floors_tuple = tuple(tuple(floor) for floor in new_floors)
+    # print(f"floors_tuple a: {floors_tuple}")
+    floors_tuple = normalize_floors(new_floors)
+    # print(f"floors_tuple b: {floors_tuple}")
+
     # if both floors are still valid
     if is_valid(floors_tuple[current_node.floor]) and is_valid(floors_tuple[new_floor]):
         # add to new_nodes
@@ -473,85 +455,9 @@ def try_move(current_node, items, new_floor):
                 new_floor,
                 floors_tuple,
                 current_node.g_score + 1,
-                calc_h_score(
-                    floors_tuple, current_node.g_score, current_node.threshold
-                ),
             )
         )
     return new_nodes
-
-
-# preserving failed h_score routines for future review
-def h_score_works_slow(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    boosts score if stops //2 + score > threshold (min_solved)
-    decreases (prioritizes) score if lower floors are empty
-    """
-    # score = min_stops_remaining(floors)
-    score = 0
-    for idx, floor in enumerate(floors):
-        score += (3 - idx) * len(floor)
-    # if it will take more elevator stops to complete than we have left
-    # before min_solved, then we aren't on the right track, so lets bump
-    # score up to deprioritize this route
-    if stops // 2 + score > threshold:
-        score += 100
-    if len(floors[0]) == 0:
-        score -= 10
-        if len(floors[1]) == 0:
-            score -= 20
-    return score
-
-
-def h_score_simple(floors, stops, threshold):
-    """
-    Function to calculate hscore
-    gives one point for each item for each move it must make to get to 4
-    """
-    print(stops, threshold)
-    score = 0
-    for idx, floor in enumerate(floors):
-        score += (3 - idx) * len(floor)
-    return score
-
-
-
-
-
-def h_score_percentage(floors, stops, threshold):
-    """
-    Function to calculate h_score based on percentage completion
-    rewards for lower floors being empty
-    """
-    print(stops, threshold)
-    max_items = sum(len(floor) for floor in floors)
-    # max_items * (4-1) since the highest floor gives the maximum multiplier
-    max_score = max_items * 3
-    score = min_stops_remaining(floors)
-    percentage_complete = score / max_score if max_score > 0 else 1
-    score = 1 - percentage_complete
-
-    if len(floors[0]) == 0:
-        score -= 0.5
-        if len(floors[1]) == 0:
-            score -= 1
-    return score
-
-
-# @lru_cache(maxsize=None)
-def init_goal(floors):
-    """
-    Function to initialize goal
-    I ended up not using, this, but preserving for now
-    """
-    goal = 0
-    # sum items as goal
-    for floor in floors:
-        goal += len(floor)
-    goal = calc_h_score(([], [], [], [range(goal)]), 0, float("infinity"))
-    return goal
 
 
 def a_star_next_nodes(current_node):
@@ -570,6 +476,7 @@ def a_star_next_nodes(current_node):
             # ignore matches
             if items[0] == items[1]:
                 continue
+
             for new_node in try_move(current_node, items, new["floor"]):
                 new_nodes.append(new_node)
     return new_nodes
@@ -577,76 +484,55 @@ def a_star_next_nodes(current_node):
 
 def solve_a_star(floors):
     """
-    Function to solve puzzle using A* algorithm
+    A* search using an admissible heuristic (min_stops_remaining(counts))
+    and a conservative closed_set keyed on the exact state (floor, floors).
+
+    This version avoids anonymization in the closed_set to rule out
+    over-aggressive state merging as the cause of returning None.
     """
-    # multiply by floor 3
-    # min_solved = float('infinity')
-    # educated guess
-    min_solved = 100
-    # start_floors = normalize_floors(tuple(tuple(list(floor)) for floor in floors))
-    # start_node = Node(
-    #     0,
-    #     start_floors,
-    #     0,
-    #     calc_h_score(start_floors, 0, min_solved),
-    # )
-    start_node = Node(
-        0,
-        tuple(tuple(list(floor)) for floor in floors),
-        0,
-        calc_h_score(tuple(tuple(list(floor)) for floor in floors), 0, min_solved),
-    )
+    min_solve = 100
+    # Build a canonical start state
+    start_floors = normalize_floors(tuple(tuple(list(floor)) for floor in floors))
+    start_node = Node(0, start_floors, 0)
+
     open_set = []
-    # add start_node to priority_queue (f_score, node)
     heappush(open_set, (start_node.f_score, start_node))
-    # initialize closed set
+
+    # closed_set maps (floor, floors) -> best g_score seen for that exact state
     closed_set = {}
 
-    # process open set
-    counter = 0
-    while  open_set:
-        counter += 1
-        # get current node
-        current_node = heappop(open_set)[1]
-        # useless check for min_solved that isn't gettign updated
-        if current_node.g_score >= min_solved:
+    while open_set:
+        _, current_node = heappop(open_set)
+        # logger.debug("Current node: %s", current_node)
+        # logger.debug("Open set size: %d", len(open_set))
+        key = current_node.state_key
+        best_g = closed_set.get(key, float("inf"))
+        if current_node.g_score > best_g or current_node.g_score >= min_solve:
+            # We've already seen this exact state with a better path
             continue
-        # is this state in closed_set?
-        # update closed set if we re in closed set, but fewer steps we'll process
-        # otherwise continue
-        if current_node.g_score > closed_set.get(
-            current_node.anonymized, float("infinity")
-        ):
-            continue
-        closed_set[current_node.anonymized] = current_node.g_score
-        # check for solution first
-        if is_solved(current_node.floor, current_node.floors):
-            return current_node.g_score
-            # if current_node.g_score < min_solved:
-            #    print(f"Took {counter} tries {current_node.g_score}")
-            #    print(f"Found win in {current_node.g_score} stops: {current_node.floors}")
-            #    print(current_node)
-            #    min_solved = current_node.g_score
-            #    # just returning first solution to save time
-            #    # this is optimized for this input, we would just need to continue if
-            #    # we were solving for general solutions
-            #    return min_solved
-            # continue
-        # is it possible to beat current score?
-        remaining = min_stops_remaining(current_node.floors)
-        if remaining + current_node.g_score > min_solved:
-            continue
-        # update threshold so children calculate h_score accordingly
-        current_node.threshold = min_solved
-        for new_node in a_star_next_nodes(current_node):
-            # skip if already seen, unless it is a lower step count.
-            if new_node.g_score < closed_set.get(
-                new_node.anonymized, float("infinity")
-            ):
-                heappush(open_set, (new_node.f_score, new_node))
-                
-    return None
 
+        # Record / update best g for this state
+        closed_set[key] = current_node.g_score
+
+        # Goal check
+        if is_solved(current_node.floor, current_node.floors):
+            min_solve = min(min_solve, current_node.g_score)
+            continue
+
+        if current_node.g_score >= min_solve:
+            continue
+
+        # Expand neighbors
+        for new_node in a_star_next_nodes(current_node):
+            new_key = new_node.state_key
+            if new_node.g_score < closed_set.get(new_key, float("inf")):
+                heappush(open_set, (new_node.f_score, new_node))
+
+    # If we exhaust the open_set without finding a goal, there's genuinely no solution
+    return min_solve
+
+
+building = [[], [], [], []]
 
 if __name__ == "__main__":
     # sample data
@@ -657,16 +543,14 @@ if __name__ == "__main__":
         "The fourth floor contains nothing relevant.",
     ]
     logging.basicConfig(level=logging.WARNING)
+    logger = logging.getLogger(__name__)
     my_aoc = aoc.AdventOfCode(2016, 11)
     lines = my_aoc.load_lines()
-    building = [[], [], [], []]
     # print(sys.argv,len(sys.argv))
     if len(sys.argv) > 1:
         lines = test_data
     for note in lines:
         parse_notes(note)
-    # building = normalize_floors(building)
-
     # parts dict to loop
     parts = {1: 1, 2: 2}
     # dict to store answers

@@ -25,7 +25,6 @@ Notes on my solutions:
 # 2025 code cleanup status
 
 Timed-out runs (> 30s):
-  2016.11.solution
   2017.17.solution
   2018.21.solution
   2020.19.solution
