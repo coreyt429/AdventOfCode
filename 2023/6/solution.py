@@ -12,22 +12,55 @@ from aoc import AdventOfCode  # pylint: disable=import-error
 
 TEMPLATE_VERSION = "20251128"
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.debug("Advent of Code Template Version %s", TEMPLATE_VERSION)
 
-def solve(input_value, part):
+def parse_input2(data):
+    # Split the data into lines
+    lines = data.strip().replace(' ','').split('\n')
+
+    # Split each line by whitespace and remove the first element (the label)
+    time_values = [int(value) for value in lines[0].split(':')[1:]]
+    distance_values = [int(value) for value in lines[1].split(':')[1:]]
+
+    # Combine the time and distance values into a list of tuples
+    time_distance_pairs = list(zip(time_values, distance_values))
+    return time_distance_pairs
+
+def parse_input(data):
+    # Split the data into lines
+    lines = data.strip().split('\n')
+
+    # Split each line by whitespace and remove the first element (the label)
+    time_values = [int(value) for value in lines[0].split()[1:]]
+    distance_values = [int(value) for value in lines[1].split()[1:]]
+
+    # Combine the time and distance values into a list of tuples
+    time_distance_pairs = list(zip(time_values, distance_values))
+    return time_distance_pairs
+
+
+def solve(input_value, _):
     """
     Function to solve puzzle
     """
-    return part
+    retval = 1;
+    # foreach pair
+    for time, distance in input_value:
+        wins=0
+        for ms in range(1,time):
+            if ms*(time-ms) > distance:
+                wins+=1
+        retval*=wins
+    return retval
 
 
 YEAR = 2023
 DAY = 6
 input_format = {
-    1: "lines",
-    2: "lines",
+    1: parse_input,
+    2: parse_input2,
 }
 
 funcs = {

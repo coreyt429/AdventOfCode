@@ -141,7 +141,9 @@ class AdventOfCode:
         input_formats = input_formats or {1: "lines", 2: "lines"}
         self.inputs = {}
         for k, v in input_formats.items():
-            if v == "lines":
+            if callable(v):
+                self.inputs[k] = v(self.load_text())
+            elif v == "lines":
                 self.inputs[k] = self.load_lines()
             elif v == "integers":
                 self.inputs[k] = self.load_integers()
