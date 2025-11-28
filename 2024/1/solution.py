@@ -9,6 +9,7 @@ I usually don't naturally go there decades of nested for loops are hard to unwin
 # import system modules
 import sys
 import logging
+
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 
@@ -55,8 +56,9 @@ def solve(input_value, part):
         distance += abs(num_a - num_b)
     return distance
 
-year = 2024
-day = 1
+
+YEAR = 2024
+DAY = 1
 input_format = {
     1: "lines",
     2: "lines",
@@ -67,13 +69,11 @@ funcs = {
     2: solve,
 }
 
-submit = False
+SUBMIT = False
 
 if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
-    submit = True
+    SUBMIT = True
 
 if __name__ == "__main__":
-    aoc = AdventOfCode(year=year, day=day, input_formats=input_format, funcs=funcs)
-    aoc.run(submit=submit)
-
-    
+    aoc = AdventOfCode(year=YEAR, day=DAY, input_formats=input_format, funcs=funcs)
+    aoc.run(submit=SUBMIT)

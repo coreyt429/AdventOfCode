@@ -379,8 +379,7 @@ def simulate_game(part):
         # process active spells, and handle win condition
         process_active_spells(game_state)
         if game_state.win:
-            if game_state.mana_spent < lowest_win_cost:
-                lowest_win_cost = game_state.mana_spent
+            lowest_win_cost = min(lowest_win_cost, game_state.mana_spent)
             continue
         # Player turn?
         if game_state.is_player_turn():

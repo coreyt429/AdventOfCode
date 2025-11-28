@@ -124,6 +124,7 @@ class Alu:
             self.operations[operation](*params)
             logger.debug("%s %s - %s", operation, params, self.registers)
 
+
 def get_relevant_adds(puzzle):
     """function to get the relevant add values from the puzzle"""
     div1, div26 = [], []

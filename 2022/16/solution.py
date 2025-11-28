@@ -185,7 +185,7 @@ def max_pressure_relief(working_valves, time_limit=30, workers=1):
     stats = {"pressure": 0, "history": tuple(), "seen": set()}
     while heap:
         current = heappop(heap)
-        logger.debug("Heap: %s, Current state: %s", len(heap),current)
+        logger.debug("Heap: %s, Current state: %s", len(heap), current)
         if current[1:4] in stats["seen"]:
             continue
         stats["seen"].add(current[1:4])
