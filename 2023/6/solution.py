@@ -1,5 +1,5 @@
 """
-Advent Of Code 2023 6 6
+Advent Of Code 2023 6
 
 """
 
@@ -16,21 +16,25 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.debug("Advent of Code Template Version %s", TEMPLATE_VERSION)
 
+
 def parse_input2(data):
+    """pare input for part 2"""
     # Split the data into lines
-    lines = data.strip().replace(' ','').split('\n')
+    lines = data.strip().replace(" ", "").split("\n")
 
     # Split each line by whitespace and remove the first element (the label)
-    time_values = [int(value) for value in lines[0].split(':')[1:]]
-    distance_values = [int(value) for value in lines[1].split(':')[1:]]
+    time_values = [int(value) for value in lines[0].split(":")[1:]]
+    distance_values = [int(value) for value in lines[1].split(":")[1:]]
 
     # Combine the time and distance values into a list of tuples
     time_distance_pairs = list(zip(time_values, distance_values))
     return time_distance_pairs
 
+
 def parse_input(data):
+    """pare input for part 1"""
     # Split the data into lines
-    lines = data.strip().split('\n')
+    lines = data.strip().split("\n")
 
     # Split each line by whitespace and remove the first element (the label)
     time_values = [int(value) for value in lines[0].split()[1:]]
@@ -45,14 +49,14 @@ def solve(input_value, _):
     """
     Function to solve puzzle
     """
-    retval = 1;
+    retval = 1
     # foreach pair
     for time, distance in input_value:
-        wins=0
-        for ms in range(1,time):
-            if ms*(time-ms) > distance:
-                wins+=1
-        retval*=wins
+        wins = 0
+        for ms in range(1, time):
+            if ms * (time - ms) > distance:
+                wins += 1
+        retval *= wins
     return retval
 
 
