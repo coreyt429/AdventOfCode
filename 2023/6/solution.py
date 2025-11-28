@@ -1,5 +1,5 @@
 """
-Advent Of Code YEAR day DAY
+Advent Of Code 2023 6 6
 
 """
 
@@ -12,9 +12,9 @@ from aoc import AdventOfCode  # pylint: disable=import-error
 
 TEMPLATE_VERSION = "20251128"
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
+logger.debug("Advent of Code Template Version %s", TEMPLATE_VERSION)
 
 def solve(input_value, part):
     """
@@ -23,9 +23,8 @@ def solve(input_value, part):
     return part
 
 
-
-year = YEAR
-day = DAY
+YEAR = 2023
+DAY = 6
 input_format = {
     1: "lines",
     2: "lines",
@@ -42,5 +41,7 @@ if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
     SUBMIT = True
 
 if __name__ == "__main__":
-    aoc = AdventOfCode(year=year, day=day, input_formats=input_format, funcs=funcs)
+    logger.debug("Starting Advent of Code %d Day %d", YEAR, DAY)
+    aoc = AdventOfCode(year=YEAR, day=DAY, input_formats=input_format, funcs=funcs)
+    logger.debug("Running Advent of Code %d Day %d", YEAR, DAY)
     aoc.run(submit=SUBMIT)
