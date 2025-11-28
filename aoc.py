@@ -593,8 +593,8 @@ def copy_and_modify_template(year, day, src, dst):
     with open(src, "r", encoding="utf-8") as f:
         content = f.read()
 
-    content = content.replace("9999", year)
-    content = content.replace("99", day)
+    content = content.replace("9999", str(year))
+    content = content.replace("99", str(day))
 
     with open(dst, "w", encoding="utf-8") as f:
         f.write(content)
