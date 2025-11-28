@@ -323,7 +323,7 @@ class AdventOfCode:
                 key = str(part)
                 if key in cached:
                     self.correct[part] = cached[key]
-            logger.info(
+            logger.debug(
                 "Loaded cached answers for year %s day %s from %s",
                 self.session.year,
                 self.session.day,
@@ -390,7 +390,7 @@ class AdventOfCode:
             cache_payload = {str(part): self.correct[part] for part in self.parts}
             with open(answers_path, "w", encoding="utf-8") as f:
                 json.dump(cache_payload, f, ensure_ascii=False, indent=2)
-            logger.info(
+            logger.debug(
                 "Cached answers for year %s day %s to %s",
                 self.session.year,
                 self.session.day,
@@ -414,7 +414,9 @@ class AdventOfCode:
             # log end time
             end_time = time.time()
             logger.info(
-                "Part %s: %s, took %.5f seconds",
+                "%d.%dPart %s: %s, took %.5f seconds",
+                self.session.year,
+                self.session.day,
                 part,
                 self.answer[part],
                 end_time - self.session.start_time,
