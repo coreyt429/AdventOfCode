@@ -19,6 +19,7 @@ import requests
 dotenv.load_dotenv()
 logger = logging.getLogger(__name__)
 
+EXIT_WRONG = {1: 201, 2: 202}
 
 class AdventOfCodeSession:
     """
@@ -436,7 +437,7 @@ class AdventOfCode:
                     self.answer[part],
                     self.correct[part],
                 )
-                raise SystemExit(part)
+                raise SystemExit(EXIT_WRONG[part])
 
     def get_input(self):
         """get input from advent of code site"""
