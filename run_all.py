@@ -245,3 +245,68 @@ with output_path.open("w", encoding="utf-8") as f:
     yaml.safe_dump(summary, f, sort_keys=False)
 
 console.print(f"\n[cyan]Summary written to[/cyan] [bold]{output_path}[/bold]")
+
+# -------- MARKDOWN OUTPUT --------
+
+md_lines = []
+md_lines.append("# run_all Summary\n")
+
+md_lines.append(f"**Total runtime:** `{total_elapsed:.2f}s`\n")
+md_lines.append(f"**Slow threshold:** `{SLOW_THRESHOLD}s`\n")
+
+# Timeouts
+md_lines.append("\n## Timed-out runs (> 30s)\n")
+if timeout_runs:
+    md_lines.append("| Module |\n")
+    md_lines.append("|--------|\n")
+    for name in timeout_runs:
+        md_lines.append(f"| {name} |\n")
+else:
+    md_lines.append("_No timeouts._\n")
+
+# Failures
+md_lines.append("\n## Failed runs\n")
+if failed_runs:
+    md_lines.append("| Module | Exit code |\n")
+    md_lines.append("|--------|-----------|\n")
+    for name, code in failed_runs:
+        md_lines.append(f"| {name} | {code} |\n")
+else:
+    md_lines.append("_No failed runs._\n")
+
+# Missing files
+md_lines.append("\n## Missing solution.py files\n")
+if missing_files:
+    md_lines.append("| Module | Path |\n")
+    md_lines.append("|--------|-------|\n")
+    for item in missing_files:
+        md_lines.append(f"| {item['module']} | {item['path']} |\n")
+else:
+    md_lines.append("_No missing files._\n")
+
+# Pylint
+md_lines.append("\n## Pylint scores < 10\n")
+if bad_lint:
+    md_lines.append("| Module | Score |\n")
+    md_lines.append("|--------|--------|\n")
+    for name, score in bad_lint:
+        sval = "-" if score is None else f"{score:.2f}"
+        md_lines.append(f"| {name} | {sval} |\n")
+else:
+    md_lines.append("_All scores are 10/10._\n")
+
+# Legacy template
+md_lines.append("\n## Solutions using legacy aoc.run() template\n")
+if legacy_template:
+    md_lines.append("| Module | Path |\n")
+    md_lines.append("|--------|-------|\n")
+    for item in legacy_template:
+        md_lines.append(f"| {item['module']} | {item['path']} |\n")
+else:
+    md_lines.append("_No legacy templates detected._\n")
+
+md_path = base / "run_all.md"
+with md_path.open("w", encoding="utf-8") as f:
+    f.writelines(md_lines)
+
+console.print(f"[cyan]Markdown summary written to[/cyan] [bold]{md_path}[/bold]")

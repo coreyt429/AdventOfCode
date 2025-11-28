@@ -1,5 +1,5 @@
 """
-Advent Of Code YEAR day DAY
+Advent Of Code 9999 day 99
 
 """
 
@@ -24,8 +24,8 @@ def solve(input_value, part):
 
 
 
-year = YEAR
-day = DAY
+YEAR = 9999
+DAY = 99
 input_format = {
     1: "lines",
     2: "lines",
@@ -42,5 +42,5 @@ if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
     SUBMIT = True
 
 if __name__ == "__main__":
-    aoc = AdventOfCode(year=year, day=day, input_formats=input_format, funcs=funcs)
+    aoc = AdventOfCode(year=YEAR, day=DAY, input_formats=input_format, funcs=funcs)
     aoc.run(submit=SUBMIT)
