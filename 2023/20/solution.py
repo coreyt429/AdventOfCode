@@ -23,7 +23,6 @@ def solve(input_value, part):
     return part
 
 
-
 YEAR = 2023
 DAY = 20
 input_format = {

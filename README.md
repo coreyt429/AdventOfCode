@@ -24,14 +24,18 @@ Notes on my solutions:
 
 # 2025 code cleanup status
 # run_all Summary
-**Total runtime:** `850.83s`
+**Total runtime:** `1029.57s`
 **Slow threshold:** `30.0s`
 
 ## Timed-out runs (> 30s)
 | Module |
 |--------|
 | 2015.22.solution |
+| 2016.11.solution |
+| 2016.14.solution |
 | 2017.17.solution |
+| 2017.22.solution |
+| 2018.6.solution |
 | 2018.21.solution |
 | 2020.19.solution |
 | 2020.23.solution |
@@ -40,48 +44,76 @@ Notes on my solutions:
 ## Failed runs
 | Module | Exit code |
 |--------|-----------|
+| 2022.20.solution | 1 |
+| 2022.21.solution | 1 |
+| 2022.22.solution | 1 |
+| 2022.23.solution | 1 |
+| 2022.24.solution | 1 |
+| 2022.25.solution | 1 |
+| 2023.7.solution | 1 |
+| 2023.8.solution | 1 |
+| 2023.9.solution | 1 |
+| 2023.10.solution | 1 |
+| 2023.11.solution | 1 |
+| 2023.12.solution | 1 |
+| 2023.13.solution | 1 |
+| 2023.14.solution | 1 |
+| 2023.15.solution | 1 |
+| 2023.16.solution | 1 |
+| 2023.17.solution | 1 |
+| 2023.18.solution | 1 |
+| 2023.19.solution | 1 |
+| 2023.20.solution | 1 |
+| 2023.21.solution | 1 |
+| 2023.22.solution | 1 |
+| 2023.23.solution | 1 |
+| 2023.24.solution | 1 |
+| 2023.25.solution | 1 |
 | 2024.18.solution | 1 |
 | 2024.19.solution | 1 |
 | 2024.20.solution | 1 |
 | 2024.21.solution | 1 |
+| 2024.22.solution | 1 |
+| 2024.23.solution | 1 |
+| 2024.24.solution | 1 |
+| 2024.25.solution | 1 |
 
 ## Missing solution.py files
-| Module | Path |
-|--------|-------|
-| 2022.20.solution | 2022/20/solution.py |
-| 2022.21.solution | 2022/21/solution.py |
-| 2022.22.solution | 2022/22/solution.py |
-| 2022.23.solution | 2022/23/solution.py |
-| 2022.24.solution | 2022/24/solution.py |
-| 2022.25.solution | 2022/25/solution.py |
-| 2023.7.solution | 2023/7/solution.py |
-| 2023.8.solution | 2023/8/solution.py |
-| 2023.9.solution | 2023/9/solution.py |
-| 2023.10.solution | 2023/10/solution.py |
-| 2023.11.solution | 2023/11/solution.py |
-| 2023.12.solution | 2023/12/solution.py |
-| 2023.13.solution | 2023/13/solution.py |
-| 2023.14.solution | 2023/14/solution.py |
-| 2023.15.solution | 2023/15/solution.py |
-| 2023.16.solution | 2023/16/solution.py |
-| 2023.17.solution | 2023/17/solution.py |
-| 2023.18.solution | 2023/18/solution.py |
-| 2023.19.solution | 2023/19/solution.py |
-| 2023.20.solution | 2023/20/solution.py |
-| 2023.21.solution | 2023/21/solution.py |
-| 2023.22.solution | 2023/22/solution.py |
-| 2023.23.solution | 2023/23/solution.py |
-| 2023.24.solution | 2023/24/solution.py |
-| 2023.25.solution | 2023/25/solution.py |
-| 2024.22.solution | 2024/22/solution.py |
-| 2024.23.solution | 2024/23/solution.py |
-| 2024.24.solution | 2024/24/solution.py |
-| 2024.25.solution | 2024/25/solution.py |
+_No missing files._
 
 ## Pylint scores < 10
 | Module | Score |
 |--------|--------|
 | 2018.15.solution | 9.92 |
+| 2022.20.solution | 9.44 |
+| 2022.21.solution | 9.44 |
+| 2022.22.solution | 9.44 |
+| 2022.23.solution | 9.44 |
+| 2022.24.solution | 9.44 |
+| 2022.25.solution | 9.44 |
+| 2023.7.solution | 9.44 |
+| 2023.8.solution | 9.44 |
+| 2023.9.solution | 9.44 |
+| 2023.10.solution | 9.44 |
+| 2023.11.solution | 9.44 |
+| 2023.12.solution | 9.44 |
+| 2023.13.solution | 9.44 |
+| 2023.14.solution | 9.44 |
+| 2023.15.solution | 9.44 |
+| 2023.16.solution | 9.44 |
+| 2023.17.solution | 9.44 |
+| 2023.18.solution | 9.44 |
+| 2023.19.solution | 9.44 |
+| 2023.20.solution | 9.44 |
+| 2023.21.solution | 9.44 |
+| 2023.22.solution | 9.44 |
+| 2023.23.solution | 9.44 |
+| 2023.24.solution | 9.44 |
+| 2023.25.solution | 9.44 |
+| 2024.22.solution | 9.44 |
+| 2024.23.solution | 9.44 |
+| 2024.24.solution | 9.44 |
+| 2024.25.solution | 9.44 |
 
 ## Solutions using legacy aoc.run() template
 | Module | Path |
@@ -138,6 +170,7 @@ Notes on my solutions:
 | 2016.25.solution | 2016/25/solution.py |
 | 2017.1.solution | 2017/1/solution.py |
 | 2017.2.solution | 2017/2/solution.py |
+| 2017.3.solution | 2017/3/solution.py |
 | 2017.4.solution | 2017/4/solution.py |
 | 2017.5.solution | 2017/5/solution.py |
 | 2017.6.solution | 2017/6/solution.py |
@@ -148,6 +181,7 @@ Notes on my solutions:
 | 2017.11.solution | 2017/11/solution.py |
 | 2017.12.solution | 2017/12/solution.py |
 | 2017.13.solution | 2017/13/solution.py |
+| 2017.14.solution | 2017/14/solution.py |
 | 2017.15.solution | 2017/15/solution.py |
 | 2017.16.solution | 2017/16/solution.py |
 | 2017.17.solution | 2017/17/solution.py |
@@ -278,11 +312,38 @@ Notes on my solutions:
 | 2022.17.solution | 2022/17/solution.py |
 | 2022.18.solution | 2022/18/solution.py |
 | 2022.19.solution | 2022/19/solution.py |
+| 2022.20.solution | 2022/20/solution.py |
+| 2022.21.solution | 2022/21/solution.py |
+| 2022.22.solution | 2022/22/solution.py |
+| 2022.23.solution | 2022/23/solution.py |
+| 2022.24.solution | 2022/24/solution.py |
+| 2022.25.solution | 2022/25/solution.py |
 | 2023.1.solution | 2023/1/solution.py |
 | 2023.2.solution | 2023/2/solution.py |
 | 2023.3.solution | 2023/3/solution.py |
 | 2023.4.solution | 2023/4/solution.py |
 | 2023.5.solution | 2023/5/solution.py |
+| 2023.6.solution | 2023/6/solution.py |
+| 2023.7.solution | 2023/7/solution.py |
+| 2023.8.solution | 2023/8/solution.py |
+| 2023.9.solution | 2023/9/solution.py |
+| 2023.10.solution | 2023/10/solution.py |
+| 2023.11.solution | 2023/11/solution.py |
+| 2023.12.solution | 2023/12/solution.py |
+| 2023.13.solution | 2023/13/solution.py |
+| 2023.14.solution | 2023/14/solution.py |
+| 2023.15.solution | 2023/15/solution.py |
+| 2023.16.solution | 2023/16/solution.py |
+| 2023.17.solution | 2023/17/solution.py |
+| 2023.18.solution | 2023/18/solution.py |
+| 2023.19.solution | 2023/19/solution.py |
+| 2023.20.solution | 2023/20/solution.py |
+| 2023.21.solution | 2023/21/solution.py |
+| 2023.22.solution | 2023/22/solution.py |
+| 2023.23.solution | 2023/23/solution.py |
+| 2023.24.solution | 2023/24/solution.py |
+| 2023.25.solution | 2023/25/solution.py |
+| 2024.1.solution | 2024/1/solution.py |
 | 2024.2.solution | 2024/2/solution.py |
 | 2024.3.solution | 2024/3/solution.py |
 | 2024.4.solution | 2024/4/solution.py |
@@ -300,3 +361,10 @@ Notes on my solutions:
 | 2024.16.solution | 2024/16/solution.py |
 | 2024.17.solution | 2024/17/solution.py |
 | 2024.18.solution | 2024/18/solution.py |
+| 2024.19.solution | 2024/19/solution.py |
+| 2024.20.solution | 2024/20/solution.py |
+| 2024.21.solution | 2024/21/solution.py |
+| 2024.22.solution | 2024/22/solution.py |
+| 2024.23.solution | 2024/23/solution.py |
+| 2024.24.solution | 2024/24/solution.py |
+| 2024.25.solution | 2024/25/solution.py |

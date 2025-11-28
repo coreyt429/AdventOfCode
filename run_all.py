@@ -8,6 +8,7 @@ import yaml
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress
+from solution_template import TEMPLATE_VERSION as CURRENT_TEMPLATE_VERSION
 
 base = Path(".")
 SLOW_THRESHOLD = 30.0
@@ -19,7 +20,7 @@ timeout_runs = []
 pylint_scores = []  # (mod_name, score_as_float)
 missing_files = []  # list of dicts: year, day, module, path
 results = []  # per-module run results, for YAML
-legacy_template = []  # solutions not using  aoc.run() template
+legacy_template = []  # solutions not using  current template
 
 
 def run_cmd(cmd, timeout=None):
@@ -86,22 +87,23 @@ with Progress() as progress:
                 result_entry["status"] = "missing"
                 continue
 
-            # ---- Check for legacy aoc.run()-based template ----
+            # ---- Check for legacy template ----
             try:
-                text = file_name.read_text(encoding="utf-8")
-            except OSError:
-                text = ""
-            if "aoc.run(" not in text:
-                result_entry["uses_aoc_run"] = False
+                from mod_name import TEMPLATE_VERSION
+                result_entry['template_version'] = TEMPLATE_VERSION
+            except ImportError:
+                result_entry['template_version'] = None
+            
+            if result_entry.get("template_version") != CURRENT_TEMPLATE_VERSION:
                 legacy_template.append(
                     {
                         "year": year,
                         "day": day,
                         "module": mod_name,
+                        "template_version": result_entry.get("template_version"),
                         "path": str(file_name),
                     }
                 )
-
             console.rule(f"[bold magenta]{mod_name}[/bold magenta]")
 
             # ---- Ruff format ----
@@ -216,7 +218,7 @@ else:
 
 # ---- Legacy aoc.run() template summary ----
 if legacy_template:
-    console.print("\n[bold]Solutions using legacy aoc.run() template:[/bold]")
+    console.print("\n[bold]Solutions using older template:[/bold]")
     table = Table(show_header=True, header_style="bold cyan")
     table.add_column("Module")
     table.add_column("Path")
@@ -224,7 +226,7 @@ if legacy_template:
         table.add_row(item["module"], item["path"])
     console.print(table)
 else:
-    console.print("\n[green]No legacy aoc.run() templates detected.[/green]")
+    console.print("\n[green]No older templates detected.[/green]")
 
 # -------- YAML OUTPUT --------
 
@@ -296,7 +298,7 @@ else:
     md_lines.append("_All scores are 10/10._\n")
 
 # Legacy template
-md_lines.append("\n## Solutions using legacy aoc.run() template\n")
+md_lines.append("\n## Solutions using older template\n")
 if legacy_template:
     md_lines.append("| Module | Path |\n")
     md_lines.append("|--------|-------|\n")

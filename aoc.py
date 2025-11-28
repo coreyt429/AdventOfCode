@@ -142,7 +142,7 @@ class AdventOfCode:
         self.inputs = {}
         for k, v in input_formats.items():
             if callable(v):
-                self.inputs[k] = v(self.load_text())
+                self.inputs[k] = v(self.load_text()) # pylint: disable=not-callable
             elif v == "lines":
                 self.inputs[k] = self.load_lines()
             elif v == "integers":
@@ -429,7 +429,14 @@ class AdventOfCode:
                     logger.info("Part %s submitted successfully.", part)
                 else:
                     logger.info("Part %s submission result: %s", part, result["status"])
-            assert self.correct[part] == self.answer[part]
+            if self.correct[part] != self.answer[part]:
+                logger.warning(
+                    "Part %s answer %s does not match known correct answer %s.",
+                    part,
+                    self.answer[part],
+                    self.correct[part],
+                )
+                raise SystemExit(part)
 
     def get_input(self):
         """get input from advent of code site"""
