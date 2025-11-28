@@ -24,6 +24,7 @@ Notes on my solutions:
 
 # 2025 code cleanup status
 Timed-out runs (> 30s):
+```text
 ┏━━━━━━━━━━━━━━━━━━┓
 ┃ Module           ┃
 ┡━━━━━━━━━━━━━━━━━━┩
@@ -39,8 +40,9 @@ Timed-out runs (> 30s):
 │ 2020.23.solution │
 │ 2022.16.solution │
 └──────────────────┘
-
+```
 Failed runs:
+```text
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Module           ┃ Exit code ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
@@ -49,8 +51,9 @@ Failed runs:
 │ 2024.20.solution │ 1         │
 │ 2024.21.solution │ 1         │
 └──────────────────┴───────────┘
-
+```
 Missing solution.py files:
+```text
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Module           ┃ Path                ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
@@ -85,15 +88,17 @@ Missing solution.py files:
 │ 2024.24.solution │ 2024/24/solution.py │
 │ 2024.25.solution │ 2024/25/solution.py │
 └──────────────────┴─────────────────────┘
-
+```
 Pylint < 10:
+```text
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
 ┃ Module           ┃ Score ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
 │ 2018.15.solution │ 9.92  │
 └──────────────────┴───────┘
-
+```
 Solutions using legacy aoc.run() template:
+```text
 ┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Module           ┃ Path                ┃
 ┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
@@ -312,3 +317,4 @@ Solutions using legacy aoc.run() template:
 │ 2024.17.solution │ 2024/17/solution.py │
 │ 2024.18.solution │ 2024/18/solution.py │
 └──────────────────┴─────────────────────┘
+```
