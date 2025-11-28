@@ -30,9 +30,6 @@ Timed-out runs (> 30s):
   2022.16.solution, lots of heap processing, pruning needed?
 
 Failed runs:
-  2017.20.solution (exit code 1)
-  2018.19.solution (exit code 1)
-  2021.24.solution (exit code 1)
   2024.18.solution (exit code 1)
   2024.20.solution (exit code 1)
 

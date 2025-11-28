@@ -66,7 +66,7 @@ class Particle:
         function to set self.distance
         """
         # get manhattan_distance using grid.manhattan_distance
-        self.distance = manhattan_distance((0, 0, 0), self.position)
+        self.distance = manhattan_distance((0, 0, 0), tuple(self.position))
         # return self.distance
         return self.distance
 

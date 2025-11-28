@@ -45,7 +45,7 @@ def parse_input(lines):
     inst_ptr = 0
     instructions = []
     for line in lines:
-        if "#inst_ptr" in line:
+        if "#ip" in line:
             _, inst_ptr = line.split(" ")
             inst_ptr = int(inst_ptr)
             continue
