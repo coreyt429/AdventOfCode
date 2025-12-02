@@ -7,6 +7,7 @@ import sys
 import json
 import re
 import logging
+from dataclasses import dataclass
 from datetime import datetime
 import subprocess
 import os
@@ -20,6 +21,7 @@ dotenv.load_dotenv()
 logger = logging.getLogger(__name__)
 
 EXIT_WRONG = {1: 201, 2: 202}
+
 
 class AdventOfCodeSession:
     """
@@ -127,32 +129,46 @@ class AdventOfCodeSession:
             if not found:
                 f.write(f"AOC_SESSION_ID={self.session_id}\n")
 
+@dataclass
+class AdventOfCodeCfg:
+    """Advent of Code configuration dataclass"""
+
+    test_mode: bool = False
+    parts: dict = None
+    answer: dict = None
+    correct: dict = None
+    funcs: dict = None
+    inputs: dict = None
+
 
 class AdventOfCode:
     """
     Advent of Code class to handle common functions for solving puzzles
     """
 
-    def __init__(self, year=None, day=None, input_formats=None, funcs=None, test_mode=False ):
-        self.test_mode = test_mode
+    def __init__(
+        self, year=None, day=None, input_formats=None, funcs=None, test_mode=False
+    ): # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self.cfg = AdventOfCodeCfg()
+        self.cfg.test_mode = test_mode
         self.session = AdventOfCodeSession(os.getenv("AOC_SESSION_ID"), year, day)
-        self.parts = {1: 1, 2: 2}
-        self.answer = {1: None, 2: None}
-        self.correct = {1: None, 2: None}
-        self.funcs = funcs or {1: None, 2: None}
+        self.cfg.parts = {1: 1, 2: 2}
+        self.cfg.answer = {1: None, 2: None}
+        self.cfg.correct = {1: None, 2: None}
+        self.cfg.funcs = funcs or {1: None, 2: None}
         input_formats = input_formats or {1: "lines", 2: "lines"}
-        self.inputs = {}
+        self.cfg.inputs = {}
         for k, v in input_formats.items():
             if callable(v):
-                self.inputs[k] = v(self.load_text()) # pylint: disable=not-callable
+                self.cfg.inputs[k] = v(self.load_text())  # pylint: disable=not-callable
             elif v == "lines":
-                self.inputs[k] = self.load_lines()
+                self.cfg.inputs[k] = self.load_lines()
             elif v == "integers":
-                self.inputs[k] = self.load_integers()
+                self.cfg.inputs[k] = self.load_integers()
             elif v == "grid":
-                self.inputs[k] = self.load_grid()
+                self.cfg.inputs[k] = self.load_grid()
             elif v == "text":
-                self.inputs[k] = self.load_text()
+                self.cfg.inputs[k] = self.load_text()
             else:
                 raise ValueError(f"Unknown input format: {v}")
         self.fetch_answers()
@@ -201,12 +217,12 @@ class AdventOfCode:
         """
         Submit an answer for the given part to Advent of Code.
 
-        If `answer` is not provided, the value from self.answer[part] is used.
+        If `answer` is not provided, the value from self.cfg.answer[part] is used.
 
         Behavior:
         - POSTs the answer to AoC.
         - Parses the HTML for feedback (right/wrong, too high/low, wait, etc.).
-        - If correct, updates self.correct[part] and answers.json cache.
+        - If correct, updates self.cfg.correct[part] and answers.json cache.
 
         Returns:
             dict: {
@@ -216,13 +232,13 @@ class AdventOfCode:
                 "message": short human-readable message (str),
             }
         """
-        if part not in self.parts:
+        if part not in self.cfg.parts:
             raise ValueError(
-                f"Invalid part: {part!r}. Expected one of {sorted(self.parts)}"
+                f"Invalid part: {part!r}. Expected one of {sorted(self.cfg.parts)}"
             )
 
         if answer is None:
-            answer = self.answer.get(part)
+            answer = self.cfg.answer.get(part)
 
         if answer is None:
             raise ValueError(
@@ -249,8 +265,8 @@ class AdventOfCode:
 
         # If correct (or AoC says already solved and we provided a value),
         # update in-memory correct answers and the answers.json cache.
-        if status in {"correct", "already_solved"} and self.correct.get(part) is None:
-            self.correct[part] = answer
+        if status in {"correct", "already_solved"} and self.cfg.correct.get(part) is None:
+            self.cfg.correct[part] = answer
 
             # Persist into {year}/{day}/answers.json
             dir_path = os.path.join(str(self.session.year), str(self.session.day))
@@ -303,7 +319,7 @@ class AdventOfCode:
         web page for the current year/day, caching them in answers.json so we
         don't have to scrape the page every time.
 
-        Any parts found will be stored in self.correct[part]. Parts not found
+        Any parts found will be stored in self.cfg.correct[part]. Parts not found
         will be set to None.
 
         Returns:
@@ -311,8 +327,8 @@ class AdventOfCode:
                   (string or int), or None if not available.
         """
         # Default all parts to None up front
-        for part in self.parts:
-            self.correct[part] = None
+        for part in self.cfg.parts:
+            self.cfg.correct[part] = None
 
         # Path for cached answers: {year}/{day}/answers.json
         dir_path = os.path.join(str(self.session.year), str(self.session.day))
@@ -323,17 +339,17 @@ class AdventOfCode:
             with open(answers_path, "r", encoding="utf-8") as f:
                 cached = json.load(f)
             # cached is expected to be a dict with string keys "1", "2"
-            for part in self.parts:
+            for part in self.cfg.parts:
                 key = str(part)
                 if key in cached:
-                    self.correct[part] = cached[key]
+                    self.cfg.correct[part] = cached[key]
             logger.debug(
                 "Loaded cached answers for year %s day %s from %s",
                 self.session.year,
                 self.session.day,
                 answers_path,
             )
-            return self.correct
+            return self.cfg.correct
         except FileNotFoundError:
             # No cache yet; we'll fetch from the web
             pass
@@ -350,7 +366,7 @@ class AdventOfCode:
             response = self.session.get(url)
         except Exception as exc:  # pylint: disable=broad-except
             logger.warning("Failed to fetch puzzle page %s: %s", url, exc)
-            return self.correct
+            return self.cfg.correct
 
         if response.status_code != 200:
             logger.warning(
@@ -358,7 +374,7 @@ class AdventOfCode:
                 response.status_code,
                 url,
             )
-            return self.correct
+            return self.cfg.correct
 
         # AoC typically embeds solved answers like:
         #   "Your puzzle answer was <code>12345</code>."
@@ -369,7 +385,7 @@ class AdventOfCode:
         )
 
         for idx, raw_answer in enumerate(matches, start=1):
-            if idx not in self.parts:
+            if idx not in self.cfg.parts:
                 # Ignore any unexpected extras
                 continue
             # Store as int when possible, otherwise keep as string.
@@ -379,7 +395,7 @@ class AdventOfCode:
             except ValueError:
                 # Non-numeric answers (occasionally appear) stay as strings.
                 pass
-            self.correct[idx] = ans_value
+            self.cfg.correct[idx] = ans_value
             logger.info(
                 "Fetched AoC answer for year %s day %s part %s: %r",
                 self.session.year,
@@ -391,7 +407,7 @@ class AdventOfCode:
         # Persist answers to answers.json so we don't need to re-fetch
         try:
             os.makedirs(dir_path, exist_ok=True)
-            cache_payload = {str(part): self.correct[part] for part in self.parts}
+            cache_payload = {str(part): self.cfg.correct[part] for part in self.cfg.parts}
             with open(answers_path, "w", encoding="utf-8") as f:
                 json.dump(cache_payload, f, ensure_ascii=False, indent=2)
             logger.debug(
@@ -403,18 +419,18 @@ class AdventOfCode:
         except OSError as exc:
             logger.warning("Failed to write answers cache %s: %s", answers_path, exc)
 
-        return self.correct
+        return self.cfg.correct
 
     def run(self, submit=False):
         """
         Function to run the functions for each part
         """
         # loop parts
-        for part in self.parts:
+        for part in self.cfg.parts:
             # log start time
             self.session.start_time = time.time()
             # get answer
-            self.answer[part] = self.funcs[part](self.inputs[part], part)
+            self.cfg.answer[part] = self.cfg.funcs[part](self.cfg.inputs[part], part)
             # log end time
             end_time = time.time()
             logger.info(
@@ -422,23 +438,26 @@ class AdventOfCode:
                 self.session.year,
                 self.session.day,
                 part,
-                self.answer[part],
+                self.cfg.answer[part],
                 end_time - self.session.start_time,
             )
             if submit:
-                result = self.submit(part=part, answer=self.answer[part])
+                result = self.submit(part=part, answer=self.cfg.answer[part])
                 if result["status"] == "correct":
                     logger.info("Part %s submitted successfully.", part)
                 else:
                     logger.info("Part %s submission result: %s", part, result["status"])
-            if self.correct[part] != self.answer[part]:
+            if (
+                self.cfg.correct[part] is not None
+                and self.cfg.correct[part] != self.cfg.answer[part]
+            ):
                 logger.warning(
                     "Part %s answer %s does not match known correct answer %s.",
                     part,
-                    self.answer[part],
-                    self.correct[part],
+                    self.cfg.answer[part],
+                    self.cfg.correct[part],
                 )
-                if not self.test_mode:
+                if not self.cfg.test_mode:
                     raise SystemExit(EXIT_WRONG[part])
 
     def get_input(self):
@@ -485,7 +504,7 @@ class AdventOfCode:
         Returns:
             - file handle
         """
-        if self.test_mode:
+        if self.cfg.test_mode:
             file_name = f"{self.session.year}/{self.session.day}/example.txt"
             logger.info("Using example input file: %s", file_name)
             return open(file_name, "r", encoding="utf-8")

@@ -38,7 +38,9 @@ def solve(input_value, part):
                 dial.rotate(-steps)
             else:
                 dial.rotate(steps)
-            logger.debug("The dial is rotated %s%s to point at %s", direction, steps, dial[0])
+            logger.debug(
+                "The dial is rotated %s%s to point at %s", direction, steps, dial[0]
+            )
             if dial[0] == 0:
                 counter += 1
                 logger.debug("Hit zero! Counter is now %s", counter)
@@ -54,7 +56,6 @@ def solve(input_value, part):
                 counter += 1
                 logger.debug("Hit zero! Counter is now %s", counter)
     return counter
-
 
 
 YEAR = 2025
