@@ -133,7 +133,8 @@ class AdventOfCode:
     Advent of Code class to handle common functions for solving puzzles
     """
 
-    def __init__(self, year=None, day=None, input_formats=None, funcs=None):
+    def __init__(self, year=None, day=None, input_formats=None, funcs=None, test_mode=False ):
+        self.test_mode = test_mode
         self.session = AdventOfCodeSession(os.getenv("AOC_SESSION_ID"), year, day)
         self.parts = {1: 1, 2: 2}
         self.answer = {1: None, 2: None}
@@ -437,7 +438,8 @@ class AdventOfCode:
                     self.answer[part],
                     self.correct[part],
                 )
-                raise SystemExit(EXIT_WRONG[part])
+                if not self.test_mode:
+                    raise SystemExit(EXIT_WRONG[part])
 
     def get_input(self):
         """get input from advent of code site"""
@@ -483,6 +485,10 @@ class AdventOfCode:
         Returns:
             - file handle
         """
+        if self.test_mode:
+            file_name = f"{self.session.year}/{self.session.day}/example.txt"
+            logger.info("Using example input file: %s", file_name)
+            return open(file_name, "r", encoding="utf-8")
         if file_name is None:
             file_name = f"{self.session.year}/{self.session.day}/input.txt"
         try:
