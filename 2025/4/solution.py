@@ -10,6 +10,7 @@ import argparse
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
+from grid import Grid  # pylint: disable=import-error
 
 TEMPLATE_VERSION = "20251203"
 
@@ -19,11 +20,44 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def get_removable_rolls(grid):
+    """
+    Docstring for get_removable_rolls
+
+    :param grid: Grid()
+    :return: set of points to remove
+    """
+    removed = set()
+    for point in grid:
+        if grid[point] == "@":
+            neighbors = grid.get_neighbors(point=point, diagonal=True)
+            count = 0
+            for neighbor in neighbors.values():
+                if grid[neighbor] == "@":
+                    count += 1
+            if count < 4:
+                removed.add(point)
+    return removed
+
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    return part
+    grid = Grid(input_value)
+    if part == 1:
+        return len(get_removable_rolls(grid))
+    removed = True
+    while removed:
+        removed = False
+        for point in get_removable_rolls(grid):
+            removed = True
+            grid[point] = "x"
+    counter = 0
+    for point in grid:
+        if grid[point] == "x":
+            counter += 1
+    return counter
 
 
 YEAR = 2025

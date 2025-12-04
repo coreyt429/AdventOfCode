@@ -816,6 +816,12 @@ class Grid:
 
         return self._format_a_star_result(a_star_config, a_star_state)
 
+    def __getitem__(self, point):
+        return self.get_point(point=point)
+
+    def __setitem__(self, point, value):
+        self.set_point(point=point, value=value)
+
 
 @functools.lru_cache(maxsize=None)
 def manhattan_distance_old(start, goal):
