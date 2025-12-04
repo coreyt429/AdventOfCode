@@ -1,160 +1,398 @@
 slow_threshold_seconds: 60.0
-total_runtime_seconds: 10.394
+total_runtime_seconds: 33.968
 years:
-- 2025
+- 2024
 results:
-- module: 2025.1.solution
-  year: 2025
+- module: 2024.1.solution
+  year: 2024
   day: 1
   status: ok
-  elapsed_seconds: 0.3060898343101144
+  elapsed_seconds: 0.23153012478724122
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.2.solution
-  year: 2025
+  template_version: null
+- module: 2024.2.solution
+  year: 2024
   day: 2
   status: ok
-  elapsed_seconds: 3.9744762498885393
+  elapsed_seconds: 0.1908150832168758
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.3.solution
-  year: 2025
+  template_version: null
+- module: 2024.3.solution
+  year: 2024
   day: 3
   status: ok
-  elapsed_seconds: 0.191942541860044
+  elapsed_seconds: 0.18270770786330104
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.4.solution
-  year: 2025
+  template_version: null
+- module: 2024.4.solution
+  year: 2024
   day: 4
-  status: failed
-  elapsed_seconds: 0.23020058358088136
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 0.2999955415725708
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.5.solution
-  year: 2025
+  template_version: null
+- module: 2024.5.solution
+  year: 2024
   day: 5
-  status: failed
-  elapsed_seconds: 0.23086258303374052
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 0.2537557501345873
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.6.solution
-  year: 2025
+  template_version: null
+- module: 2024.6.solution
+  year: 2024
   day: 6
-  status: failed
-  elapsed_seconds: 0.2250481671653688
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 5.159146499820054
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.7.solution
-  year: 2025
+  template_version: null
+- module: 2024.7.solution
+  year: 2024
   day: 7
-  status: failed
-  elapsed_seconds: 0.23045599972829223
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 7.715615625027567
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.8.solution
-  year: 2025
+  template_version: null
+- module: 2024.8.solution
+  year: 2024
   day: 8
-  status: failed
-  elapsed_seconds: 0.22245704103261232
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 0.2178309583105147
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.9.solution
-  year: 2025
+  template_version: null
+- module: 2024.9.solution
+  year: 2024
   day: 9
-  status: failed
-  elapsed_seconds: 0.237445583101362
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 1.309526416938752
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.10.solution
-  year: 2025
+  template_version: null
+- module: 2024.10.solution
+  year: 2024
   day: 10
-  status: failed
-  elapsed_seconds: 0.2276422083377838
-  return_code: 4
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 0.2507753330282867
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.11.solution
-  year: 2025
+  template_version: null
+- module: 2024.11.solution
+  year: 2024
   day: 11
+  status: ok
+  elapsed_seconds: 0.2181997080333531
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.12.solution
+  year: 2024
+  day: 12
+  status: ok
+  elapsed_seconds: 0.8112125829793513
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.13.solution
+  year: 2024
+  day: 13
+  status: ok
+  elapsed_seconds: 0.9288432910107076
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.14.solution
+  year: 2024
+  day: 14
+  status: ok
+  elapsed_seconds: 1.696861875243485
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.15.solution
+  year: 2024
+  day: 15
+  status: ok
+  elapsed_seconds: 0.4237214168533683
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.16.solution
+  year: 2024
+  day: 16
+  status: ok
+  elapsed_seconds: 4.371780458372086
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.17.solution
+  year: 2024
+  day: 17
+  status: ok
+  elapsed_seconds: 0.21587225003167987
+  return_code: 0
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.18.solution
+  year: 2024
+  day: 18
   status: failed
-  elapsed_seconds: 0.23046662518754601
-  return_code: 4
+  elapsed_seconds: 0.21947616711258888
+  return_code: 1
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.19.solution
+  year: 2024
+  day: 19
+  status: failed
+  elapsed_seconds: 0.20475720893591642
+  return_code: 1
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.20.solution
+  year: 2024
+  day: 20
+  status: failed
+  elapsed_seconds: 0.2096942076459527
+  return_code: 1
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.21.solution
+  year: 2024
+  day: 21
+  status: failed
+  elapsed_seconds: 0.18607641709968448
+  return_code: 1
+  pylint_score: 10.0
+  uses_aoc_run: false
+  template_version: null
+- module: 2024.22.solution
+  year: 2024
+  day: 22
+  status: ok
+  elapsed_seconds: 0.19112091697752476
+  return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
   template_version: '20251203'
-- module: 2025.12.solution
-  year: 2025
-  day: 12
-  status: failed
-  elapsed_seconds: 0.2327704168856144
-  return_code: 4
+- module: 2024.23.solution
+  year: 2024
+  day: 23
+  status: ok
+  elapsed_seconds: 0.19655400002375245
+  return_code: 0
+  pylint_score: 9.55
+  uses_aoc_run: false
+  template_version: '20251203'
+- module: 2024.24.solution
+  year: 2024
+  day: 24
+  status: ok
+  elapsed_seconds: 0.1871742089278996
+  return_code: 0
+  pylint_score: 9.55
+  uses_aoc_run: false
+  template_version: '20251203'
+- module: 2024.25.solution
+  year: 2024
+  day: 25
+  status: ok
+  elapsed_seconds: 0.18889191607013345
+  return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
   template_version: '20251203'
 timeouts: []
 failures:
-- module: 2025.4.solution
-  exit_code: 4
-- module: 2025.5.solution
-  exit_code: 4
-- module: 2025.6.solution
-  exit_code: 4
-- module: 2025.7.solution
-  exit_code: 4
-- module: 2025.8.solution
-  exit_code: 4
-- module: 2025.9.solution
-  exit_code: 4
-- module: 2025.10.solution
-  exit_code: 4
-- module: 2025.11.solution
-  exit_code: 4
-- module: 2025.12.solution
-  exit_code: 4
+- module: 2024.18.solution
+  exit_code: 1
+- module: 2024.19.solution
+  exit_code: 1
+- module: 2024.20.solution
+  exit_code: 1
+- module: 2024.21.solution
+  exit_code: 1
 missing: []
 pylint:
-- module: 2025.1.solution
+- module: 2024.1.solution
   score: 10.0
-- module: 2025.2.solution
+- module: 2024.2.solution
   score: 10.0
-- module: 2025.3.solution
+- module: 2024.3.solution
   score: 10.0
-- module: 2025.4.solution
+- module: 2024.4.solution
+  score: 10.0
+- module: 2024.5.solution
+  score: 10.0
+- module: 2024.6.solution
+  score: 10.0
+- module: 2024.7.solution
+  score: 10.0
+- module: 2024.8.solution
+  score: 10.0
+- module: 2024.9.solution
+  score: 10.0
+- module: 2024.10.solution
+  score: 10.0
+- module: 2024.11.solution
+  score: 10.0
+- module: 2024.12.solution
+  score: 10.0
+- module: 2024.13.solution
+  score: 10.0
+- module: 2024.14.solution
+  score: 10.0
+- module: 2024.15.solution
+  score: 10.0
+- module: 2024.16.solution
+  score: 10.0
+- module: 2024.17.solution
+  score: 10.0
+- module: 2024.18.solution
+  score: 10.0
+- module: 2024.19.solution
+  score: 10.0
+- module: 2024.20.solution
+  score: 10.0
+- module: 2024.21.solution
+  score: 10.0
+- module: 2024.22.solution
   score: 9.55
-- module: 2025.5.solution
+- module: 2024.23.solution
   score: 9.55
-- module: 2025.6.solution
+- module: 2024.24.solution
   score: 9.55
-- module: 2025.7.solution
+- module: 2024.25.solution
   score: 9.55
-- module: 2025.8.solution
-  score: 9.55
-- module: 2025.9.solution
-  score: 9.55
-- module: 2025.10.solution
-  score: 9.55
-- module: 2025.11.solution
-  score: 9.55
-- module: 2025.12.solution
-  score: 9.55
-legacy_template: []
+legacy_template:
+- year: 2024
+  day: 1
+  module: 2024.1.solution
+  template_version: null
+  path: 2024/1/solution.py
+- year: 2024
+  day: 2
+  module: 2024.2.solution
+  template_version: null
+  path: 2024/2/solution.py
+- year: 2024
+  day: 3
+  module: 2024.3.solution
+  template_version: null
+  path: 2024/3/solution.py
+- year: 2024
+  day: 4
+  module: 2024.4.solution
+  template_version: null
+  path: 2024/4/solution.py
+- year: 2024
+  day: 5
+  module: 2024.5.solution
+  template_version: null
+  path: 2024/5/solution.py
+- year: 2024
+  day: 6
+  module: 2024.6.solution
+  template_version: null
+  path: 2024/6/solution.py
+- year: 2024
+  day: 7
+  module: 2024.7.solution
+  template_version: null
+  path: 2024/7/solution.py
+- year: 2024
+  day: 8
+  module: 2024.8.solution
+  template_version: null
+  path: 2024/8/solution.py
+- year: 2024
+  day: 9
+  module: 2024.9.solution
+  template_version: null
+  path: 2024/9/solution.py
+- year: 2024
+  day: 10
+  module: 2024.10.solution
+  template_version: null
+  path: 2024/10/solution.py
+- year: 2024
+  day: 11
+  module: 2024.11.solution
+  template_version: null
+  path: 2024/11/solution.py
+- year: 2024
+  day: 12
+  module: 2024.12.solution
+  template_version: null
+  path: 2024/12/solution.py
+- year: 2024
+  day: 13
+  module: 2024.13.solution
+  template_version: null
+  path: 2024/13/solution.py
+- year: 2024
+  day: 14
+  module: 2024.14.solution
+  template_version: null
+  path: 2024/14/solution.py
+- year: 2024
+  day: 15
+  module: 2024.15.solution
+  template_version: null
+  path: 2024/15/solution.py
+- year: 2024
+  day: 16
+  module: 2024.16.solution
+  template_version: null
+  path: 2024/16/solution.py
+- year: 2024
+  day: 17
+  module: 2024.17.solution
+  template_version: null
+  path: 2024/17/solution.py
+- year: 2024
+  day: 18
+  module: 2024.18.solution
+  template_version: null
+  path: 2024/18/solution.py
+- year: 2024
+  day: 19
+  module: 2024.19.solution
+  template_version: null
+  path: 2024/19/solution.py
+- year: 2024
+  day: 20
+  module: 2024.20.solution
+  template_version: null
+  path: 2024/20/solution.py
+- year: 2024
+  day: 21
+  module: 2024.21.solution
+  template_version: null
+  path: 2024/21/solution.py

@@ -115,7 +115,10 @@ for idx, (year, day) in enumerate(solutions):
                 "path": str(file_name),
             }
         )
-    console.rule(f"[bold magenta]{mod_name}[/bold magenta] [green]({result_entry.get("template_version")})[/green]")
+    console.rule(
+        f"[bold magenta]{mod_name}[/bold magenta] "
+        f"[green]({result_entry.get('template_version')})[/green]"
+    )
 
     # ---- Ruff format ----
     print_step_label("Formatting with ruff...")
@@ -247,11 +250,20 @@ else:
 # ---- Legacy aoc.run() template summary ----
 if legacy_template:
     console.print("\n[bold]Solutions using older template:[/bold]")
-    table = Table(show_header=True, header_style="bold cyan", box=box.MINIMAL_HEAVY_HEAD)
+    table = Table(
+        show_header=True,
+        header_style="bold cyan",
+        box=box.MINIMAL_HEAVY_HEAD,
+    )
     table.add_column("Module")
+    table.add_column("Template version")
     table.add_column("Path")
     for item in legacy_template:
-        table.add_row(item["module"], item["path"])
+        table.add_row(
+            item["module"],
+            str(item.get("template_version")),
+            item["path"],
+        )
     console.print(table)
 else:
     console.print("\n[green]No older templates detected.[/green]")
@@ -328,10 +340,12 @@ else:
 # Legacy template
 md_lines.append("\n## Solutions using older template\n")
 if legacy_template:
-    md_lines.append("| Module | Path |\n")
-    md_lines.append("|--------|-------|\n")
+    md_lines.append("| Module | Template version | Path |\n")
+    md_lines.append("|--------|------------------|-------|\n")
     for item in legacy_template:
-        md_lines.append(f"| {item['module']} | {item['path']} |\n")
+        md_lines.append(
+            f"| {item['module']} | {item.get('template_version')} | {item['path']} |\n"
+        )
 else:
     md_lines.append("_No legacy templates detected._\n")
 
