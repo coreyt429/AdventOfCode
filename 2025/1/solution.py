@@ -4,7 +4,6 @@ Advent Of Code 2025 day 1
 """
 
 # import system modules
-import sys
 import logging
 import argparse
 from collections import deque
@@ -13,9 +12,11 @@ from collections import deque
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 
-TEMPLATE_VERSION = "20251201"
+TEMPLATE_VERSION = "20251203"
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -70,10 +71,6 @@ funcs = {
     2: solve,
 }
 
-SUBMIT = False
-
-if len(sys.argv) > 1 and sys.argv[1].lower() == "submit":
-    SUBMIT = True
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -1,5 +1,5 @@
 """
-Advent Of Code 9999 day 99
+Advent Of Code 2025 day 12
 
 """
 
@@ -7,14 +7,14 @@ Advent Of Code 9999 day 99
 import logging
 import argparse
 
+
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 
 TEMPLATE_VERSION = "20251203"
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -26,9 +26,8 @@ def solve(input_value, part):
     return part
 
 
-
-YEAR = 9999
-DAY = 99
+YEAR = 2025
+DAY = 12
 input_format = {
     1: "lines",
     2: "lines",

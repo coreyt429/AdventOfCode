@@ -520,7 +520,7 @@ class AdventOfCode:
             except OSError as e2:
                 # file is missing, lets download it
                 logger.info("Error opening file %s: %s", file_name, e2)
-                sys.exit()
+                sys.exit(4)
 
     def load_lines(self, file_name=None):
         """

@@ -11,7 +11,7 @@ import argparse
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 
-TEMPLATE_VERSION = "20251202"
+TEMPLATE_VERSION = "20251203"
 
 logging.basicConfig(
     level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
