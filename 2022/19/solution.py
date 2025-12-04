@@ -42,6 +42,8 @@ def tadd_old(a, b):
         (5, 7, 9)
     """
     return tuple(x + y for x, y in zip(a, b))
+
+
 def tadd(a, b):
     """simpe function to add two 4-tuples"""
     return (
@@ -50,6 +52,7 @@ def tadd(a, b):
         a[2] + b[2],
         a[3] + b[3],
     )
+
 
 def estimate_geodes(geodes, geode_robots, minutes):
     """
@@ -225,7 +228,7 @@ class RobotFactory:
             #         break
 
             # if not can_build_something:
-                # only then explore the wait branch
+            # only then explore the wait branch
             heappush(heap, (-potential, minutes + 1, new_inventory, robots))
             # build conditions, work with start inventory,
             if time_left < 1:
@@ -240,7 +243,7 @@ class RobotFactory:
                     # logger.debug("Skipping building %s robot as we have enough", element)
                     continue
                 # check by inventory
-                if self.can_build_robot(element, inventory):       
+                if self.can_build_robot(element, inventory):
                     # logger.debug("Building robot: %s", element)
                     # update by new_inventory
                     updated_inventory = tadd(
