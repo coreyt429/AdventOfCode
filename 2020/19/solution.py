@@ -98,44 +98,45 @@ def close_under_unit_productions(cell, unit_productions):
                 stack.append(a)
 
 
-def cyk_accepts(message, start_symbol, terminals, binaries, unit_productions): # pylint: disable=too-many-locals
+def _populate_cyk_cell(table, i, length, binaries, unit_productions):
+    """Populate CYK table cell for a given start index and substring length."""
+    cell = table[i][length]
+    for split in range(1, length):
+        left = table[i][split]
+        right = table[i + split][length - split]
+        if not left or not right:
+            continue
+        for b in left:
+            for c in right:
+                parents = binaries.get((b, c))
+                if parents:
+                    cell |= parents
+
+    if cell:
+        close_under_unit_productions(cell, unit_productions)
+
+
+def cyk_accepts(message, start_symbol, terminals, binaries, unit_productions):
     """CYK algorithm to determine if message is in the language of the grammar."""
     n = len(message)
     if n == 0:
         return False
 
     # T[i][length] -> set of nonterminals that derive message[i : i+length]
-    t = [[set() for _ in range(n + 1)] for _ in range(n)]
+    table = [[set() for _ in range(n + 1)] for _ in range(n)]
 
     # ----- length 1 substrings -----
     for i, ch in enumerate(message):
-        cell = t[i][1]
+        cell = table[i][1]
         cell |= terminals.get(ch, set())
-        # close under A -> B unit productions
         close_under_unit_productions(cell, unit_productions)
 
     # ----- length >= 2 -----
-    for length in range(2, n + 1): # pylint: disable=too-many-nested-blocks
+    for length in range(2, n + 1):
         for i in range(0, n - length + 1):
-            cell = t[i][length]
-            # try all splits
-            for split in range(1, length):
-                left = t[i][split]
-                right = t[i + split][length - split]
-                if not left or not right:
-                    continue
-                for b in left:
-                    for c in right:
-                        parents = binaries.get((b, c))
-                        if parents:
-                            cell |= parents
+            _populate_cyk_cell(table, i, length, binaries, unit_productions)
 
-            # after we’ve added direct parents via A -> B C,
-            # also add any that come from A' -> A unit productions
-            if cell:
-                close_under_unit_productions(cell, unit_productions)
-
-    return start_symbol in t[0][n]
+    return start_symbol in table[0][n]
 
 
 def parse_rule(rule_text):
