@@ -65,7 +65,7 @@ it run to see if the part 2 answer is right after those changes.  Yeah, answers 
 to debug this one again.
 
 Updated to use networkx.DiGraph() with directional weights to try to force the "reading order" rules
-Something is still off, but at least it is fasster.
+Something is still off, but at least it is faster.
 
 After deep testing, I found and fixed a type (wrong variable in comparison).  So part1 is getting
 the right answer now.
@@ -74,15 +74,30 @@ Debugging hasn't turned up anything else, and I'm not sure I'm following my orig
 My recommendation next time is to rebuild attempt_move from the ground up with careful attention
 to the rules.  We must be doing something wrong here.
 
+20251203 Update:
+
+Refactored to correct pylint warnings and meld into current template. p1 still right, p2 still wrong.
+
 """
 
 # import system modules
-import time
+import logging
+import argparse
+from dataclasses import dataclass
 import networkx
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid, manhattan_distance  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 
 test_games = [
     """#######
@@ -131,6 +146,12 @@ test_games = [
 #########""",
 ]
 
+@dataclass
+class Game():
+    """Class to represent a game"""
+    def __init__(self, game_str):
+        self.grid = Grid(game_str)
+        self.players = Players(parent=self)
 
 class PlayerIterator:
     """Iterator for players that skips dead players"""
@@ -156,7 +177,8 @@ class PlayerIterator:
 class Players:
     """Container for players"""
 
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent # Game()
         self.players = []
 
     def append(self, player):
@@ -182,20 +204,20 @@ class Player:
 
     directions = ["n", "w", "e", "s"]
 
-    def __init__(self, container, grid, team, pos, attack=3, hit_points=200):
-        self.player_id = len(container)
-        self.grid = grid
+    def __init__(self, game, team, pos):
+        self.player_id = len(game.players)
+        self.grid = game.grid
         self.team = team
         self.pos = pos
         self.stats = {
-            "attack": attack,
-            "hit_points": hit_points,
+            "attack": 3,
+            "hit_points": 200,
             "alive": True,
         }
         self.grid.map[pos] = "."
         self.grid.overrides[pos] = self.team
         self.graph = None
-        self.container = container
+        self.container = game.players
 
     @property
     def alive(self):
@@ -449,17 +471,16 @@ class Player:
         )
 
 
-def play_game(game, elf_attack=3):
+def play_game(game_map, elf_attack=3):
     """Function to play the game"""
-    players = Players()
-    my_map = Grid(game)
-    for point in my_map:
-        team = my_map.get_point(point)
+    game = Game(game_map)
+    for point in game.grid:
+        team = game.grid.get_point(point)
         if team in ["G", "E"]:
-            new_player = Player(players, my_map, team, point)
+            new_player = Player(game, team, point)
             if new_player.team == "E":
                 new_player.stats["attack"] = elf_attack
-            players.append(new_player)
+            game.players.append(new_player)
     completed_turns = 0
     game_over = False
     while not game_over:
@@ -468,25 +489,25 @@ def play_game(game, elf_attack=3):
         # in that round,  <-- rather important I missed this intially
         # regardless of the type of unit or whether other units have moved
         # after the round started
-        players.sort()  # sort by reading order
-        for player in players:
+        game.players.sort()  # sort by reading order
+        for player in game.players:
             if not player.play_turn():
                 game_over = True
                 break
         if game_over:
             break
         completed_turns += 1
-        players.sort()
-        map_list = str(my_map).splitlines()
+        game.players.sort()
+        map_list = str(game.grid).splitlines()
         for line in map_list:
             line += "    "
-        for player in players:
+        for player in game.players:
             map_list[player.pos[1]] += f" {player.stats['hit_points']}"
         for line in map_list:
             line = line.replace("     ", "    ")
         # print('\n'.join(map_list))
         # part 2 short circuit on first elf death
-        for player in players.players:
+        for player in game.players:
             if (
                 player.team == "E"
                 and player.stats["attack"] > 3
@@ -494,8 +515,8 @@ def play_game(game, elf_attack=3):
             ):
                 game_over = True
 
-    winner = next(iter(players)).team
-    remaining_hit_points = [player.stats["hit_points"] for player in players]
+    winner = next(iter(game.players)).team
+    remaining_hit_points = [player.stats["hit_points"] for player in game.players]
     # print(f"Team {winner} wins!")
     # print(f"Outcome: {completed_turns} * {sum(remaining_hit_points)} = {result}")
     # for player in players.players:
@@ -503,7 +524,7 @@ def play_game(game, elf_attack=3):
     elf_losses = len(
         [
             player
-            for player in players.players
+            for player in game.players
             if player.team == "E" and not player.alive
         ]
     )
@@ -528,28 +549,32 @@ def solve(input_value, part):
         return score
     raise ValueError(f"Invalid part specified: {part}")
 
+YEAR = 2018
+DAY = 15
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018, 15)
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    correct = {1: 221754, 2: 41972}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if answer[my_part] != correct[my_part]:
-            print(f"Incorrect answer {answer[my_part]} != {correct[my_part]}")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
