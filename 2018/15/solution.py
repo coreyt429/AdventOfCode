@@ -76,7 +76,8 @@ to the rules.  We must be doing something wrong here.
 
 20251203 Update:
 
-Refactored to correct pylint warnings and meld into current template. p1 still right, p2 still wrong.
+Refactored to correct pylint warnings and meld into current template.
+p1 still right, p2 still wrong.
 
 """
 
@@ -93,8 +94,7 @@ from grid import Grid, manhattan_distance  # pylint: disable=import-error
 TEMPLATE_VERSION = "20251203"
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -146,12 +146,15 @@ test_games = [
 #########""",
 ]
 
+
 @dataclass
-class Game():
+class Game:
     """Class to represent a game"""
+
     def __init__(self, game_str):
         self.grid = Grid(game_str)
         self.players = Players(parent=self)
+
 
 class PlayerIterator:
     """Iterator for players that skips dead players"""
@@ -178,7 +181,7 @@ class Players:
     """Container for players"""
 
     def __init__(self, parent):
-        self.parent = parent # Game()
+        self.parent = parent  # Game()
         self.players = []
 
     def append(self, player):
@@ -522,11 +525,7 @@ def play_game(game_map, elf_attack=3):
     # for player in players.players:
     #     print(f"player: {player}, alive: {player.alive}")
     elf_losses = len(
-        [
-            player
-            for player in game.players
-            if player.team == "E" and not player.alive
-        ]
+        [player for player in game.players if player.team == "E" and not player.alive]
     )
     return completed_turns * sum(remaining_hit_points), winner, elf_losses
 
@@ -548,6 +547,7 @@ def solve(input_value, part):
             score, _, elf_losses = play_game(input_value, elf_power)
         return score
     raise ValueError(f"Invalid part specified: {part}")
+
 
 YEAR = 2018
 DAY = 15
