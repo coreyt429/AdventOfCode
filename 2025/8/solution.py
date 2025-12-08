@@ -7,6 +7,21 @@ Advent Of Code 2025 day 8
 import logging
 import argparse
 from math import prod
+from itertools import combinations
+import numpy as np
+from scipy.spatial.distance import pdist, squareform
+
+def calculate_distances(points):
+    coords = np.array([(p.x, p.y, p.z) for p in points])
+    dists = squareform(pdist(coords))
+
+    pairs = []
+    for i in range(len(points)):
+        for j in range(i + 1, len(points)):
+            pairs.append(((points[i], points[j]), dists[i, j]))
+
+    pairs.sort(key=lambda item: item[1])
+    return dict(pairs)
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
@@ -20,8 +35,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# global for TEST  so we can use it deeper in functions
 TEST = False
-DEBUG = False
 
 
 def get_points_from_input(input_value):
@@ -38,15 +53,38 @@ def get_points_from_input(input_value):
 
 def calculate_distances(points):
     """
-    Function to calculate distances between points
+    Function to calculate distances between all points
+    arguments:
+        points: list of Point objects
+    returns:
+        dict with keys as (Point, Point) tuples and Float values as distances
     """
-    distance_map = {}
-    for i, point_a in enumerate(points):
-        for j, point_b in enumerate(points):
-            if i < j:
-                distance = linear_distance(point_a, point_b)
-                distance_map[(point_a, point_b)] = distance
-    return dict(sorted(distance_map.items(), key=lambda item: item[1]))
+    coords = np.array([(p.x, p.y, p.z) for p in points])
+    dists = squareform(pdist(coords))
+
+    pairs = []
+    for i in range(len(points)):
+        for j in range(i + 1, len(points)):
+            pairs.append(((points[i], points[j]), dists[i, j]))
+
+    pairs.sort(key=lambda item: item[1])
+    return dict(pairs)
+
+def calculate_distances_old(points):
+    """
+    Function to calculate distances between all points
+    arguments:
+        points: list of Point objects
+    returns:
+        dict with keys as (Point, Point) tuples and Float values as distances
+    """
+    dist = linear_distance
+    distances = [
+        ((a, b), dist(a, b))
+        for a, b in combinations(points, 2)
+    ]
+    distances.sort(key=lambda item: item[1])
+    return dict(distances)
 
 
 def can_merge(connections):
@@ -103,6 +141,26 @@ def add_connection(connections, p1, p2):
         connections.append(set([p1, p2]))
 
 
+def part_2(points, distance_map):
+    """
+    Function to solve part 2
+    """
+    connections = []
+    last_pair = None
+    for pair in distance_map.keys():
+        logger.debug("Processing pair: %s", pair)
+        add_connection(connections, *pair)
+        if can_merge(connections):
+            connections = merged_connection(connections)
+            logger.debug("Merged connections, total now: %d", len(connections))
+        if len(connections) == 1 and len(connections[0]) == len(points):
+            logger.debug("All points connected.")
+            last_pair = pair
+            break
+    p1, p2 = last_pair
+    return p1.x * p2.x
+
+
 def part_1(points, distance_map):
     """
     Function to solve part 1
@@ -134,15 +192,26 @@ def part_1(points, distance_map):
     return prod(sizes[:3])
 
 
+# globals to cache input parsing and distance calculations
+input_points = []
+initial_distance_map = {}
+
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    points = get_points_from_input(input_value)
-    distance_map = calculate_distances(points)
+    # these don't change between parts, so cache them globally
+    # shaves 1.3 seconds off total runtime
+    if not input_points:
+        logger.debug("Parsing input points")
+        input_points.extend(get_points_from_input(input_value))
+    if not initial_distance_map:
+        logger.debug("Calculating initial distance map")
+        initial_distance_map.update(calculate_distances(input_points))
     if part == 1:
-        return part_1(points, distance_map)
-    return 2
+        return part_1(input_points, initial_distance_map)
+    return part_2(input_points, initial_distance_map)
 
 
 YEAR = 2025
@@ -166,7 +235,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     TEST = args.test
     if args.debug:
-        DEBUG = True
         logger.setLevel(logging.DEBUG)
     aoc = AdventOfCode(
         year=YEAR,

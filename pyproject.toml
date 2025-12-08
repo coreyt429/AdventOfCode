@@ -16,5 +16,6 @@ dependencies = [
     "colorama",
     "networkx",
     "rich",
-    "pyyaml"
+    "pyyaml",
+    "scipy>=1.16.3",
 ]
