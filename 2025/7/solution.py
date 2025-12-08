@@ -20,6 +20,119 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+nodes = {}
+
+
+class Node:
+    """
+    Node class for graph traversal
+    """
+
+    def __init__(self, point, grid):
+        self.point = point
+        self.grid = grid
+        self.children = []
+        self.timelines = 0
+        self.find_children()
+
+    def add_child(self, child_node):
+        """
+        Add a child node
+        """
+        self.children.append(child_node)
+
+    def add_child_point(self, child_point):
+        """
+        Add a child node by point
+        """
+        if child_point in nodes:
+            child_node = nodes[child_point]
+        else:
+            child_node = Node(child_point, self.grid)
+            nodes[child_point] = child_node
+        if child_node not in self.children:
+            self.add_child(child_node)
+
+    def get_children(self):
+        """
+        List child node
+        """
+        yield from sorted(self.children)
+
+    def find_children(self):
+        """
+        Find child nodes
+        """
+        neighbors = self.grid.get_neighbors(point=self.point, diagonal=True)
+        if "s" not in neighbors:
+            return
+        if self.grid[neighbors["s"]] == ".":
+            child_point = neighbors["s"]
+            self.add_child_point(child_point)
+        elif self.grid[neighbors["s"]] == "^":
+            for direction in ["sw", "se"]:
+                if direction not in neighbors:
+                    continue
+                neighbor = neighbors.get(direction)
+                if neighbor and self.grid[neighbor] == ".":
+                    child_point = neighbor
+                    self.add_child_point(child_point)
+
+    def __hash__(self):
+        return hash(self.point)
+
+    def __str__(self):
+        my_str = (
+            f"Node({self.point}): children=["
+            f"{''.join([str(child.point) for child in self.children])}]"
+        )
+        return my_str
+
+    def __lt__(self, other):
+        if self.point[0] < other.point[0]:
+            return True
+        if self.point[0] == other.point[0]:
+            return self.point[1] < other.point[1]
+        return False
+
+
+def count_splits_oop_dag(grid):
+    """
+    Count splits using OOP DAG traversal
+    """
+    start_point = find_start(grid)
+    start_node = Node(start_point, grid)
+    nodes[start_point] = start_node
+    p1_counter = 0
+    for node in nodes.values():
+        logger.debug("Node: %s", node)
+        if len(node.children) > 1:
+            p1_counter += 1
+    logger.debug("Number of splits: %s", p1_counter)
+    return p1_counter
+
+
+def count_timelines_oop_dag(grid):
+    """
+    Count timelines using OOP DAG traversal
+    """
+    start_point = find_start(grid)
+    start_node = Node(start_point, grid)
+    nodes[start_point] = start_node
+    start_node.timelines = 1
+    total_timelines = 0
+
+    for point in grid:
+        if point in nodes:
+            node = nodes[point]
+            if len(node.children) == 0:
+                # Leaf node
+                total_timelines += node.timelines
+            else:
+                for child in node.get_children():
+                    child.timelines += node.timelines
+    return total_timelines
+
 
 def is_tachyon(point, grid):
     """
@@ -247,8 +360,11 @@ def solve(input_value, part):
     grid = Grid(input_value, use_overrides=False)
     logger.debug("\n%s", grid)
     if part == 2:
+        return count_timelines_oop_dag(grid)
+
+    if part == 2:
         return count_timelines_dp(grid)
-    return count_splits(grid)
+    return count_splits_oop_dag(grid)
 
 
 YEAR = 2025
