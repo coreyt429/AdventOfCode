@@ -32,8 +32,12 @@ If we do something like this in the future, maybe add methods for:
 """
 
 import math
+import logging
+from dataclasses import dataclass, field
 from copy import deepcopy
 from collections import deque
+
+logger = logging.getLogger(__name__)
 
 
 class OpCode:
@@ -217,20 +221,37 @@ class OpCode:
         parent.relative_base += values[0]
 
 
+@dataclass
+class IntCodeState:
+    """
+    Data class for IntCode computer state
+    """
+    program: dict
+    ptr: int = 0
+    relative_base: int = 0
+    inputs: list = field(default_factory=list)
+    output: object = None  # list/deque or scalar
+    last_output: object = None
+    jump: int | None = None
+
+
 class IntCodeComputer:
     """
     Class to simulate an IntCode Computer
     intcode.py:195:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
     combine some into a cfg dict
+
+    IntCodeState dataclass defined above to help with that, unfortunately my first attempt to
+    use it broke things, and I haven't had time to refactor again.
     """
 
     def __init__(self, program, input_val=None, relative_base=0):
         """init method"""
         # parse program
-        self.source = program
+        # self.source = program
         # self.program = dict(zip(enumerate(int(num) for num in program.split(','))))
         self.program = {key: int(value) for key, value in enumerate(program.split(","))}
-        self.program_backup = deepcopy(self.program)
+        self._program_backup = deepcopy(self.program)
         # init pointer
         self.ptr = 0
         #
@@ -260,11 +281,11 @@ class IntCodeComputer:
 
     def backup(self):
         """Method to backup program state"""
-        self.program_backup = deepcopy(self.program)
+        self._program_backup = deepcopy(self.program)
 
     def restore(self):
         """Method to restore backup"""
-        self.program = deepcopy(self.program_backup)
+        self.program = deepcopy(self._program_backup)
         self.ptr = 0
 
     def set_output(self, other):
@@ -287,7 +308,6 @@ class IntCodeComputer:
         last_output = None
         # loop until break
         while True:
-            # print(self)
             # run next step
             output = self.step()
             # check for result
@@ -316,7 +336,6 @@ class IntCodeComputer:
         """
         # get current intstruction string
         instruction_text = str(self.program[self.ptr])
-        # print(f"instruction_text: {instruction_text}")
         # the opcode is the rightmost two digits of the first value in an instruction.
         op_code = int(instruction_text[-2:])
         if op_code == 99:
@@ -332,8 +351,8 @@ class IntCodeComputer:
         try:
             operation = self.operations[op_code]
         except KeyError:
-            print(f"Invalid op_code {op_code} at ptr {self.ptr}")
-            print(f"op_codes: {self.operations.keys()}")
+            logger.error("Invalid op_code %s at ptr %s", op_code, self.ptr)
+            logger.error("op_codes: %s", self.operations.keys())
             return 99
         # Parameter modes are single digits, one per parameter, read right-to-left from the opcode
         param_modes = list(reversed([int(num) for num in instruction_text[:-2]]))
