@@ -15,6 +15,8 @@ import sys
 import math
 import logging
 from dataclasses import dataclass
+from functools import total_ordering
+from collections.abc import Mapping
 from typing import Sequence, Type, Literal
 from queue import PriorityQueue
 import functools
@@ -27,6 +29,82 @@ neighbor_cache = {"screen": {}, "cartesian": {}, "matrix": {}}
 all_directions = ("n", "ne", "e", "se", "s", "sw", "w", "nw")
 cardinal_directions = ("n", "s", "e", "w")
 diagonal_directions = ("ne", "se", "sw", "nw")
+
+
+
+
+@total_ordering
+class Point:
+    __slots__ = ("x", "y", "z")
+
+    _keys = ("x", "y", "z")
+
+    def __init__(self, x, y, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    # -------------------------------------------------
+    # Tuple-like behavior
+    # -------------------------------------------------
+    def __len__(self):
+        return 3
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
+        yield self.z
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            try:
+                return (self.x, self.y, self.z)[key]
+            except IndexError:
+                raise IndexError("Point index out of range") from None
+
+        if isinstance(key, str):
+            if key in self._keys:
+                return getattr(self, key)
+            raise KeyError(key)
+
+        raise TypeError("Point indices must be int or str")
+
+    # -------------------------------------------------
+    # Dict-like behavior
+    # -------------------------------------------------
+    def keys(self):
+        return self._keys
+
+    def items(self):
+        return ((k, getattr(self, k)) for k in self._keys)
+
+    def values(self):
+        return (getattr(self, k) for k in self._keys)
+
+    # -------------------------------------------------
+    # Comparisons (z, y, x order)
+    # -------------------------------------------------
+    def _cmp_key(self):
+        return (self.z, self.y, self.x)
+
+    def __eq__(self, other):
+        if not isinstance(other, Point):
+            return NotImplemented
+        return self._cmp_key() == other._cmp_key()
+
+    def __lt__(self, other):
+        if not isinstance(other, Point):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    def __hash__(self):
+        return hash((self.z, self.y, self.x))
+
+    # -------------------------------------------------
+    # Niceties
+    # -------------------------------------------------
+    def __repr__(self):
+        return f"Point(x={self.x}, y={self.y}, z={self.z})"
 
 
 class Node:
@@ -857,7 +935,7 @@ def are_collinear(p1, p2, p3):
         cross_product = np.cross(v1, v2)
         return np.allclose(cross_product, [0, 0, 0])
 
-    raise ValueError("This function only supports 2D or 3D points.")
+    raise ValueError("This function only supports 2D or  3D points.")
 
 
 def linear_distance_numpy(p1, p2):
