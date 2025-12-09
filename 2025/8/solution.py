@@ -11,6 +11,7 @@ from itertools import combinations
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
+
 def calculate_distances(points):
     coords = np.array([(p.x, p.y, p.z) for p in points])
     dists = squareform(pdist(coords))
@@ -22,6 +23,7 @@ def calculate_distances(points):
 
     pairs.sort(key=lambda item: item[1])
     return dict(pairs)
+
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
@@ -70,6 +72,7 @@ def calculate_distances(points):
     pairs.sort(key=lambda item: item[1])
     return dict(pairs)
 
+
 def calculate_distances_old(points):
     """
     Function to calculate distances between all points
@@ -79,10 +82,7 @@ def calculate_distances_old(points):
         dict with keys as (Point, Point) tuples and Float values as distances
     """
     dist = linear_distance
-    distances = [
-        ((a, b), dist(a, b))
-        for a, b in combinations(points, 2)
-    ]
+    distances = [((a, b), dist(a, b)) for a, b in combinations(points, 2)]
     distances.sort(key=lambda item: item[1])
     return dict(distances)
 
