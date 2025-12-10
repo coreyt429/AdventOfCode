@@ -180,23 +180,18 @@ class RobotFactory:
                 continue
 
             if (inventory, robots) in visited:
-                # logger.debug("Already visited state: Inventory: %s, Robots: %s", inventory, robots)
                 continue
             visited.add((inventory, robots))
 
             if 0 < potential <= self.max_geodes:
-                # logger.debug("Potential %s less than max geodes %s, skipping", potential, self.max_geodes)
                 continue
             if minutes == self.target_time:
-                # logger.debug("Reached target time with inventory: %s, robots: %s", inventory, robots)
                 continue
             new_inventory = tadd(inventory, robots)
-            # logger.debug("New inventory after collecting resources: %s", new_inventory)
             self.max_geodes = max(self.max_geodes, new_inventory[GEODE])
             potential = estimate_geodes(
                 new_inventory[GEODE], robots[GEODE], self.target_time - (minutes + 1)
             )
-            # logger.debug("Updated max geodes: %s, New potential: %s", self.max_geodes, potential)
             # if we can build a geode robot, always do it
             if self.can_build_robot("geode", inventory) and time_left > 1:
                 # logger.debug("Building geode robot")
@@ -219,15 +214,6 @@ class RobotFactory:
                     ),
                 )
                 continue  # always build geode if we can
-            # no build condition, if we can't build explore the branch without building
-            # logger.debug("Not building any robot this minute")
-            # can_build_something = False
-            # for element_idx, element in enumerate(elements[:-1]):
-            #     if robots[element_idx] < self.max_cost[element_idx] and self.can_build_robot(element, inventory):
-            #         can_build_something = True
-            #         break
-
-            # if not can_build_something:
             # only then explore the wait branch
             heappush(heap, (-potential, minutes + 1, new_inventory, robots))
             # build conditions, work with start inventory,
