@@ -11,20 +11,6 @@ from itertools import combinations
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-
-def calculate_distances(points):
-    coords = np.array([(p.x, p.y, p.z) for p in points])
-    dists = squareform(pdist(coords))
-
-    pairs = []
-    for i in range(len(points)):
-        for j in range(i + 1, len(points)):
-            pairs.append(((points[i], points[j]), dists[i, j]))
-
-    pairs.sort(key=lambda item: item[1])
-    return dict(pairs)
-
-
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import linear_distance_numpy as linear_distance  # pylint: disable=import-error
@@ -65,9 +51,9 @@ def calculate_distances(points):
     dists = squareform(pdist(coords))
 
     pairs = []
-    for i in range(len(points)):
+    for i, p_i in enumerate(points):
         for j in range(i + 1, len(points)):
-            pairs.append(((points[i], points[j]), dists[i, j]))
+            pairs.append(((p_i, points[j]), dists[i, j]))
 
     pairs.sort(key=lambda item: item[1])
     return dict(pairs)

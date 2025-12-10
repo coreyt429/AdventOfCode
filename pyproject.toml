@@ -18,4 +18,5 @@ dependencies = [
     "rich",
     "pyyaml",
     "scipy>=1.16.3",
+    "pulp>=3.3.0",
 ]

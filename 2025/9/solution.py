@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_axis_aligned_rectangles(points: np.ndarray):
-    """ Get all axis-aligned rectangles defined by pairs of points."""
+    """Get all axis-aligned rectangles defined by pairs of points."""
     dx = np.abs(points[:, None, 0] - points[None, :, 0]) + 1
     dy = np.abs(points[:, None, 1] - points[None, :, 1]) + 1
     areas = dx * dy
@@ -39,6 +39,7 @@ def get_axis_aligned_rectangles(points: np.ndarray):
 
 def segments_intersect(a1, a2, b1, b2):
     """Return True if line segments a1a2 and b1b2 intersect (excluding endpoints)."""
+
     def orient(p, q, r):
         return np.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]))
 
@@ -48,6 +49,7 @@ def segments_intersect(a1, a2, b1, b2):
     o4 = orient(b1, b2, a2)
 
     return (o1 * o2 < 0) and (o3 * o4 < 0)
+
 
 def _point_on_segment(p, a, b) -> bool:
     """Return True if point p lies on segment ab (inclusive)."""
