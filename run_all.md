@@ -1,5 +1,5 @@
 # run_all Summary
-**Total runtime:** `592.96s`
+**Total runtime:** `638.42s`
 **Slow threshold:** `60.0s`
 
 ## Timed-out runs (> 60s)
@@ -35,8 +35,6 @@
 | 2024.19.solution | 1 |
 | 2024.20.solution | 1 |
 | 2024.21.solution | 1 |
-| 2025.9.solution | 4 |
-| 2025.10.solution | 4 |
 | 2025.11.solution | 4 |
 | 2025.12.solution | 4 |
 
@@ -76,9 +74,6 @@ _No missing files._
 | 2024.23.solution | 9.55 |
 | 2024.24.solution | 9.55 |
 | 2024.25.solution | 9.55 |
-| 2025.8.solution | 9.24 |
-| 2025.9.solution | 9.55 |
-| 2025.10.solution | 9.55 |
 | 2025.11.solution | 9.55 |
 | 2025.12.solution | 9.55 |
 
