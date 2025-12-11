@@ -4,11 +4,21 @@ Advent Of Code 2018 day 3
 """
 
 # import system modules
-import time
+from __future__ import annotations
+import logging
+import argparse
 import re
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 
 # input regex match
 pattern_input = re.compile(r"#(\d+)\s+@\s+(\d+),(\d+): (\d+)x(\d+)")
@@ -252,25 +262,32 @@ def solve(input_value, part):
     return overlap
 
 
+YEAR = 2018
+DAY = 3
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2018, 3)
-    input_lines = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
