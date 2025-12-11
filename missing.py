@@ -10,11 +10,11 @@ with open('run_all.yaml', 'r') as file:
 
 results = data.get('results', [])
 for result in results:
-    logger.debug(f"Result: {result}")
+    logger.debug("Result: %s", result)
     if result.get('status') == 'missing':
         for path in [f'{result["year"]}', f'{result["year"]}/{result["day"]}']:
-            logger.debug(f"Creating directory: {path}")
+            logger.debug("Creating directory: %s", path)
             create_directory(path)
-            logger.debug(f"Creating __init__.py in: {path}")
+            logger.debug("Creating __init__.py in: %s", path)
             create_init_file(path)
         copy_and_modify_template(result['year'], result['day'], 'solution_template.py', f'{result["year"]}/{result["day"]}/solution.py')

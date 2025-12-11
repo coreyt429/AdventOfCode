@@ -16,7 +16,7 @@ def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    logger.info(input_value)
+    logger.info("%s", input_value)
     return part
 
 
