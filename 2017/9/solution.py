@@ -6,20 +6,28 @@ Oh boy, regex fun.
 """
 
 # import system modules
-import time
+from __future__ import annotations
+import logging
+import argparse
 import re
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 def prep_string(in_string):
     """
     Function to prep string
     """
-    # remove cancelled characters
     out_string = re.sub(r"!.", "", in_string)
-    # remove garbage
     out_string = re.sub(r"<[^>]*>", "", out_string)
     return out_string
 
@@ -28,15 +36,11 @@ def score_string(in_string):
     """
     Function to score string
     """
-    # init total and points
     total = 0
     points = 0
-    # walk string
     for char in in_string:
-        # start a group, so increment points
         if char == "{":
             points += 1
-        # end a group, so give out the points
         if char == "}":
             total += points
             points -= 1
@@ -47,42 +51,40 @@ def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # part 2, simpler processing, so just do it here
     if part == 2:
-        # strip cancelled characters
         out_string = re.sub(r"!.", "", input_value)
-        # match characters inside garbage
         matches = re.findall(r"<([^>]*)>", out_string)
-        # find any?
-        if matches:
-            # add up the lengths of garbage groups, and return
-            return sum(len(tmp_string) for tmp_string in matches)
-    # part 1
-    # prep the string
+        return sum(len(tmp_string) for tmp_string in matches)
     new_string = prep_string(input_value)
-    # score the string
-    score = score_string(new_string)
-    return score
+    return score_string(new_string)
+
+
+YEAR = 2017
+DAY = 9
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017, 9)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

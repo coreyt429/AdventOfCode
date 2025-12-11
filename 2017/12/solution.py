@@ -4,27 +4,31 @@ Advent Of Code 2017 day 12
 """
 
 # import system modules
-import time
+from __future__ import annotations
+import logging
+import argparse
 import re
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 def trace_pipe(pipes, current, visited=()):
     """
     Function to trace from one pipe to find connections
     """
-
-    # add current to visited
     visited = (*visited, current)
-    # walk connections for current
     for target in pipes[current]:
-        # if target hasn't been visited already
         if target not in visited:
-            # trace target as well
             visited = trace_pipe(pipes, target, visited)
-    # return tuple visited
     return visited
 
 
@@ -32,72 +36,61 @@ def load_pipes(lines):
     """
     Function to read input and build pipe connections
     """
-    # init connections and all_nums
     connections = {}
     all_nums = set()
-    # walk lines
     for line in lines:
-        # find all numbers in line, and store as ints
         nums = [int(num) for num in re.findall(r"(\d+)", line)]
-        # update all_nums set
         all_nums.update(nums)
-        # pop current, the rest are connected to current
         current = nums.pop(0)
-        # walk remainint numbers
         for num in nums:
-            # connect current <-> num
             connections.setdefault(current, set()).add(num)
             connections.setdefault(num, set()).add(current)
     return connections, all_nums
 
 
-def solve(lines, part):
+def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # parse input data
-    pipes, all_programs = load_pipes(lines)
-    # trace program 0
+    pipes, all_programs = load_pipes(input_value)
     connected = trace_pipe(pipes, 0)
-    # get disconnected from all_programs - connected
     disconnected = all_programs.difference(connected)
     if part == 1:
-        # part1 return count connected to 0
         return len(connected)
-    # part 2, continue
-    # add connedcted to groups
     groups = [connected]
-    # while we still have disconnected programs
     while disconnected:
-        # trace next program in disconnected
         connected = trace_pipe(pipes, disconnected.pop())
-        # append new connected set to groups
         groups.append(connected)
-        # update disconnected by removing connected
         disconnected.difference_update(connected)
-    # return the count of groups
     return len(groups)
 
 
+YEAR = 2017
+DAY = 12
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017, 12)
-    # fetch input
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

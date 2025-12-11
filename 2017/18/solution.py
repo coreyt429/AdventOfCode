@@ -15,18 +15,23 @@ values.  Changed that condition, and it worked like magic.
 """
 
 # import system modules
-import time
-
-# uncomment the next line to turn on sound for part 1
-# import winsound
+from __future__ import annotations
+import logging
+import argparse
 from collections import deque
 
-
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
-# having fun with this one, in case this makes a song
 class SoundPlayer:
     """
     Class SoundPlayer,  this turned out to be pretty useless,
@@ -34,27 +39,22 @@ class SoundPlayer:
     """
 
     def __init__(self):
-        """
-        init player
-        """
+        """Initialize playback history."""
         self.history = []
 
     def last(self):
-        """
-        return last played frequency
-        """
+        """Return the last played frequency."""
         return self.history[-1]
 
     def play(self, frequency):
         """
-        play sound and update history
+        Log a frequency playback to history (tone generation disabled).
+
+        Args:
+            frequency (int): Frequency to "play".
         """
         if 37 <= frequency <= 32767:
-            # leaving because it was fun
-            # commenting out because it slowed us down
-            # winsound.Beep(frequency, 500)
             pass
-        # print(f"Play {frequency}")
         self.history.append(frequency)
 
 
@@ -63,11 +63,13 @@ class Computer:
     Class to represent a computer
     """
 
-    # cmd handler function table
-
     def __init__(self, program=None, comp_id=None):
         """
-        init computer
+        Initialize a duet computer.
+
+        Args:
+            program (Iterable[str] | str | None): Program source.
+            comp_id (int | None): Identifier to preload register `p`.
         """
         self.handlers = {
             "snd": self.do_snd,
@@ -92,13 +94,11 @@ class Computer:
         self.comp_id = comp_id
         if program:
             self.load_program(program)
-        if self.comp_id:
+        if self.comp_id is not None:
             self.registers["p"] = self.comp_id
 
     def __str__(self):
-        """
-        string representation, primarily used in debugging
-        """
+        """Debug string showing execution state."""
         my_string = f"{self.comp_id}: running {self.running()}, "
         my_string = f"iowait: {self.registers['iowait']}, "
         my_string += f"pointer: {self.registers['pointer']}/{len(self.program)}, "
@@ -108,7 +108,10 @@ class Computer:
 
     def load_program(self, program):
         """
-        parse program instructions
+        Parse program text into instruction dictionaries.
+
+        Args:
+            program (Iterable[str] | str): Program source.
         """
         if isinstance(program, str):
             program = program.split("\n")
@@ -132,42 +135,35 @@ class Computer:
 
     def value(self, test_value):
         """
-        utility function to normalize values
+        Resolve a literal or register name into an integer value.
+
+        Args:
+            test_value (int | str): Value reference.
         """
         if isinstance(test_value, int):
             return test_value
         return self.registers[test_value]
 
     def running(self):
-        """
-        is the program still running?
-        """
+        """Return True while the instruction pointer remains in bounds."""
         return 0 <= self.registers["pointer"] < len(self.program)
 
     def run_next_instruction(self):
-        """
-        execute instruction
-        """
+        """Execute the next instruction if still running."""
         if self.running():
             current = self.program[self.registers["pointer"]]
-            # print(self.comp_id, current)
             instruction = current["instruction"]
             return self.handlers[instruction](current)
         return self.running()
 
     def run_program(self):
-        """
-        run program loop
-        """
-        # self.registers['pointer'] = 0
+        """Execute instructions until halted or blocked."""
         while self.run_next_instruction():
             pass
         return self.running()
 
     def do_send(self, instruction):
-        """
-        handler for instruction snd part 2
-        """
+        """Part-2 send handler; enqueue value for partner."""
         self.partner.buffer.append(self.value(instruction["x"]))
         self.partner.registers["iowait"] = False
         self.registers["pointer"] += 1
@@ -175,9 +171,7 @@ class Computer:
         return True
 
     def do_receive(self, instruction):
-        """
-        handler for instruction rcv part 2
-        """
+        """Part-2 receive handler; block when no data is available."""
         if len(self.buffer) == 0:
             self.registers["iowait"] = True
             return False
@@ -187,9 +181,7 @@ class Computer:
         return True
 
     def do_snd(self, instruction):
-        """
-        handler for instruction snd part 1
-        """
+        """Part-1 sound instruction."""
         frequency = self.value(instruction["x"])
         self.registers["sent"] += 1
         self.player.play(frequency)
@@ -197,55 +189,40 @@ class Computer:
         return True
 
     def do_set(self, instruction):
-        """
-        handler for instruction set
-        """
+        """Set register to the operand value."""
         self.registers[instruction["x"]] = self.value(instruction["y"])
         self.registers["pointer"] += 1
         return True
 
     def do_add(self, instruction):
-        """
-        handler for instruction add
-        """
+        """Add operand value to the register."""
         self.registers[instruction["x"]] += self.value(instruction["y"])
         self.registers["pointer"] += 1
         return True
 
     def do_mul(self, instruction):
-        """
-        handler for instruction mul
-        """
+        """Multiply register by operand value."""
         self.registers[instruction["x"]] *= self.value(instruction["y"])
         self.registers["pointer"] += 1
         return True
 
     def do_mod(self, instruction):
-        """
-        handler for instruction mod
-        """
+        """Modulo the register by operand value."""
         self.registers[instruction["x"]] %= self.value(instruction["y"])
         self.registers["pointer"] += 1
         return True
 
     def do_rcv(self, instruction):
-        """
-        handler for instruction rcv
-        """
+        """Recover last frequency when operand is non-zero."""
         value = self.value(instruction["x"])
         if value:
             self.registers["recover"] = self.player.last()
-            # at least for part 1, we want to end here
             self.registers["pointer"] += len(self.program)
         self.registers["pointer"] += 1
         return True
 
     def do_jgz(self, instruction):
-        """
-        handler for instruction jgz
-        """
-        # hmm, here lies the bug that tripped be up.  I was this to be non-zero
-        # it needs to be non-zero and positive
+        """Conditional jump for positive operand."""
         if self.value(instruction["x"]) > 0:
             self.registers["pointer"] += self.value(instruction["y"])
         else:
@@ -255,24 +232,25 @@ class Computer:
 
 def solve(input_value, part):
     """
-    Function to solve puzzle
+    Execute the duet program for the requested part.
+
+    Args:
+        input_value (Iterable[str]): Puzzle input lines.
+        part (int): Part selector (1 or 2).
+
+    Returns:
+        int: Recovered frequency (part 1) or sends from program 1 (part 2).
     """
     if part == 1:
         computer = Computer(input_value)
         computer.run_program()
         return computer.registers["recover"]
-    # init computers
     computers = {0: Computer(input_value, 0), 1: Computer(input_value, 1)}
-
-    # establish relationship
     computers[0].partner = computers[1]
     computers[1].partner = computers[0]
-
-    # override snd and rcv
     for comp in computers.values():
         comp.handlers["snd"] = comp.do_send
         comp.handlers["rcv"] = comp.do_receive
-
     while True:
         running = False
         for comp in computers.values():
@@ -280,7 +258,6 @@ def solve(input_value, part):
                 break
             running = True
             comp.run_program()
-
         if not running:
             break
         if all(comp.registers["iowait"] for comp in computers.values()):
@@ -288,24 +265,32 @@ def solve(input_value, part):
     return computers[1].registers["sent"]
 
 
+YEAR = 2017
+DAY = 18
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017, 18)
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

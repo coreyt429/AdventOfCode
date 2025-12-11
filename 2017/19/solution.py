@@ -18,14 +18,21 @@ manhattan distance between the points to count steps.  Maybe I can work on that 
 """
 
 # import system modules
-import time
+from __future__ import annotations
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
 
-# dict to store answers
-answer = {1: None, 2: None}
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 class Packet:
@@ -35,137 +42,132 @@ class Packet:
 
     def __init__(self, grid, pos, direction, **kwargs):
         """
-        init function
+        Initialize packet state for the ASCII maze.
+
+        Args:
+            grid (Iterable[str]): Raw maze rows.
+            pos (tuple[int, int]): Starting coordinate.
+            direction (str): Initial movement direction.
+            **kwargs: Additional Grid constructor arguments.
         """
-        # init position
         self.pos = pos
-        # init direction
         self.direction = direction
-        # init letters
         self.letters = []
-        # init grid
-        # need to test dict vs list for performance.  I think get_square would have to update
-        # for list though
         self.grid = Grid(
             grid, start_pos=pos, coordinate_system="screen", datastore="dict", **kwargs
         )
-        # reset self.pos (needed if changing the pos_type)
         self.pos = self.grid.pos
-        # init steps
         self.steps = 0
 
     def __str__(self):
-        """String for debugging"""
-        my_str = f"{self.grid}"
-        return my_str
+        return f"{self.grid}"
 
     def get_square(self, pos):
-        """get value of square"""
+        """
+        Return the character at the requested coordinate.
+
+        Args:
+            pos (tuple[int, int]): Coordinate lookup.
+        """
         return self.grid.map[pos]
 
     def step_forward(self):
         """
-        Function to move forward or turn
+        Advance one step following the packet path rules.
+
+        Returns:
+            bool: True while more movement is possible.
         """
-        # get current value
         current = self.get_square(self.pos)
-        # is it a letter
         if current.isalpha():
-            # add to letters
             self.letters.append(current)
-        # is it not a +?
         if current != "+":
-            # try moving forward
             if self.grid.move(self.direction, invalid=" "):
-                # increment steps, and update position
                 self.steps += 1
                 self.pos = self.grid.pos
                 return True
-            # can't move forward and not a at a decision point
-            # must be the end of the line
             return False
-        # can't go forward
-        # init options
         options = {
             "s": {"directions": ["e", "w"], "invalid": " |"},
             "n": {"directions": ["e", "w"], "invalid": " |"},
             "e": {"directions": ["n", "s"], "invalid": " -"},
             "w": {"directions": ["n", "s"], "invalid": " -"},
         }
-        # get neighbors from grid
         neighbors = self.grid.get_neighbors(
             directions=options[self.direction]["directions"],
             invalid=options[self.direction]["invalid"],
         )
-        # if only one option, take it
         if len(neighbors) == 1:
-            # walk neighbors
             for direction in neighbors.keys():
-                # try moving to neighbor
                 if self.grid.move(direction):
-                    # update direction
                     self.direction = direction
-                    # increment steps
                     self.steps += 1
-                    # update pos
                     self.pos = self.grid.pos
                     return True
-        # if no neighbors, then end of the line
         if len(neighbors) == 0:
-            print(f"end of the line: {self.pos}")
+            logger.debug("end of the line: %s", self.pos)
             return False
-        # else, too many options, and we need code to try multiple paths
-        # this doesn't seem to be the case with our input
-        print(f"too many options: {self.pos}")
+        logger.debug("too many options: %s", self.pos)
         return False
+
+
+def traverse_path(grid_lines):
+    """
+    Walk the ASCII path recording collected letters and step count.
+
+    Args:
+        grid_lines (list[str]): Puzzle grid rows.
+
+    Returns:
+        tuple[str, int]: Letter string and number of steps taken.
+    """
+    start = (grid_lines[0].index("|"), 0)
+    pack = Packet(grid_lines, start, "s")
+    sentinel = 0
+    while pack.step_forward():
+        sentinel += 1
+        if sentinel > 100000:
+            logger.warning("Breaking loop due to sentinel")
+            break
+    return "".join(pack.letters), pack.steps + 1
 
 
 def solve(input_value, part):
     """
-    Function to solve puzzle
+    Execute the tube traversal for the requested part.
     """
-    # part 2, just return the answer
-    if part == 2:
-        return answer[2]
-    # init my_map
-    my_map = input_value
-    # find start location
-    start = (my_map[0].index("|"), 0)
-    # init packet
-    pack = Packet(my_map, start, "s")
-    # init sentinel
-    sentinel = 0
-    # step forward until we can't
-    while pack.step_forward():
-        # increment sentinel
-        sentinel += 1
-        # check sentinel
-        if sentinel > 100000:
-            print("Breaking loop")
-            break
-    # store steps for part 2
-    # I'm not sure why I'm off by one here, maybe revisit
-    answer[2] = pack.steps + 1
-    # return part1 answer
-    return "".join(pack.letters)
+    letters, steps = traverse_path(input_value)
+    if part == 1:
+        return letters
+    return steps
+
+
+YEAR = 2017
+DAY = 19
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2017, 19)
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
