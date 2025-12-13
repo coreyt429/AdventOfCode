@@ -59,7 +59,9 @@ def parse_input(lines):
                     sleep[1].split(":")[1]
                 )
             except KeyError as exc:
-                logger.error("Error processing guard %s line: %s: %s", guard_id, line, exc)
+                logger.error(
+                    "Error processing guard %s line: %s: %s", guard_id, line, exc
+                )
                 continue
             # I thought about getting the most frequent minute here,
             # but we would be calculating multiple times, so instead
