@@ -4,23 +4,29 @@ Advent Of Code 2015 day 2
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-def parse_input(lines):
+def parse_input(input_text):
     """
     Function to parse input
     """
-    # Split each line by whitespace and remove the first element (the label)
     presents = []
-    for line in lines:
-        presents.append(line.split("x"))
-    for present in presents:
-        for idx, dimension in enumerate(present):
-            present[idx] = int(dimension)
+    for line in input_text.strip().splitlines():
+        if not line:
+            continue
+        presents.append([int(dimension) for dimension in line.split("x")])
     return presents
 
 
@@ -47,7 +53,7 @@ def ribbon(present):
     return 2 * present[0] + 2 * present[1] + present[0] * present[1] * present[2]
 
 
-def part1(parsed_data):
+def part1(parsed_data, _part=None):
     """
     Funciton to solve part 1
     """
@@ -57,7 +63,7 @@ def part1(parsed_data):
     return retval
 
 
-def part2(parsed_data):
+def part2(parsed_data, _part=None):
     """
     Function to solve part 2
     A present with dimensions 2x3x4 requires 2+2+3+3 = 10 feet of ribbon to wrap the present
@@ -70,25 +76,32 @@ def part2(parsed_data):
     return retval
 
 
+YEAR = 2015
+DAY = 2
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: part1,
+    2: part2,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2015, 2)
-    input_lines = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: part1, 2: part2}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](parse_input(input_lines))
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
