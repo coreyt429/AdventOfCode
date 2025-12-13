@@ -1,5 +1,5 @@
 # run_all Summary
-**Total runtime:** `638.42s`
+**Total runtime:** `654.45s`
 **Slow threshold:** `60.0s`
 
 ## Timed-out runs (> 60s)
@@ -35,8 +35,6 @@
 | 2024.19.solution | 1 |
 | 2024.20.solution | 1 |
 | 2024.21.solution | 1 |
-| 2025.11.solution | 4 |
-| 2025.12.solution | 4 |
 
 ## Missing solution.py files
 _No missing files._
@@ -44,8 +42,6 @@ _No missing files._
 ## Pylint scores < 10
 | Module | Score |
 |--------|--------|
-| 2022.19.solution | 9.67 |
-| 2022.20.solution | 9.44 |
 | 2022.21.solution | 9.44 |
 | 2022.22.solution | 9.44 |
 | 2022.23.solution | 9.44 |
@@ -74,8 +70,6 @@ _No missing files._
 | 2024.23.solution | 9.55 |
 | 2024.24.solution | 9.55 |
 | 2024.25.solution | 9.55 |
-| 2025.11.solution | 9.55 |
-| 2025.12.solution | 9.55 |
 
 ## Solutions using older template
 | Module | Template version | Path |
@@ -130,55 +124,6 @@ _No missing files._
 | 2016.23.solution | None | 2016/23/solution.py |
 | 2016.24.solution | None | 2016/24/solution.py |
 | 2016.25.solution | None | 2016/25/solution.py |
-| 2017.1.solution | None | 2017/1/solution.py |
-| 2017.2.solution | None | 2017/2/solution.py |
-| 2017.3.solution | None | 2017/3/solution.py |
-| 2017.4.solution | None | 2017/4/solution.py |
-| 2017.5.solution | None | 2017/5/solution.py |
-| 2017.6.solution | None | 2017/6/solution.py |
-| 2017.7.solution | None | 2017/7/solution.py |
-| 2017.8.solution | None | 2017/8/solution.py |
-| 2017.9.solution | None | 2017/9/solution.py |
-| 2017.10.solution | None | 2017/10/solution.py |
-| 2017.11.solution | None | 2017/11/solution.py |
-| 2017.12.solution | None | 2017/12/solution.py |
-| 2017.13.solution | None | 2017/13/solution.py |
-| 2017.14.solution | None | 2017/14/solution.py |
-| 2017.15.solution | None | 2017/15/solution.py |
-| 2017.16.solution | None | 2017/16/solution.py |
-| 2017.17.solution | None | 2017/17/solution.py |
-| 2017.18.solution | None | 2017/18/solution.py |
-| 2017.19.solution | None | 2017/19/solution.py |
-| 2017.20.solution | None | 2017/20/solution.py |
-| 2017.21.solution | None | 2017/21/solution.py |
-| 2017.22.solution | None | 2017/22/solution.py |
-| 2017.23.solution | None | 2017/23/solution.py |
-| 2017.24.solution | None | 2017/24/solution.py |
-| 2017.25.solution | None | 2017/25/solution.py |
-| 2018.1.solution | None | 2018/1/solution.py |
-| 2018.2.solution | None | 2018/2/solution.py |
-| 2018.3.solution | None | 2018/3/solution.py |
-| 2018.4.solution | None | 2018/4/solution.py |
-| 2018.5.solution | None | 2018/5/solution.py |
-| 2018.6.solution | None | 2018/6/solution.py |
-| 2018.7.solution | None | 2018/7/solution.py |
-| 2018.8.solution | None | 2018/8/solution.py |
-| 2018.9.solution | None | 2018/9/solution.py |
-| 2018.10.solution | None | 2018/10/solution.py |
-| 2018.11.solution | None | 2018/11/solution.py |
-| 2018.12.solution | None | 2018/12/solution.py |
-| 2018.13.solution | None | 2018/13/solution.py |
-| 2018.14.solution | None | 2018/14/solution.py |
-| 2018.16.solution | None | 2018/16/solution.py |
-| 2018.17.solution | None | 2018/17/solution.py |
-| 2018.18.solution | None | 2018/18/solution.py |
-| 2018.19.solution | None | 2018/19/solution.py |
-| 2018.20.solution | None | 2018/20/solution.py |
-| 2018.21.solution | None | 2018/21/solution.py |
-| 2018.22.solution | None | 2018/22/solution.py |
-| 2018.23.solution | None | 2018/23/solution.py |
-| 2018.24.solution | None | 2018/24/solution.py |
-| 2018.25.solution | None | 2018/25/solution.py |
 | 2019.1.solution | None | 2019/1/solution.py |
 | 2019.2.solution | None | 2019/2/solution.py |
 | 2019.3.solution | None | 2019/3/solution.py |
@@ -272,7 +217,6 @@ _No missing files._
 | 2022.17.solution | None | 2022/17/solution.py |
 | 2022.18.solution | None | 2022/18/solution.py |
 | 2022.19.solution | 20251202 | 2022/19/solution.py |
-| 2022.20.solution | 20251128 | 2022/20/solution.py |
 | 2022.21.solution | 20251128 | 2022/21/solution.py |
 | 2022.22.solution | 20251128 | 2022/22/solution.py |
 | 2022.23.solution | 20251128 | 2022/23/solution.py |
