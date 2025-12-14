@@ -6,10 +6,18 @@ set() and string slicing made this one fairly easy.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def item_priority(item):
@@ -28,7 +36,7 @@ def solve(input_value, part):
     total = 0
     if part == 1:
         for line in input_value:
-            half = int(len(line) / 2)
+            half = len(line) // 2
             set_a = set(line[:half])
             set_b = set(line[half:])
             # Find the item type that appears in both compartments of each rucksack.
@@ -36,42 +44,43 @@ def solve(input_value, part):
         # What is the sum of the priorities of those item types?
         return total
     # part 2
-    while input_value:
+    for idx in range(0, len(input_value), 3):
         # Find the item type that corresponds to the badges of each three-Elf group.
         # Every set of three lines in your list corresponds to a single group
-        common_set = set(input_value.pop(0))
-        common_set.intersection_update(input_value.pop(0))
-        common_set.intersection_update(input_value.pop(0))
+        common_set = set(input_value[idx])
+        common_set.intersection_update(input_value[idx + 1])
+        common_set.intersection_update(input_value[idx + 2])
         total += item_priority(common_set.pop())
     # What is the sum of the priorities of those item types?
     return total
 
 
+YEAR = 2022
+DAY = 3
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2022, 3)
-    # input_data = my_aoc.load_text()
-    # print(input_text)
-    input_data = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 8039, 2: 2510}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
