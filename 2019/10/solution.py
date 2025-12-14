@@ -18,11 +18,12 @@ to account for screen coordinates.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 import math
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid, sort_collinear_points, are_collinear  # pylint: disable=import-error
 
 X = 0
@@ -30,6 +31,13 @@ Y = 1
 
 # dict to store answers
 answer = {1: None, 2: None}
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def bearing(p_1, p_2):
@@ -165,47 +173,60 @@ def find_best_position(grid):
     return best_position, most_detected, lines_by_point
 
 
+def _compute_answers(input_value):
+    """
+    Compute and cache both part answers.
+    """
+    grid = Grid(input_value, use_overrides=False)
+    best, count, lines_by_point = find_best_position(grid)
+    sorted_points = get_sorted_points(lines_by_point[best], best)
+    point = sorted_points[199]
+    answer[1] = count
+    answer[2] = (100 * point[0]) + point[1]
+
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # part 2, already calculated, just return
-    if part == 2:
-        return answer[2]
-    # init grid
-    grid = Grid(input_value, use_overrides=False)
-    # find best position, note we
-    best, count, lines_by_point = find_best_position(grid)
-    # get asteroids points in order of destruction
-    sorted_points = get_sorted_points(lines_by_point[best], best)
-    # select 200th asteroid to destroy
-    point = sorted_points[199]
-    # store answer 2 for next pass
-    answer[2] = (100 * point[0]) + point[1]
-    # part 1
-    return count
+    if answer[part] is None:
+        _compute_answers(input_value)
+    return answer[part]
+
+
+def parse_input(input_text):
+    """
+    Parse the asteroid map lines.
+    """
+    return [line.rstrip("\n") for line in input_text.splitlines() if line.strip()]
+
+
+YEAR = 2019
+DAY = 10
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019, 10)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # correct answers to validate changes
-    correct = {1: 230, 2: 1205}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

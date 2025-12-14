@@ -12,19 +12,27 @@ function.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from itertools import cycle, accumulate
 import numpy as np
 
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 
 pattern = [0, 1, 0, -1]
 # save pattern_len so we don't calculate it repeatedly
 PATTERN_LENGTH = len(pattern)
 pattern_cache_base = {}
 pattern_cache_full = {}
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def calculate_pattern_original(idx, length):
@@ -192,7 +200,7 @@ def solve(input_value, part):
     if part == 1:
         for _ in range(100):
             signal = run_phase(signal)
-        return signal_to_str(signal)[offset : offset + 8]
+        return int(signal_to_str(signal)[offset : offset + 8])
     # part 2
     # The real signal is your puzzle input repeated 10000 times. Treat this new signal as a
     # single input list. Patterns are still calculated as before, and 100 phases of FFT are
@@ -215,31 +223,42 @@ def solve(input_value, part):
         # update result list with itertools.accumulate()
         reversed_signal = [n % 10 for n in accumulate(reversed_signal)]
     # reverse last 8 digits
-    return "".join(str(num) for num in reversed_signal[-1:-9:-1])
+    return int("".join(str(num) for num in reversed_signal[-1:-9:-1]))
+
+
+def parse_input(input_text):
+    """
+    Clean signal text.
+    """
+    return input_text.strip()
+
+
+YEAR = 2019
+DAY = 16
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019, 16)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: "59281788", 2: "96062868"}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

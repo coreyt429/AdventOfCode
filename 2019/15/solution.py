@@ -19,20 +19,28 @@ that was using it so hopefully that will save the day some other day.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from queue import heappush, heappop
 from copy import deepcopy
 
 # import my modules
 from intcode import IntCodeComputer  # pylint: disable=import-error
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
 
 opposite = {1: 2, 2: 1, 3: 4, 4: 3}
 directions = {1: "n", 2: "s", 3: "w", 4: "e"}
 
 # dict to store answers
-answer = {1: None, 2: None}
+answers = {1: None, 2: None}
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class NodeState:
@@ -163,87 +171,82 @@ class RepairDroid(Grid):
                 self.set_point(point, "#")
 
 
+def _compute_answers(program):
+    """
+    Explore the area once and cache the answers.
+    """
+    droid = RepairDroid(program)
+    steps = droid.find_oxygen()
+    droid.fix_unknowns()
+    minutes = 0
+    closed_set = set()
+    while True:
+        new_oxygen = set()
+        for point in droid:
+            if point in closed_set:
+                continue
+            if droid.get_point(point, "?") == "O":
+                neighbors = droid.get_neighbors(
+                    point=point, directions=["n", "s", "e", "w"], invalid="#"
+                )
+                for neighbor in neighbors.values():
+                    if droid.get_point(neighbor) == ".":
+                        new_oxygen.add(neighbor)
+                closed_set.add(point)
+            elif droid.get_point(point, "?") == "#":
+                closed_set.add(point)
+        if new_oxygen:
+            for point in new_oxygen:
+                droid.set_point(point, "O")
+            minutes += 1
+        else:
+            break
+    answers[1] = steps
+    answers[2] = minutes
+
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    # part 2 return answer we calculated in the first pass
-    if part == 2:
-        return answer[2]
-    # init droid
-    droid = RepairDroid(input_value)
-    # get steps to oxygen source
-    steps = droid.find_oxygen()
-    # part 2 continue
-    # repair unkown walls
-    droid.fix_unknowns()
-    # init minutes
-    minutes = 0
-    # init closed_set
-    closed_set = set()
-    # loop until break
-    while True:
-        # init new_oxygen each pass
-        new_oxygen = set()
-        # iterate over points in map
-        for point in droid:
-            # skip id already closed
-            if point in closed_set:
-                continue
-            # oxygen
-            if droid.get_point(point, "?") == "O":
-                # get neighbors
-                neighbors = droid.get_neighbors(
-                    point=point, directions=["n", "s", "e", "w"], invalid="#"
-                )
-                # iterate over neighbors
-                for neighbor in neighbors.values():
-                    # if neighbor is empty
-                    if droid.get_point(neighbor) == ".":
-                        # add to new_oxygen
-                        new_oxygen.add(neighbor)
-                # add point to closed set
-                closed_set.add(point)
-            # add walls to closed_set
-            elif droid.get_point(point, "?") == "#":
-                closed_set.add(point)
-        # did we find any new rooms to oxygenate?
-        if new_oxygen:
-            # iterate over new rooms
-            for point in new_oxygen:
-                # set to oxygen
-                droid.set_point(point, "O")
-            # increment minutes
-            minutes += 1
-        else:
-            # break if no new rooms
-            break
-    # store part 2 answer for the next pass
-    answer[2] = minutes
-    # part 1, return steps to oxygen source
-    return steps
+    if answers[part] is None:
+        _compute_answers(input_value)
+    return answers[part]
+
+
+def parse_input(input_text):
+    """
+    Return stripped intcode program.
+    """
+    return input_text.strip()
+
+
+YEAR = 2019
+DAY = 15
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2019, 15)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # correct answers once solved, to validate changes
-    correct = {1: 354, 2: 370}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
