@@ -6,13 +6,18 @@ Just repackaged into my current format.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 
-# dict to store answers
-answer = {1: None, 2: None}
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 HEADING_DIRECTIONS = {
@@ -30,6 +35,16 @@ DIRECTIONAL_MOVEMENTS = {
 }
 
 
+def parse_input(input_text):
+    """
+    Parse input text into (turn, steps) tuples.
+    """
+    return [
+        (direction[0], int(direction[1:]))
+        for direction in input_text.strip().split(", ")
+    ]
+
+
 def follow_direction(direction, block_count, fd_x, fd_y, heading):
     """
     follow direction
@@ -43,56 +58,57 @@ def follow_direction(direction, block_count, fd_x, fd_y, heading):
     return fd_x, fd_y, heading, visited_blocks
 
 
-def solve(input_value, part):
+def solve(directions, part):
     """
     Function to solve puzzle
     """
-    if part == 2:
-        return answer[2]
-    my_directions = [
-        (direction[0], int(direction[1:]))
-        for direction in input_value.rstrip().split(", ")
-    ]
     my_x = 0
     my_y = 0
     my_heading = "N"
     path = [(my_x, my_y)]
-    visited = set()
-    visited.add((my_x, my_y))
-    found = False
-    part2_coord = ()
-    for my_direction, blocks in my_directions:
+    visited = {(my_x, my_y)}
+    part2_coord = None
+    for my_direction, blocks in directions:
         my_x, my_y, my_heading, visits = follow_direction(
             my_direction, blocks, my_x, my_y, my_heading
         )
         path.append((my_x, my_y))
         for coord in visits:
             if coord in visited:
-                # print(f"already visited: {coord} - {abs(coord[0]) + abs(coord[1])}")
-                if not found:
+                if part2_coord is None:
                     part2_coord = coord
-                    found = True
             visited.add(coord)
-    answer[2] = abs(part2_coord[0]) + abs(part2_coord[1])
-    return abs(my_x) + abs(my_y)
+    part1 = abs(my_x) + abs(my_y)
+    part2 = abs(part2_coord[0]) + abs(part2_coord[1]) if part2_coord else None
+    return part1 if part == 1 else part2
+
+
+YEAR = 2016
+DAY = 1
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 1)
-    input_text = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

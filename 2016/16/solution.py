@@ -3,8 +3,16 @@ Advent Of Code 2016 day 16
 This one was pretty easy.  I worked it out in the jupyter notebook, then just cleaned it up here
 """
 
-import time
-import aoc  # pylint: disable=import-error
+import logging
+import argparse
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def dragon_curve(str_a):
@@ -40,21 +48,44 @@ def checksum(input_string):
     return checksum(my_checksum)
 
 
-if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 16)
-    # load input string from aoc
-    input_data = my_aoc.load_text()
-    # target sizes
+def solve(input_data, part):
+    """
+    Generate the disk checksum for the requested part.
+    """
     size = {1: 272, 2: 35651584}
-    for part in [1, 2]:
-        start = time.time()
-        # get initial dragon curve
-        NEW_STRING = dragon_curve(input_data)
-        while len(NEW_STRING) < size[part]:
-            # keep regenerating until we reach target size
-            NEW_STRING = dragon_curve(NEW_STRING)
-        # truncate string to target size
-        NEW_STRING = NEW_STRING[: size[part]]
-        # get checksum
-        end = time.time()
-        print(f"Part {part}: {checksum(NEW_STRING)}, took {end - start} seconds")
+    data = input_data.strip()
+    while len(data) < size[part]:
+        data = dragon_curve(data)
+    data = data[: size[part]]
+    return int(checksum(data))
+
+
+YEAR = 2016
+DAY = 16
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

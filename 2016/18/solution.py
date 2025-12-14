@@ -3,8 +3,16 @@ Advent Of Code 2016 day 18
 
 """
 
-import time
-import aoc  # pylint: disable=import-error
+import logging
+import argparse
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def next_row(last_row):
@@ -38,16 +46,45 @@ def next_row(last_row):
     return new_row
 
 
+def solve(first_row, part):
+    """
+    Count safe tiles for the requested number of rows.
+    """
+    targets = {1: 40, 2: 400000}
+    current = first_row.strip()
+    safe_tiles = current.count(".")
+    for _ in range(1, targets[part]):
+        current = next_row(current)
+        safe_tiles += current.count(".")
+    return safe_tiles
+
+
+YEAR = 2016
+DAY = 18
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 18)
-    first_row = my_aoc.load_text()
-    # part 1
-    start_time = time.time()
-    parts = {1: 40, 2: 400000}
-    for part, num_rows in parts.items():
-        rows = [first_row]
-        while len(rows) < num_rows:
-            rows.append(next_row(rows[-1]))
-        end_time = time.time()
-        COUNT = "\n".join(rows).count(".")
-        print(f"Part {part}: {COUNT}, took {end_time - start_time} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

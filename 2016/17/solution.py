@@ -28,10 +28,18 @@ standard Cartesian system.
 
 """
 
-import time
+import logging
+import argparse
 from heapq import heappush, heappop
 import hashlib
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def get_neighbors(position, seed, path):
@@ -117,13 +125,40 @@ def min_max_paths(seed):
     return min_rooms, min_path, max_rooms, max_path
 
 
+def solve(seed, part):
+    """
+    Wrapper that returns the requested answer for part 1 or 2.
+    """
+    _, min_path, max_rooms, _ = min_max_paths(seed.strip())
+    return min_path if part == 1 else max_rooms
+
+
+YEAR = 2016
+DAY = 17
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 17)
-    # pull seed from aoc
-    my_seed = my_aoc.load_text()
-    start_time = time.time()
-    _, part1, part2, _ = min_max_paths(my_seed)
-    end_time = time.time()
-    print(f"Part 1: {part1}")
-    print(f"Part 2: {part2}")
-    print(f"took {end_time - start_time} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

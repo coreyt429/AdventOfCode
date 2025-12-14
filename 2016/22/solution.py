@@ -24,11 +24,19 @@ Tricks to narrow search space:
 
 """
 
-import time
+import logging
+import argparse
 import re
 from heapq import heappush, heappop
 from copy import deepcopy
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # regex for matching grid data
 pattern_df = re.compile(r".*x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)%")
@@ -96,7 +104,7 @@ class HeapEntry:
         return retval
 
 
-def parse_input(lines):
+def parse_input(input_text):
     """
     Function to parse input
     """
@@ -107,7 +115,7 @@ def parse_input(lines):
     # changed to dict of tuples with position tuple as key
     nodes = {}
     # walk lines
-    for line in lines:
+    for line in input_text.strip().splitlines():
         # check if this is a node line
         match = pattern_df.match(line)
         if match:
@@ -347,26 +355,45 @@ def count_pairs(nodes):
     return len(pairs)
 
 
+def solve(nodes, part):
+    """
+    Entry point for the puzzle parts.
+    """
+    if part == 1:
+        return count_pairs(nodes)
+    # part 2, find target and source nodes
+    node_map = deepcopy(nodes)
+    read_node = (0, 0)
+    source_node = (get_range(node_map)[MAX][X], 0)
+    return find_shortest_path(node_map, source_node, read_node)
+
+
+YEAR = 2016
+DAY = 22
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 22)
-    input_lines = my_aoc.load_lines()
-    storage_nodes = parse_input(input_lines)
-    # parts structure to loop
-    parts = {1: 1, 2: 2}
-    answer = {1: None, 2: None}
-    # loop parts
-    for part in parts:
-        # log start time
-        start = time.time()
-        # part 1, just run count_pairs
-        if part == 1:
-            answer[part] = count_pairs(storage_nodes)
-        else:
-            # part 2, find target and source nodes
-            read_node = (0, 0)
-            source_node = (get_range(storage_nodes)[MAX][X], 0)
-            # find shortest path from target to source
-            answer[part] = find_shortest_path(storage_nodes, source_node, read_node)
-        # log end time
-        end = time.time()
-        print(f"Part {part}: {answer[part]}, took {end - start} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

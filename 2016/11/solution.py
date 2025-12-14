@@ -51,14 +51,20 @@ was faster, maybe I'll revisit another day:
   Part 2: 71, took 13.964895963668823 seconds
 """
 
-import time
 import logging
+import argparse
 import re
 from heapq import heappop, heappush
 import itertools
-import sys
 from functools import lru_cache
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class Node:
@@ -283,7 +289,19 @@ pattern_microchip = re.compile(r"a (\w+)-compatible microchip.*")
 pattern_generator = re.compile(r"a (\w+) generator.*")
 
 
-def parse_notes(input_string):
+def parse_input(input_text):
+    """
+    Parse the full puzzle input into a list of floors.
+    """
+    building = [[], [], [], []]
+    for note in input_text.strip().splitlines():
+        if not note:
+            continue
+        parse_notes(building, note)
+    return building
+
+
+def parse_notes(building, input_string):
     """
     Function to parse notes
     """
@@ -532,48 +550,44 @@ def solve_a_star(floors):
     return min_solve
 
 
-building = [[], [], [], []]
+def solve(building, part):
+    """
+    Wrapper that prepares floors and runs the A* search.
+    """
+    floors = [list(floor) for floor in building]
+    if part == 2:
+        for item_element in "ED":
+            for item_type in "MG":
+                floors[0].append(f"{item_element}{item_type}")
+    return solve_a_star(floors)
+
+
+YEAR = 2016
+DAY = 11
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
 
 if __name__ == "__main__":
-    # sample data
-    test_data = [
-        "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.",  # pylint: disable=line-too-long
-        "The second floor contains a hydrogen generator.",
-        "The third floor contains a lithium generator.",
-        "The fourth floor contains nothing relevant.",
-    ]
-    logging.basicConfig(level=logging.WARNING)
-    logger = logging.getLogger(__name__)
-    my_aoc = aoc.AdventOfCode(2016, 11)
-    lines = my_aoc.load_lines()
-    # print(sys.argv,len(sys.argv))
-    if len(sys.argv) > 1:
-        lines = test_data
-    for note in lines:
-        parse_notes(note)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers for validation
-    correct = {1: 47, 2: 71}
-    # dict to map functions
-    funcs = {1: solve_a_star, 2: solve_a_star}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        if my_part == 2:
-            for item_element in "ED":
-                for item_type in "MG":
-                    building[0].append(f"{item_element}{item_type}")
-        # get answer
-        answer[my_part] = funcs[my_part](building)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

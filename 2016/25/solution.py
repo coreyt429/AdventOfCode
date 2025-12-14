@@ -15,11 +15,20 @@ and it does not seem to occur.  Still worth handling just in case.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 import re
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 
 # define globals to use
 registers = {"a": 0, "b": 0, "c": 0, "d": 0}
@@ -250,7 +259,7 @@ def run_program(program):
     return signal
 
 
-def solve(input_value):
+def solve(input_value, _part=None):
     """
     Function to solve puzzle
     """
@@ -265,6 +274,9 @@ def solve(input_value):
         seed += 1
         # set register a to seed
         registers["a"] = seed
+        registers["b"] = 0
+        registers["c"] = 0
+        registers["d"] = 0
         # decode program (do this on each pass to reset tgl'd instructions)
         program = decode_program(input_value)
         # execute program
@@ -275,25 +287,32 @@ def solve(input_value):
     return seed
 
 
+YEAR = 2016
+DAY = 25
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 25)
-    input_text = my_aoc.load_text()
-    # print(input_text)
-    # input_lines = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: lambda ignore_input: ("Click on 'Transmit Signal'")}
-    # loop parts
-    for part in parts:
-        # log start time
-        start = time.time()
-        # get answer
-        answer[part] = funcs[part](input_text)
-        # log end time
-        end = time.time()
-        # print results
-        print(f"Part {part}: {answer[part]}, took {end - start} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

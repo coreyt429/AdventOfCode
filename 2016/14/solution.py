@@ -10,15 +10,30 @@ then sort by index
 
 """
 
+import logging
+import argparse
 import hashlib
 import re
 from collections import deque
-import time
 
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # patterns for matching 3 and 5 chars in a row
 pattern_chars = {3: re.compile(r"(.)\1\1"), 5: re.compile(r"(.)\1\1\1\1")}
+
+
+def parse_input(input_text):
+    """
+    Return stripped salt string.
+    """
+    return input_text.strip()
 
 
 def checksum(number, seed):
@@ -106,26 +121,32 @@ def find_key(seed, protocol):
     return sorted(list(my_keys))[63][0]
 
 
+YEAR = 2016
+DAY = 14
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: find_key,
+    2: find_key,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 14)
-    # set seed, set to abc for test data
-    input_text = my_aoc.load_text()
-    print(input_text)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: find_key, 2: find_key}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_text, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

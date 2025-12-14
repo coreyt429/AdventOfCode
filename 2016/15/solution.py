@@ -6,33 +6,44 @@ It is structually in the same spirit, so moving on.
 
 """
 
+import logging
+import argparse
 import re
-import time
-import aoc  # pylint: disable=import-error
 
-disks = []
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-def parse_input(input_string):
+def parse_input(input_text):
     """
     Function to parse input
     """
-    # get numbers from input_string
-    match = re.findall(r"\d+", input_string)
-    if match:
-        # add to disks
-        disks.append(tuple(int(data) for data in match))
+    disks = []
+    for line in input_text.strip().splitlines():
+        match = re.findall(r"\d+", line)
+        if match:
+            disks.append(tuple(int(data) for data in match))
+    return disks
 
 
-def solve():
+def solve(disks, part):
     """
     Function to solve puzzle
     """
+    local_disks = [tuple(disk) for disk in disks]
+    if part == 2:
+        local_disks.append((7, 11, 0, 0))
     # initialize delay and drops
     delay = 0
     drops = {}
     # walk disks
-    for disk in disks:
+    for disk in local_disks:
         # increment delay for each disk
         delay += 1
         # identify first clock tick of first slot
@@ -50,37 +61,41 @@ def solve():
             current_drop += disk[1]
     # initialize common drops, to store drops that are common to all disks
     # used the first disk as the initial common
-    common_drops = drops[disks[0]]
+    common_drops = drops[local_disks[0]]
     # walk disks again
-    for disk in disks:
+    for disk in local_disks:
         # reduce common_drops to the intersection of iteself and the current disk
         common_drops = common_drops.intersection(drops[disk])
     # return the lowest value in common_drops
     return sorted(list(common_drops))[0]
 
 
-if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 15)
-    # test data
-    test_data = [
-        "Disc #1 has 5 positions; at time=0, it is at position 4.",
-        "Disc #2 has 2 positions; at time=0, it is at position 1.",
-    ]
-    # load live data
-    lines = my_aoc.load_lines()
-    # using test data for now, comment out for live
-    # lines = test_data
+YEAR = 2016
+DAY = 15
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
 
-    for part in [1, 2]:
-        # initialize disk list
-        disks = []
-        # parse input
-        for line in lines:
-            parse_input(line)
-        # part 2 add disk
-        if part == 2:
-            disks.append((7, 11, 0, 0))
-        start = time.time()
-        answer = solve()
-        end = time.time()
-        print(f"Part {part}: {answer}, took {end - start} seconds")
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

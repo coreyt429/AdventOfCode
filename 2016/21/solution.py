@@ -13,11 +13,19 @@ scrambled to the target.
 
 """
 
-import time
+import logging
+import argparse
 import re
 import collections
 from itertools import permutations
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # regex patterns to parse instructions
 patterns = {
@@ -154,7 +162,7 @@ def scramble(input_string, instruction):
     return "we shouldn't be able to get here, but pylint wants a return"
 
 
-def solve(input_string, instructions):
+def run_instructions(input_string, instructions):
     """
     Function to scamble pass based on instructions
     """
@@ -166,49 +174,54 @@ def solve(input_string, instructions):
     return input_string
 
 
+def parse_input(input_text):
+    """
+    Return the list of instructions.
+    """
+    return [line.strip() for line in input_text.splitlines() if line.strip()]
+
+
+def solve(instructions, part):
+    """
+    Solve part 1 (scramble) or part 2 (brute-force unscramble).
+    """
+    if part == 1:
+        return run_instructions("abcdefgh", instructions)
+
+    target = "fbgdceah"
+    for perm in permutations(target):
+        candidate = "".join(perm)
+        if run_instructions(candidate, instructions) == target:
+            return candidate
+    return None
+
+
+YEAR = 2016
+DAY = 21
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 21)
-    input_lines = [
-        "swap position 4 with position 0",
-        "swap letter d with letter b",
-        "reverse positions 0 through 4",
-        "rotate left 1 step",
-        "move position 1 to position 4",
-        "move position 3 to position 0",
-        "rotate based on position of letter b",
-        "rotate based on position of letter d",
-    ]
-    START_STRING = "abcde"
-    # uncomment for live, comment for test
-    input_lines = my_aoc.load_lines()
-    START_STRING = "abcdefgh"
-    # print(input_lines)
-    # parts structure to loop
-    parts = {1: 1, 2: 2}
-    answer = {1: None, 2: None}
-    # loop parts
-    for part in parts:
-        # log start time
-        start = time.time()
-        # part 1, just scramble
-        if part == 1:
-            answer[part] = solve(START_STRING, input_lines)
-        # What is the un-scrambled version of the scrambled password fbgdceah?
-        if part == 2:
-            # new string to match
-            MATCH_STRING = "fbgdceah"
-            # walk possible strings until we find an answer
-            for perm in permutations(MATCH_STRING):
-                # build test string
-                TEST_STRING = "".join(perm)
-                # scramble TEST_STRING
-                test_scramble = solve(TEST_STRING, input_lines)
-                # check test_scramble
-                if test_scramble == MATCH_STRING:
-                    # the sample data had two answers, but my input just has 1
-                    # so break after finding one, and don't collect them all
-                    answer[part] = TEST_STRING
-                    break
-        # log end time
-        end = time.time()
-        print(f"Part {part}: {answer[part]}, took {end - start} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

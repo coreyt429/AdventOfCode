@@ -7,13 +7,28 @@ Good learning opportunity for me.
 
 """
 
-import time
+import logging
+import argparse
 import collections
 
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-def solve(input_value, puzzle_part=1):
+def parse_input(input_text):
+    """
+    Return elf count as int.
+    """
+    return int(input_text.strip())
+
+
+def _solve_part1(input_value):
     """
     Function to solve puzzle.
     This solves part1 efficiently, and I'm sure it would solve part 2
@@ -25,20 +40,9 @@ def solve(input_value, puzzle_part=1):
     # loop until we have an answer
     while len(queue) > 1:
         # select elf1 and elf2 based on rules for problem part
-        if puzzle_part == 1:
-            # first two in the queue
-            elf1 = queue.popleft()
-            elf2 = queue.popleft()
-        else:
-            # deque rotation was too slow, see solve_part2
-            # Pop elf2 at the middle index
-            mid_index = len(queue) // 2
-            queue.rotate(-mid_index)
-            elf2 = queue.popleft()
-            queue.rotate(mid_index)
-
-            # Pop elf1 at the start
-            elf1 = queue.popleft()
+        # first two in the queue
+        elf1 = queue.popleft()
+        elf2 = queue.popleft()
         # silly call to make pylint happy, and leave code readable
         if elf2:
             pass
@@ -76,23 +80,41 @@ def solve_part2(input_value):
     return left[0] or right[0]
 
 
+def solve(input_value, part):
+    """
+    Entry point for either puzzle part.
+    """
+    if part == 1:
+        return _solve_part1(input_value)
+    return solve_part2(input_value)
+
+
+YEAR = 2016
+DAY = 19
+input_format = {
+    1: parse_input,
+    2: parse_input,
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 19)
-    my_input = int(my_aoc.load_text())
-    # test input, uncomment to test
-    # my_input=5
-    # parts structure to loop
-    parts = {1: 1, 2: 2}
-    # answer structure
-    answer = {1: None, 2: None}
-    # functiopn map since we are using seperate functions
-    func_map = {1: solve, 2: solve_part2}
-    # loop parts
-    for part in parts:
-        # log start time
-        start = time.time()
-        # collect answer
-        answer[part] = func_map[part](my_input)
-        # log end time
-        end = time.time()
-        print(f"Part {part}: {answer[part]}, took {end - start} seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

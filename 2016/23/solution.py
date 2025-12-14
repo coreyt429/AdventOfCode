@@ -10,11 +10,19 @@ shortcut for that loop to speed it up.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 import re
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # define globals to use
 registers = {"a": 0, "b": 0, "c": 0, "d": 0}
@@ -214,36 +222,41 @@ def solve(input_value, part=1):
     """
     Function to solve puzzle
     """
-    if part == 1:
-        registers["a"] = 7
-    else:
-        registers["a"] = 12
+    registers["a"] = 7 if part == 1 else 12
+    registers["b"] = 0
+    registers["c"] = 0
+    registers["d"] = 0
     program = decode_program(input_value)
     run_program(program)
     return registers["a"]
 
 
+YEAR = 2016
+DAY = 23
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2016, 23)
-    input_text = my_aoc.load_text()
-    # print(input_text)
-    # input_lines = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for current_part in parts:
-        # log start time
-        start = time.time()
-        # get answer
-        answer[current_part] = funcs[current_part](input_text, part=current_part)
-        # log end time
-        end = time.time()
-        # print results
-        print(
-            f"Part {current_part}: {answer[current_part]}, took {end - start} seconds"
-        )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
