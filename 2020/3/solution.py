@@ -11,12 +11,20 @@ For part 2, used math.prod to get the product of the tree counts.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from math import prod
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def trees_on_slope(grid, slope):
@@ -50,34 +58,34 @@ def solve(input_value, part):
         return trees_on_slope(grid, (3, 1))
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
     return prod([trees_on_slope(grid, slope) for slope in slopes])
-    # result = 1
-    # for slope in slopes:
-    #     result *= trees_on_slope(grid, slope)
-    # return result
+
+
+YEAR = 2020
+DAY = 3
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020, 3)
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 252, 2: 2608962048}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

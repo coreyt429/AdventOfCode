@@ -12,11 +12,19 @@ Okay, that worked, and quite impressively.  reduced part2 from
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from itertools import combinations
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # dict to store answers
 answer = {1: None, 2: None}
@@ -92,35 +100,41 @@ def solve(input_value, part):
     # XMAS starts by transmitting a preamble of 25 numbers
     preamble_size = 25
     numbers = [int(num) for num in input_value]
+    first_invalid = find_first_invalid(numbers, preamble_size)
     if part == 1:
         # What is the first number that does not have this property?
-        return find_first_invalid(numbers, preamble_size)
+        return first_invalid
     # part 2:
     # which sum to the invalid number from step 1.
-    target = answer[1]
-    return find_matching_group(numbers, target)
+    return find_matching_group(numbers, first_invalid)
+
+
+YEAR = 2020
+DAY = 9
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
 
 
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2020, 9)
-    input_lines = my_aoc.load_lines()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # correct answers once solved, to validate changes
-    correct = {1: 26134589, 2: 3535124}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_lines, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
