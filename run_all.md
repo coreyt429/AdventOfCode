@@ -1,5 +1,5 @@
 # run_all Summary
-**Total runtime:** `668.03s`
+**Total runtime:** `673.76s`
 **Slow threshold:** `60.0s`
 
 ## Timed-out runs (> 60s)
@@ -74,30 +74,6 @@ _No missing files._
 ## Solutions using older template
 | Module | Template version | Path |
 |--------|------------------|-------|
-| 2020.1.solution | None | 2020/1/solution.py |
-| 2020.2.solution | None | 2020/2/solution.py |
-| 2020.3.solution | None | 2020/3/solution.py |
-| 2020.4.solution | None | 2020/4/solution.py |
-| 2020.5.solution | None | 2020/5/solution.py |
-| 2020.6.solution | None | 2020/6/solution.py |
-| 2020.7.solution | None | 2020/7/solution.py |
-| 2020.8.solution | None | 2020/8/solution.py |
-| 2020.9.solution | None | 2020/9/solution.py |
-| 2020.10.solution | None | 2020/10/solution.py |
-| 2020.11.solution | None | 2020/11/solution.py |
-| 2020.12.solution | None | 2020/12/solution.py |
-| 2020.13.solution | None | 2020/13/solution.py |
-| 2020.14.solution | None | 2020/14/solution.py |
-| 2020.15.solution | None | 2020/15/solution.py |
-| 2020.16.solution | None | 2020/16/solution.py |
-| 2020.17.solution | None | 2020/17/solution.py |
-| 2020.18.solution | None | 2020/18/solution.py |
-| 2020.20.solution | None | 2020/20/solution.py |
-| 2020.21.solution | None | 2020/21/solution.py |
-| 2020.22.solution | None | 2020/22/solution.py |
-| 2020.23.solution | None | 2020/23/solution.py |
-| 2020.24.solution | None | 2020/24/solution.py |
-| 2020.25.solution | None | 2020/25/solution.py |
 | 2021.1.solution | None | 2021/1/solution.py |
 | 2021.2.solution | None | 2021/2/solution.py |
 | 2021.3.solution | None | 2021/3/solution.py |
