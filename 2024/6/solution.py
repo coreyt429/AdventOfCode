@@ -40,11 +40,19 @@ to minimize iteration on the Grid()
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 stash = {}
 
@@ -55,17 +63,12 @@ class Guard(Grid):
     def __init__(self, map_data):
         """method to initialize guard position"""
         super().__init__(map_data, pos_token="X", use_overrides=False)
-        # find guard position
         for point, char in self.items():
-            # look for direction char, likely always starts as '^',
-            # we'll check for any just in case
             if char in "<>^v":
-                # set position token to char
                 self.cfg["pos_token"] = char
                 self.set_point(point, ".")
                 self.teleport(point)
                 break
-        # turn user_overrides on so we can see the guard position
         self.cfg["use_overrides"] = True
         self.visited = set([self.pos])
         self.direction_map = self.build_direction_map()
@@ -90,7 +93,6 @@ class Guard(Grid):
         """Method to turn right 90 degrees"""
         directions = "nesw"
         idx = directions.index(self.direction)
-        # move to next direction
         idx = (idx + 1) % 4
         self.direction = directions[idx]
         self.cfg["pos_token"] = self.direction_map[self.direction]
@@ -99,7 +101,6 @@ class Guard(Grid):
     def step(self):
         """Method to take a step, and log the position"""
         neighbors = self.get_neighbors()
-        # next step is off the map
         if self.direction not in neighbors:
             return False
         while self.get_point(point=neighbors[self.direction]) == "#":
@@ -116,46 +117,35 @@ class Guard(Grid):
 
 def next_stop(current_point, direction, points):
     """Function to find the point before the next block"""
-    # print(f"next_stop({current_point}, {direction})")
     x_0, y_0 = current_point
     if direction == "s":
-        # Points with the same x but greater y
         candidates = [p for p in points if p[0] == x_0 and p[1] > y_0]
-        # Choose the point with the minimal (y - y_0)
         next_point = min(candidates, key=lambda p: p[1]) if candidates else None
         if next_point is not None:
             next_point = (next_point[0], next_point[1] - 1)
 
     elif direction == "n":
-        # Points with the same x but lower y
         candidates = [p for p in points if p[0] == x_0 and p[1] < y_0]
-        # Choose the point closest below (maximum y but still less than y_0)
         next_point = max(candidates, key=lambda p: p[1]) if candidates else None
         if next_point is not None:
             next_point = (next_point[0], next_point[1] + 1)
 
     elif direction == "e":
-        # Points with the same y but greater x
         candidates = [p for p in points if p[1] == y_0 and p[0] > x_0]
-        # Choose the point with the minimal (x - x_0)
         next_point = min(candidates, key=lambda p: p[0]) if candidates else None
         if next_point is not None:
             next_point = (next_point[0] - 1, next_point[1])
 
     elif direction == "w":
-        # Points with the same y but lower x
         candidates = [p for p in points if p[1] == y_0 and p[0] < x_0]
-        # Choose the point closest to the left (maximum x but still less than x_0)
         next_point = max(candidates, key=lambda p: p[0]) if candidates else None
         if next_point is not None:
             next_point = (next_point[0] + 1, next_point[1])
-    # print(f"next_point: {next_point}")
     return next_point
 
 
 def has_loop_2(guard, blocks):
     """function to check a map for loops"""
-    # print(f"has_loop_2({guard.pos})")
     last_point = guard.pos
     already = set()
     loop_detected = False
@@ -172,7 +162,6 @@ def has_loop_2(guard, blocks):
             return False
         guard.teleport(next_point)
         guard.turn()
-    # print(f"{(last_point, guard.pos)} is in {already}")
     return True
 
 
@@ -183,17 +172,11 @@ def find_loops_2(input_value):
     for point, char in guard.items():
         if char == "#":
             blocks.append(point)
-    # point_counter = 0
     stash["visited"].remove(guard.pos)
-    # point_count = len(stash['visited'])
     loops = 0
     for test_point in stash["visited"]:
-        # point_counter += 1
-        # if point_counter % 100 == 0:
-        #     print(f"{point_counter}/{point_count}: {test_point} > {loops}")
         guard.set_point(test_point, "#")
         if has_loop_2(guard, tuple(blocks + [test_point])):
-            # print(f"loop detected: {test_point}")
             loops += 1
         guard.set_point(test_point, ".")
         guard.reset()
@@ -202,34 +185,25 @@ def find_loops_2(input_value):
 
 def find_loops(input_value):
     """Function to detect and count loops"""
-    # setup tortoise and hare instances of Guard
     tortoise = Guard(input_value)
     hare = Guard(input_value)
     start_pos = hare.start[0]
     loops = 0
     loop_positions = set()
-    # debug counters to see progress
     point_counter = 0
     point_count = len(stash["visited"])
     for test_point in stash["visited"]:
         char = hare.get_point(test_point)
         point_counter += 1
-        # progress check
         if point_counter % 100 == 0:
             print(f"{test_point}: {point_counter}/{point_count}")
-        # skip already blocked points
         if char == "#":
             continue
-        # skip starting point
         if test_point == start_pos:
             continue
         counter = 0
-        # set test point as blocked
         tortoise.set_point(test_point, "#")
         hare.set_point(test_point, "#")
-        # intersections were occuring before the loop, causing inflated loop count
-        # for the test data, ignoring the first intersection worked
-        # for the puzzle data, ignoring the second intersection worked
         intersection_count = 0
         while next(hare.walk_about(), None) is not None:
             counter += 1
@@ -238,14 +212,11 @@ def find_loops(input_value):
             if tortoise.pos == hare.pos:
                 intersection_count += 1
                 if intersection_count > 2:
-                    # print(f"Loop Detected")
                     loops += 1
                     loop_positions.add(test_point)
                     break
-        # reset test point
         tortoise.set_point(test_point, ".")
         hare.set_point(test_point, ".")
-        # reset Guards
         hare.reset()
         tortoise.reset()
     return loops
@@ -256,9 +227,7 @@ def solve(input_value, part):
     Function to solve puzzle
     """
     if part == 2:
-        # return find_loops(input_value)
         return find_loops_2(input_value)
-        # 2026 too high
     guard = Guard(input_value)
     for _ in guard.walk_about():
         pass
@@ -266,31 +235,32 @@ def solve(input_value, part):
     return len(guard.visited)
 
 
+YEAR = 2024
+DAY = 6
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 6)
-    # input_data = my_aoc.load_text()
-    # print(input_text)
-    input_data = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 5409, 2: 2022}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

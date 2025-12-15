@@ -8,10 +8,18 @@ This technique runs in 0.01 seconds, so not really looking for a faster method.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def parse_data(lines):
@@ -25,15 +33,11 @@ def parse_data(lines):
 
 def dampen_report(report, dampener):
     """Function to dampen reports: Part 2"""
-    # part 1?  just return false
     if dampener == 1:
         return False
-    # iterate over indexes
     for idx in range(len(report)):
         my_list = list(report)
-        # remove current index
         my_list.pop(idx)
-        # check is_safe without dampener on the revised report
         if is_safe(tuple(my_list), dampener - 1):
             return True
     return False
@@ -42,10 +46,8 @@ def dampen_report(report, dampener):
 def is_safe(report, dampener=1):
     """Function to determine if a report is safe"""
     safe = True
-    # The levels are either all increasing or all decreasing.
     if report not in [tuple(sorted(report)), tuple(reversed(sorted(report)))]:
         return dampen_report(report, dampener)
-    # Any two adjacent levels differ by at least one and at most three
     for idx, num in enumerate(report[:-1]):
         if report[idx + 1] == num:
             return dampen_report(report, dampener)
@@ -60,39 +62,38 @@ def solve(input_value, part):
     """
     reports = parse_data(input_value)
     counter = 0
-    # same logic here for both parts.
-    # pass part as dampener to get different behavior
     for report in reports:
         if is_safe(report, part):
             counter += 1
     return counter
 
 
+YEAR = 2024
+DAY = 2
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 2)
-    # input_data = my_aoc.load_text()
-    # print(input_text)
-    input_data = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 220, 2: 296}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

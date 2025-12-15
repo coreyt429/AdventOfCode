@@ -9,10 +9,18 @@ adjust it a bit.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def parse_input(input_text):
@@ -36,20 +44,14 @@ def combo_operand_value(operand, registers):
     """
     Function to get the value of a combo operand
     """
-    # The value of a combo operand can be found as follows:
-    # Combo operands 0 through 3 represent literal values 0 through 3.
     if operand < 4:
         return operand
-    # Combo operand 4 represents the value of register A.
     if operand == 4:
         return registers["A"]
-    # Combo operand 5 represents the value of register B.
     if operand == 5:
         return registers["B"]
-    # Combo operand 6 represents the value of register C.
     if operand == 6:
         return registers["C"]
-    # Combo operand 7 is reserved and will not appear in valid programs.
     return None
 
 
@@ -94,44 +96,19 @@ def run_program(input_text, register_a=None):
 
 operations = {}
 op_names = {}
-# The eight instructions are as follows:
-# The adv instruction (opcode 0) performs division. The numerator is the value in the A register.
-# The denominator is found by raising 2 to the power of the instruction's combo operand.
-# (So, an operand of 2 would divide A by 4 (2^2); an operand of 5 would divide A by 2^B.)
-# The result of the division operation is truncated to an integer and then written to the
-# A register.
 operations[0] = lambda a, operand: a // (2**operand)
 op_names[0] = "adv"
-# The bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's
-# literal operand, then stores the result in register B.
 operations[1] = lambda b, operand, _, __: b ^ operand
 op_names[1] = "bxl"
-# The bst instruction (opcode 2) calculates the value of its combo operand modulo 8
-# (thereby keeping only its lowest 3 bits),then writes that value to the B register.
 operations[2] = lambda b, _, __, operand: operand % 8
 op_names[2] = "bst"
-# The jnz instruction (opcode 3) does nothing if the A register is 0. However, if the A register
-# is not zero, it jumps by setting the instruction pointer to the value of its literal operand;
-# if this instruction jumps, the instruction pointer is not increased by 2 after this instruction.
-# operations[3] = lambda a, operand: operand if a != 0 else None
-# this operation not needed handled in if statement instead
 op_names[3] = "jnz"
-# The bxc instruction (opcode 4) calculates the bitwise XOR of register B and register C,
-# then stores the result in register B. (For legacy reasons, this instruction reads an operand
-# but ignores it.)
 operations[4] = lambda b, c, _, __: b ^ c
 op_names[4] = "bxc"
-
-# The out instruction (opcode 5) calculates the value of its combo operand modulo 8, then outputs
-# that value. (If a program outputs multiple values, they are separated by commas.)
 operations[5] = lambda _, __, ___, operand: operand % 8
 op_names[5] = "out"
-# The bdv instruction (opcode 6) works exactly like the adv instruction except that the result is
-# stored in the B register. (The numerator is still read from the A register.)
 operations[6] = lambda a, b, c, operand: a // (2**operand)
 op_names[6] = "bdv"
-# The cdv instruction (opcode 7) works exactly like the adv instruction except that the result is
-# stored in the C register. (The numerator is still read from the A register.)
 operations[7] = lambda a, b, c, operand: a // (2**operand)
 op_names[7] = "cdv"
 
@@ -144,66 +121,56 @@ def solve(input_value, part):
         return ",".join(map(str, run_program(input_value)))
     _, program = parse_input(input_value)
     result = ""
-
-    # start at 0, starting closer to the answer worked for the sample data
-    # and did not work for my puzzle input
     register_a_attempt = 0
     while True:
         result = run_program(input_value, register_a_attempt)
-        # check if the output is too long
         if len(result) > len(program):
             print(f"result: {result}, program: {program}")
             raise ValueError("The output is too long")
 
-        # check if the output is correct
         if result == program:
             break
 
         last = register_a_attempt
-        # check each program value to see if it is correct
         for i in range(len(result) - 1, -1, -1):
             if result[i] != program[i]:
-                # add 8^i to the register value
                 add = 8**i
-                # slow down for the last digit
-                # In the sample data, incrementing by 8 on position 1,
-                # skipped the correct answer
                 if add < 9:
                     add = 1
                 register_a_attempt += add
                 break
-        # if the register value did not change, increment by 1
-        # this happens when the result matches, except that it is too short
         if register_a_attempt == last:
             register_a_attempt += 1
 
-    # 4398046511103 too low, as expected
-    # 35184372088831 too low, as expected
     return register_a_attempt
 
 
+YEAR = 2024
+DAY = 17
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 17)
-    input_data = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: "7,6,5,3,6,5,7,0,4", 2: 190615597431823}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

@@ -16,11 +16,20 @@ pickup the towel list from solve().  This was much faster and used less memory.
 """
 
 # import system modules
+import logging
+import argparse
 from functools import lru_cache
+from heapq import heappush, heappop
 
 # import my modules
-from heapq import heappush, heappop
 from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def parse_input(input_text):
@@ -113,13 +122,32 @@ def solve(input_value, part):
     return count
 
 
+YEAR = 2024
+DAY = 19
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(2024, 19)
-    aoc.load_text()
-    # my_aoc.load_list()
-    # correct answers once solved, to validate changes
-    aoc.correct[1] = 220
-    aoc.correct[2] = 565600047715343
-    aoc.funcs[1] = solve
-    aoc.funcs[2] = solve
-    aoc.run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

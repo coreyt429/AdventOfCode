@@ -14,10 +14,18 @@ I;m happy for now.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def read_file_map(file_map):
@@ -32,42 +40,23 @@ def read_file_map(file_map):
                 filesystem.append(file_id)
             else:
                 filesystem.append(".")
-        # increment file_id after adding a file
         if counter % 2 == 0:
             file_id += 1
         counter += 1
     return filesystem
 
 
-def compress_filesystem_original(filesystem):
-    """Function to compress the filesystem"""
-    for idx in range(len(filesystem) - 1, -1, -1):
-        if isinstance(filesystem[idx], int):
-            idx_space = filesystem.index(".")
-            if idx_space < idx:
-                filesystem[idx_space] = filesystem[idx]
-                filesystem[idx] = "."
-    return filesystem
-
-
 def compress_filesystem(filesystem):
     """Function to compress the filesystem, improved"""
-    # Precompute all space indexes
     space_indexes = [i for i, value in enumerate(filesystem) if value == "."]
-    # Pointer to track the next available space
     space_idx = 0
 
-    # Iterate from right to left, moving blocks into available spaces
     for idx in range(len(filesystem) - 1, -1, -1):
         if isinstance(filesystem[idx], int) and space_indexes[space_idx] < idx:
-            # Move block to the next available space
             filesystem[space_indexes[space_idx]] = filesystem[idx]
             filesystem[idx] = "."
-            # Move to the next space
             space_idx += 1
-            # this condition shouldn't happen, but should be accounted for.
             if not space_idx < len(space_indexes):
-                # recompute all space indexes
                 space_indexes = [
                     i for i, value in enumerate(filesystem) if value == "."
                 ]
@@ -79,20 +68,15 @@ def map_filesystem(filesystem):
     spaces = []
     files = []
     last = "."
-    # iterate over filesystem
     for idx, value in enumerate(filesystem):
-        # files
         if isinstance(value, int):
-            # new file?
             if last != value:
                 current = {"idx": idx, "length": 1, "id": value}
                 files.append(current)
             else:
                 current["length"] += 1
             last = value
-        # spaces
         else:
-            # new space?
             if isinstance(last, int):
                 current = {"idx": idx, "length": 1}
                 spaces.append(current)
@@ -105,24 +89,17 @@ def map_filesystem(filesystem):
 def compress_filesystem_2(filesystem):
     """Function to compress filesystem by moving files instead of blocks"""
     spaces, files = map_filesystem(filesystem)
-    # iterate over files from right to left
     for file in reversed(files):
-        # iterate over spaces from left to right
         for space in spaces:
             if space["idx"] > file["idx"]:
                 continue
-            # if file will fit in space
             if space["length"] >= file["length"]:
-                # swap file and space
                 for idx in range(space["idx"], space["idx"] + file["length"]):
                     filesystem[idx] = file["id"]
                 for idx in range(file["idx"], file["idx"] + file["length"]):
                     filesystem[idx] = ""
-                # update file index so we can check it
                 file["idx"] = space["idx"]
-                # reduce space size by file
                 space["length"] -= file["length"]
-                # move space pointer forward
                 space["idx"] += file["length"]
                 break
     return filesystem
@@ -146,34 +123,36 @@ def solve(input_value, part):
         files = compress_filesystem(files)
     else:
         files = compress_filesystem_2(files)
-        # 8491540479687 too high
-        # 8491540479686 too high, just guessed off by one, back to examining output
     checksum = checksum_filesystem(files)
     return checksum
 
 
+YEAR = 2024
+DAY = 9
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 9)
-    input_data = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 6288707484810, 2: 6311837662089}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

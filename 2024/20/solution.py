@@ -12,12 +12,21 @@ Part 2, saving for another day. 9 months later, it is another day. all good now
 """
 
 # import system modules
+import logging
+import argparse
 from collections import defaultdict
 from functools import lru_cache
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid, manhattan_distance  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def path_to_linked_list(path):
@@ -53,31 +62,25 @@ def find_cheats(position, target, linked_list, grid, **kwargs):
         ):
             if part == 2 or is_valid_cheat(position, current, grid):
                 cheats.append(current)
-        # current = linked_list[current]["next"]
     return cheats
 
 
 @lru_cache(maxsize=None)
 def is_valid_cheat(point, cheat, grid):
     """Function to determine if a cheat is valid"""
-    # Check if the manhattan distance is 2 or 3
     distance = manhattan_distance(point, cheat)
-    # if distance not in [2, 3]:
-    #     return False
-
-    # Check if the path between point and cheat only passes through walls
     x_1, y_1 = point
     x_2, y_2 = cheat
 
-    if x_1 == x_2:  # Same row
+    if x_1 == x_2:
         for y_val in range(min(y_1, y_2) + 1, max(y_1, y_2)):
             if grid.get_point((x_1, y_val)) != "#":
                 return False
-    elif y_1 == y_2:  # Same column
+    elif y_1 == y_2:
         for x_val in range(min(x_1, x_2) + 1, max(x_1, x_2)):
             if grid.get_point((x_val, y_1)) != "#":
                 return False
-    else:  # Diagonal
+    else:
         if distance == 2:
             if grid.get_point((x_1, y_2)) != "#" or grid.get_point((x_2, y_1)) != "#":
                 return False
@@ -116,16 +119,13 @@ def solve(input_value, part):
     distance = 3
     if part == 2:
         distance = 20
-        # return part
     target = 99
     grid = Grid(input_value, use_overrides=False)
-    # start, goal = None, None
     start = next(point for point, value in grid.items() if value == "S")
     goal = next(point for point, value in grid.items() if value == "E")
     path_linked_list = path_to_linked_list(grid.shortest_paths(start, goal)[0])
     cheat_stats = {1: defaultdict(set), 2: {}}
     for point, node in path_linked_list.items():
-        # print(f"\r{point=}, position={node['position']}, of {len(path_linked_list)},", end="")
         for cheat in find_cheats(
             point, target, path_linked_list, grid, distance=distance, part=part
         ):
@@ -151,25 +151,35 @@ def solve(input_value, part):
         if size < 100:
             continue
         count += len(cheat)
-
-    # 1415 is too high
-    # I wasn't subtracting the manhattan distance between the points from the savings
-    # part 2
-    # 904905 is too low
-    # 916903 is too low - dijkstra for cheat - really slow
-    # 1010981 - bingo
-    # 1029553 is too high - manhattan distance for cheat
-    # 1141785 is too high
     return count
 
 
+YEAR = 2024
+DAY = 20
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    aoc = AdventOfCode(2024, 20)
-    aoc.load_text()
-    # aoc.load_list()
-    # correct answers once solved, to validate changes
-    aoc.correct[1] = 1404
-    aoc.correct[2] = 1010981
-    aoc.funcs[1] = solve
-    aoc.funcs[2] = solve
-    aoc.run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

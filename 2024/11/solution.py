@@ -13,11 +13,19 @@ for part 2.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from functools import lru_cache
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
@@ -36,19 +44,11 @@ def split_stone(stone):
 @lru_cache(maxsize=None)
 def change_stone(stone):
     """Function to check a stone to see which change it needs to make"""
-    # If the stone is engraved with the number 0,
-    # it is replaced by a stone engraved with the number 1.
     if stone == 0:
         return [1]
-    # If the stone is engraved with a number that has an even number of digits,
-    # it is replaced by two stones. The left half of the digits are engraved on the new left stone,
-    # and the right half of the digits are engraved on the new right stone.
-    # (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
     can_split, split_stones = split_stone(stone)
     if can_split:
         return split_stones
-    # If none of the other rules apply, the stone is replaced by a new stone;
-    # the old stone's number multiplied by 2024 is engraved on the new stone.
     return [stone * 2024]
 
 
@@ -66,7 +66,6 @@ def solve(input_value, part):
         new_stones = {}
         for stone, count in stones.items():
             if count > 0:
-                # stones[stone] -= count
                 new_stones[stone] = new_stones.get(stone, 0)
                 for new_stone in change_stone(stone):
                     new_stones[new_stone] = new_stones.get(new_stone, 0) + count
@@ -75,28 +74,32 @@ def solve(input_value, part):
     return sum(stones.values())
 
 
+YEAR = 2024
+DAY = 11
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 11)
-    input_data = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 235850, 2: 279903140844645}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

@@ -4,14 +4,21 @@ Advent Of Code 2024 day 16
 """
 
 # import system modules
-import time
+import logging
+import argparse
 from heapq import heappop, heappush
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
 
-# dict to store answers
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 answer = {1: None, 2: None}
 
 
@@ -23,8 +30,8 @@ def has_duplicates(test_tup):
 def shortest_path(grid, start, goal):
     """Find all shortest paths with the minimum score in the maze."""
     heap = []
-    best_paths = []  # Store all paths with the minimum score
-    heappush(heap, (0, start, "e", (start,)))  # Start state
+    best_paths = []
+    heappush(heap, (0, start, "e", (start,)))
     seen = {}
     min_path_score = float("infinity")
 
@@ -34,33 +41,26 @@ def shortest_path(grid, start, goal):
             heappop(heap)
         )
 
-        # Stop processing paths with scores exceeding the minimum score
         if current["score"] > min_path_score:
             continue
 
-        # Check if we reached the goal
         if current["point"] == goal:
             if current["score"] < min_path_score:
-                # New minimum score found
                 min_path_score = current["score"]
                 best_paths = [current["path"]]
             elif current["score"] == min_path_score:
-                # Add another valid path
                 best_paths.append(current["path"])
             continue
 
-        # Prevent revisits of the same state with a higher or equal score
         signature = (current["point"], current["direction"])
         if signature in seen and seen[signature] < current["score"]:
             continue
         seen[signature] = current["score"]
 
-        # Explore neighbors
         neighbors = grid.get_neighbors(
             point=current["point"], directions=["n", "s", "e", "w"]
         )
 
-        # Forward movement
         forward_point = neighbors[current["direction"]]
         if (
             forward_point not in current["path"]
@@ -76,7 +76,6 @@ def shortest_path(grid, start, goal):
                 ),
             )
 
-        # Turning (add turn cost)
         turns = ["e", "w"] if current["direction"] in ["n", "s"] else ["n", "s"]
         for turn in turns:
             neighbor = neighbors[turn]
@@ -98,7 +97,6 @@ def solve(input_value, part):
     """
     if part == 2:
         return answer[part]
-        # 541 too low (actually 542 was too low, 541 was my real answer that time)
     maze = Grid(input_value, use_overrides=False)
     start = None
     goal = None
@@ -119,29 +117,32 @@ def solve(input_value, part):
     return score
 
 
+YEAR = 2024
+DAY = 16
+input_format = {
+    1: "lines",
+    2: "lines",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 16)
-    # input_data = my_aoc.load_text()
-    # print(input_text)
-    input_data = my_aoc.load_lines()
-    # print(input_lines)
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # correct answers once solved, to validate changes
-    correct = {1: 123540, 2: 665}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)

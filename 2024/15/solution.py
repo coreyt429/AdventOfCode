@@ -22,11 +22,19 @@ to use a set instead, so they would only be considered once.
 """
 
 # import system modules
-import time
+import logging
+import argparse
 
 # import my modules
-import aoc  # pylint: disable=import-error
+from aoc import AdventOfCode  # pylint: disable=import-error
 from grid import Grid  # pylint: disable=import-error
+
+TEMPLATE_VERSION = "20251203"
+
+logging.basicConfig(
+    level=logging.INFO, format="%(levelname)s:%(filename)s:%(lineno)d - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def parse_input(text):
@@ -82,7 +90,6 @@ class Item:
         last_pos = position
         for _ in range(len(symbol[1:])):
             neighbors = self.parent.get_neighbors(point=last_pos, directions=["e"])
-            # safety condition, this should always be true
             if "e" in neighbors:
                 self.positions.append(neighbors["e"])
                 last_pos = neighbors["e"]
@@ -99,17 +106,13 @@ class Item:
             targets.append(neighbors[direction])
             states.append(self.parent.get_point(point=neighbors[direction]))
 
-        # if any position is a wall, we can't move
         if "#" in states:
             return False
         others = set()
-        # check to see if we can move
         for idx, target in enumerate(targets):
-            # don't consider our other half as an obstacle
             if target in self.positions:
                 continue
             if states[idx] == ".":
-                # . doesn't change our ability to move
                 continue
             other = self.parent.get_item(position=target)
             if not other.move(instruction, test=True):
@@ -118,11 +121,8 @@ class Item:
         if test:
             return True
 
-        # actually move:
         self.position = targets[0]
         for position in self.positions:
-            # blank current positions, so we don't have to worry
-            # about order
             self.parent.set_point(position, ".")
         for other in others:
             other.move(instruction)
@@ -140,21 +140,16 @@ def expand_map(map_text):
     """Function to expand map (part 2)"""
     new_map_text = ""
     for char in map_text:
-        # If the tile is #, the new map contains ## instead.
-        # If the tile is ., the new map contains .. instead.
         if char in "#.":
             new_map_text += char
             new_map_text += char
             continue
-        # If the tile is O, the new map contains [] instead.
         if char == "O":
             new_map_text += "[]"
             continue
-        # If the tile is @, the new map contains @. instead.
         if char == "@":
             new_map_text += "@."
             continue
-        # \n
         new_map_text += char
     return new_map_text
 
@@ -166,41 +161,42 @@ def solve(input_value, part):
     map_text, directions_text = parse_input(input_value)
     if part == 2:
         map_text = expand_map(map_text)
-        # 1420359 too low
     warehouse = WareHouse(map_text)
     for instruction in directions_text:
         warehouse.robot.move(instruction)
-        # print(f"Move {instruction}:\n{warehouse}\n")
     total = 0
     for box in warehouse.boxes:
-        # print(box.position)
         total += (100 * box.position[1]) + box.position[0]
 
     return total
 
 
+YEAR = 2024
+DAY = 15
+input_format = {
+    1: "text",
+    2: "text",
+}
+
+funcs = {
+    1: solve,
+    2: solve,
+}
+
+
 if __name__ == "__main__":
-    my_aoc = aoc.AdventOfCode(2024, 15)
-    input_data = my_aoc.load_text()
-    # parts dict to loop
-    parts = {1: 1, 2: 2}
-    # dict to store answers
-    answer = {1: None, 2: None}
-    # correct answers once solved, to validate changes
-    correct = {1: 1429911, 2: 1453087}
-    # dict to map functions
-    funcs = {1: solve, 2: solve}
-    # loop parts
-    for my_part in parts:
-        # log start time
-        start_time = time.time()
-        # get answer
-        answer[my_part] = funcs[my_part](input_data, my_part)
-        # log end time
-        end_time = time.time()
-        # print results
-        print(
-            f"Part {my_part}: {answer[my_part]}, took {end_time - start_time} seconds"
-        )
-        if correct[my_part]:
-            assert correct[my_part] == answer[my_part]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    args = parser.parse_args()
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    aoc = AdventOfCode(
+        year=YEAR,
+        day=DAY,
+        input_formats=input_format,
+        funcs=funcs,
+        test_mode=args.test,
+    )
+    aoc.run(submit=args.submit)
