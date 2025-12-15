@@ -1,5 +1,5 @@
 # run_all Summary
-**Total runtime:** `698.83s`
+**Total runtime:** `684.39s`
 **Slow threshold:** `60.0s`
 
 ## Timed-out runs (> 60s)
@@ -48,25 +48,25 @@ _No missing files._
 | 2022.23.solution | 9.55 |
 | 2022.24.solution | 9.55 |
 | 2022.25.solution | 9.55 |
-| 2023.7.solution | 9.44 |
-| 2023.8.solution | 9.44 |
-| 2023.9.solution | 9.44 |
-| 2023.10.solution | 9.44 |
-| 2023.11.solution | 9.44 |
-| 2023.12.solution | 9.44 |
-| 2023.13.solution | 9.44 |
-| 2023.14.solution | 9.44 |
-| 2023.15.solution | 9.44 |
-| 2023.16.solution | 9.44 |
-| 2023.17.solution | 9.44 |
-| 2023.18.solution | 9.44 |
-| 2023.19.solution | 9.44 |
-| 2023.20.solution | 9.44 |
-| 2023.21.solution | 9.44 |
-| 2023.22.solution | 9.44 |
-| 2023.23.solution | 9.44 |
-| 2023.24.solution | 9.44 |
-| 2023.25.solution | 9.44 |
+| 2023.7.solution | 9.55 |
+| 2023.8.solution | 9.55 |
+| 2023.9.solution | 9.55 |
+| 2023.10.solution | 9.55 |
+| 2023.11.solution | 9.55 |
+| 2023.12.solution | 9.55 |
+| 2023.13.solution | 9.55 |
+| 2023.14.solution | 9.55 |
+| 2023.15.solution | 9.55 |
+| 2023.16.solution | 9.55 |
+| 2023.17.solution | 9.55 |
+| 2023.18.solution | 9.55 |
+| 2023.19.solution | 9.55 |
+| 2023.20.solution | 9.55 |
+| 2023.21.solution | 9.55 |
+| 2023.22.solution | 9.55 |
+| 2023.23.solution | 9.55 |
+| 2023.24.solution | 9.55 |
+| 2023.25.solution | 9.55 |
 | 2024.22.solution | 9.55 |
 | 2024.23.solution | 9.55 |
 | 2024.24.solution | 9.55 |
@@ -75,31 +75,6 @@ _No missing files._
 ## Solutions using older template
 | Module | Template version | Path |
 |--------|------------------|-------|
-| 2023.1.solution | None | 2023/1/solution.py |
-| 2023.2.solution | None | 2023/2/solution.py |
-| 2023.3.solution | None | 2023/3/solution.py |
-| 2023.4.solution | None | 2023/4/solution.py |
-| 2023.5.solution | None | 2023/5/solution.py |
-| 2023.6.solution | 20251128 | 2023/6/solution.py |
-| 2023.7.solution | 20251128 | 2023/7/solution.py |
-| 2023.8.solution | 20251128 | 2023/8/solution.py |
-| 2023.9.solution | 20251128 | 2023/9/solution.py |
-| 2023.10.solution | 20251128 | 2023/10/solution.py |
-| 2023.11.solution | 20251128 | 2023/11/solution.py |
-| 2023.12.solution | 20251128 | 2023/12/solution.py |
-| 2023.13.solution | 20251128 | 2023/13/solution.py |
-| 2023.14.solution | 20251128 | 2023/14/solution.py |
-| 2023.15.solution | 20251128 | 2023/15/solution.py |
-| 2023.16.solution | 20251128 | 2023/16/solution.py |
-| 2023.17.solution | 20251128 | 2023/17/solution.py |
-| 2023.18.solution | 20251128 | 2023/18/solution.py |
-| 2023.19.solution | 20251128 | 2023/19/solution.py |
-| 2023.20.solution | 20251128 | 2023/20/solution.py |
-| 2023.21.solution | 20251128 | 2023/21/solution.py |
-| 2023.22.solution | 20251128 | 2023/22/solution.py |
-| 2023.23.solution | 20251128 | 2023/23/solution.py |
-| 2023.24.solution | 20251128 | 2023/24/solution.py |
-| 2023.25.solution | 20251128 | 2023/25/solution.py |
 | 2024.1.solution | None | 2024/1/solution.py |
 | 2024.2.solution | None | 2024/2/solution.py |
 | 2024.3.solution | None | 2024/3/solution.py |
