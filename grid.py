@@ -16,7 +16,6 @@ import math
 import logging
 from dataclasses import dataclass
 from functools import total_ordering
-from collections.abc import Mapping
 from typing import Sequence, Type, Literal
 from queue import PriorityQueue
 import functools
@@ -31,10 +30,9 @@ cardinal_directions = ("n", "s", "e", "w")
 diagonal_directions = ("ne", "se", "sw", "nw")
 
 
-
-
 @total_ordering
 class Point:
+    """Class to represent a point in 2D or 3D space."""
     __slots__ = ("x", "y", "z")
 
     _keys = ("x", "y", "z")
@@ -43,6 +41,16 @@ class Point:
         self.x = x
         self.y = y
         self.z = z
+
+    @property
+    def xy_tuple(self):
+        """Return (x, y) tuple"""
+        return (self.x, self.y)
+
+    @property
+    def xyz_tuple(self):
+        """Return (x, y, z) tuple"""
+        return (self.x, self.y, self.z)
 
     # -------------------------------------------------
     # Tuple-like behavior
@@ -73,12 +81,15 @@ class Point:
     # Dict-like behavior
     # -------------------------------------------------
     def keys(self):
+        """keys() method"""
         return self._keys
 
     def items(self):
+        """items() method"""
         return ((k, getattr(self, k)) for k in self._keys)
 
     def values(self):
+        """values() method"""
         return (getattr(self, k) for k in self._keys)
 
     # -------------------------------------------------
@@ -98,7 +109,7 @@ class Point:
         return self._cmp_key() < other._cmp_key()
 
     def __hash__(self):
-        return hash((self.z, self.y, self.x))
+        return hash(tuple((self.x, self.y)))
 
     # -------------------------------------------------
     # Niceties
@@ -586,7 +597,7 @@ class Grid:
             self.neighbor_offsets["tuple"][direction] = point
         return self.neighbor_offsets
 
-    def get_neighbors(self, point: tuple[int, int]=None, **kwargs):
+    def get_neighbors(self, point: tuple[int, int] = None, **kwargs):
         """
         Function to get neighbors of a point on a map or maze
         This function assumes screen coordinates.  If using another coordinate system,
