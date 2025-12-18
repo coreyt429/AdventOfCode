@@ -6,6 +6,8 @@ Advent Of Code 2023 day 25
 # import system modules
 import logging
 import argparse
+import networkx as nx
+
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
@@ -18,11 +20,33 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def parse_input(lines: list[str]) -> set[tuple[str, str]]:
+    """parse input data into edges set"""
+    edges = set();
+
+    for line in lines:
+        # jqt: rhn xhk nvd
+        a, b = line.split(': ')
+        b = b.split(' ')
+
+        for c in b:
+            edges.add((a,c))
+            edges.add((c,a))
+    return edges
+
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    return part
+    if part == 2:
+        return None
+    edges = parse_input(input_value)
+    graph = nx.from_edgelist(edges)
+    edge_betweenness = nx.edge_betweenness_centrality(graph)
+    most_crucial_edges = sorted(edge_betweenness, key=edge_betweenness.get)[-3:]
+    graph.remove_edges_from(most_crucial_edges)
+    size1, size2 = [len(c) for c in nx.connected_components(graph)]
+    return  size1 * size2
 
 
 YEAR = 2023
