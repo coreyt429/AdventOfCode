@@ -22,17 +22,17 @@ logger = logging.getLogger(__name__)
 
 def parse_input(lines: list[str]) -> set[tuple[str, str]]:
     """parse input data into edges set"""
-    edges = set();
-
+    edges = set()
     for line in lines:
         # jqt: rhn xhk nvd
-        a, b = line.split(': ')
-        b = b.split(' ')
+        a, b = line.split(": ")
+        b = b.split(" ")
 
         for c in b:
-            edges.add((a,c))
-            edges.add((c,a))
+            edges.add((a, c))
+            edges.add((c, a))
     return edges
+
 
 def solve(input_value, part):
     """
@@ -46,7 +46,7 @@ def solve(input_value, part):
     most_crucial_edges = sorted(edge_betweenness, key=edge_betweenness.get)[-3:]
     graph.remove_edges_from(most_crucial_edges)
     size1, size2 = [len(c) for c in nx.connected_components(graph)]
-    return  size1 * size2
+    return size1 * size2
 
 
 YEAR = 2023
