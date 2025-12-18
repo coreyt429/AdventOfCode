@@ -8,9 +8,11 @@ import logging
 import argparse
 from collections import defaultdict, deque
 from functools import cache
+from dataclasses import dataclass
 
 # import my modules
 from aoc import AdventOfCode  # pylint: disable=import-error
+from grid import Grid  , Point# pylint: disable=import-error
 
 TEMPLATE_VERSION = "20251203"
 
@@ -19,126 +21,126 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@dataclass
+class Node:
+    """
+    Node class for graph
+    """
+    point: Point
+    grid: Grid
+    value: str = ""
+    container: list[Point]
+    neighbors: dict[Point, int]
 
-def parse_input(lines: list[str]) -> tuple[tuple[str, ...], ...]:
-    """parse input data into grid"""
-    # Split the data into lines
-    grid = []
-    for line in lines:
-        grid.append(tuple(list(line)))
-    return tuple(grid)
+    def __str__(self):
+        return f"Node({self.point}): neighbors={list(f"{k}:{v}" for k, v in self.neighbors.items())}"
 
+def path_exists(grid, start, end, node_points):
+    """
+    Check if path exists between two points without crossing other node points
+    """
+    
+    start = (start.x, start.y) if isinstance(start, Point) else start
+    end = (end.x, end.y) if isinstance(end, Point) else end
 
-def neighbors(
-    grid: tuple[tuple[str, ...], ...], r: int, c: int, ignore_slopes: bool
-):
-    """get neighbor coordinates from (r,c)"""
-    logger.debug("neighbors r=%d c=%d", r, c)
-    cell = grid[r][c]
-    logger.debug("cell=%s", cell)
+    # Ensure node_points is a concrete set (not a generator) and uses tuple coords
+    node_points = set(
+        (p.x, p.y) if isinstance(p, Point) else p
+        for p in node_points
+    )
 
-    if ignore_slopes or cell == ".":
-        for r, c in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
-            logger.debug("checking neighbor r=%d c=%d", r, c)
-            logger.debug("len(grid)=%d", len(grid))
-            logger.debug("len(grid[r])=%d", len(grid[r]) if 0 <= r < len(grid) else -1)
-            if r >= len(grid):
-                continue
-            if grid[r][c] != "#":
-                yield r, c
-    elif cell == "v":
-        yield (r + 1, c)
-    elif cell == "^":
-        yield (r - 1, c)
-    elif cell == ">":
-        yield (r, c + 1)
-    elif cell == "<":
-        yield (r, c - 1)
-
-
-def num_neighbors(
-    grid: tuple[tuple[str, ...], ...], r: int, c: int, ignore_slopes: bool
-) -> int:
-    """count number of neighbors from (r,c)"""
-    if ignore_slopes or grid[r][c] == ".":
-        return sum(
-            grid[r][c] != "#"
-            for r, c in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1))
-        )
-    return 1
-
-
-def is_node(
-    grid: tuple[tuple[str, ...], ...],
-    rc: tuple[int, int],
-    src: tuple[int, int],
-    dst: tuple[int, int],
-    ignore_slopes: bool,
-) -> bool:
-    """determine if rc is a node"""
-    return rc == src or rc == dst or num_neighbors(grid, *rc, ignore_slopes) > 2
-
-
-def adjacent_nodes(
-    grid: tuple[tuple[str, ...], ...],
-    rc: tuple[int, int],
-    src: tuple[int, int],
-    dst: tuple[int, int],
-    ignore_slopes: bool = False,
-) -> tuple[tuple[tuple[int, int], int], ...]:
-    """find adjacent nodes from rc"""
-    q = deque([(rc, 0)])
-    seen = set()
-
-    while q:
-        rc, dist = q.popleft()
-        seen.add(rc)
-
-        for n in neighbors(grid, *rc, ignore_slopes):
-            if n in seen:
-                continue
-
-            if is_node(grid, n, src, dst, ignore_slopes):
-                yield (n, dist + 1)
-                continue
-
-            q.append((n, dist + 1))
-
-
-def graph_from_grid(
-    grid: tuple[tuple[str, ...], ...],
-    src: tuple[int, int],
-    dst: tuple[int, int],
-    ignore_slopes: bool = False,
-) -> dict[tuple[int, int], list[tuple[tuple[int, int], int]]]:
-    """Generate graph from grid"""
-    g = defaultdict(list)
-    q = deque([src])
-    seen = set()
-
-    while q:
-        rc = q.popleft()
-        if rc in seen:
+    queue = deque()
+    queue.append((start, 0))
+    visited = set()
+    while queue:
+        current, steps = queue.popleft()
+        if current == end:
+            return steps
+        if current in node_points and current != start and current != end:
             continue
+        visited.add(current)
+        neighbors = grid.get_neighbors(current, directions=["n", "s", "e", "w"])
+        for neighbor in neighbors.values():
+            if neighbor in visited or grid[neighbor] == "#":
+                continue
+            queue.append((neighbor, steps + 1))
+    return 0
 
-        seen.add(rc)
 
-        for n, weight in adjacent_nodes(grid, rc, src, dst, ignore_slopes):
-            g[rc].append((n, weight))
-            q.append(n)
+def grid_to_nodes(grid, start, end):
+    """
+    Convert grid to graph
+    """
+    nodes = []
+    # start and end are nodes regardless.  
+    nodes.append(Node(point=start, grid=grid, container=nodes, value='.', neighbors={}))
+    nodes.append(Node(point=end, grid=grid, container=nodes, value='.', neighbors={}))
+    for point in grid:
+        if isinstance(point, tuple):
+            point = Point(*point)
+        if grid.get_point(point) == "#":
+            continue
+        # other points are nodes if they have decision points
+        neighbors = {k: v for k, v in grid.get_neighbors(point, directions=["n", "s", "e", "w"]).items() if grid[v] != "#"}
+        if point == Point(x=6, y=2, z=0):
+            logger.debug('point: %s, value: %s, neighbors: %s', point, grid.get_point((point.x, point.y)), neighbors)
+            for k, v in neighbors.items():
+                logger.debug(' direction: %s, neighbor: %s value: %s',k, v, grid.get_point(v))
+        
+        if len(neighbors) > 2:
+            node = Node(point=point, grid=grid, container=nodes, value=grid.get_point(point), neighbors={})
+            nodes.append(node)
+    node_values = {
+        (n.point.x, n.point.y) if isinstance(n.point, Point) else (n.point[0], n.point[1])
+        for n in nodes
+    }
+    for n_1 in nodes:
+        for n_2 in nodes:
+            if n_1 == n_2:
+                continue
+            if n_1.neighbors.get(n_2.point):
+                continue
+            path_length = path_exists(grid, n_1.point, n_2.point, node_values)
+            if path_length > 0:
+                n_1.neighbors[n_2.point] = path_length
+                n_2.neighbors[n_1.point] = path_length
+    logger.debug('Total nodes: %d', len(nodes))
+    return nodes
 
-    return g
-
+def longest_path(nodes, start, end, current=None, visited=None):
+    """
+    Find longest path in graph from start to end
+    """
+    if visited is None:
+        visited = set()
+    if current is None:
+        current = start
+    visited.add(current)
+    if current == end:
+        return visited
+    max_length = 0
+    for neighbor, weight in nodes[current].neighbors.items():
+        if neighbor in visited:
+            continue
+        path_length = longest_path(nodes, neighbor, end, visited.copy())
+        if path_length + weight > max_length:
+            max_length = path_length + weight
+    return max_length
 
 def solve(input_value, part):
     """
     Function to solve puzzle
     """
-    grid = parse_input(input_value)
-    start = (0, grid[0].index("."))
-    end = (len(grid) - 1, grid[-1].index("."))
-    graph = graph_from_grid(grid, start, end)
-    return len(graph)
+    if part == 2:
+        return 1
+    grid = Grid(input_value)
+    start = grid.index(".")
+    end = grid.index(".", idx=-1)
+    graph = grid_to_nodes(grid, start, end)
+    for k, v in graph.items():
+        v.add_adjacent_nodes()
+
+    return 1
 
 
 YEAR = 2023

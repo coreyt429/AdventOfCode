@@ -275,6 +275,8 @@ class AStarConfig:
     use_closed_set: bool = True
     retval: Literal["path", "length", "both", "nodes"] = "path"
     limit: int | None = None
+    start: Point | tuple[int, int] = Point(0, 0)
+    goal: Point | tuple[int, int] = Point(0, 0)
     max_paths: int = 1
 
     @classmethod
@@ -404,6 +406,23 @@ class Grid:
         for point in self:
             value = self.get_point(point)
             self.set_point(point, int(value))
+
+    def findall(self, value):
+        """findall function for grid to find all occurrences of value"""
+        found_points = []
+        for point in self:
+            if self.get_point(point) == value:
+                found_points.append(point)
+        return found_points
+
+    def index(self, value, idx=0):
+        """index function for grid to find first occurrence of value"""
+        found_points = self.findall(value)
+        if not found_points:
+            raise ValueError(f"{value} is not in grid")
+        if len(found_points) > abs(idx):
+            return found_points[idx]
+        raise ValueError(f"{value} does not have index {idx} in grid")
 
     def __len__(self):
         return len(self.map)
@@ -567,7 +586,7 @@ class Grid:
             self.neighbor_offsets["tuple"][direction] = point
         return self.neighbor_offsets
 
-    def get_neighbors(self, **kwargs):
+    def get_neighbors(self, point: tuple[int, int]=None, **kwargs):
         """
         Function to get neighbors of a point on a map or maze
         This function assumes screen coordinates.  If using another coordinate system,
@@ -602,7 +621,8 @@ class Grid:
         x_val = 0
         y_val = 1
         # init point, default to self.pos
-        point = kwargs.get("point", self.pos)
+        if point is None:
+            point = self.pos
         # define booleans:
         # I think I'm getting technical here, but this may matter when we go to apply rules
         # as I typically provide matrix coordinates as (row, col)
@@ -658,6 +678,8 @@ class Grid:
         """
         Retrieve the value of a point with optional defaults.
         """
+        if isinstance(point, Point):
+            point = (point.x, point.y)
         default = default if default is not None else self.cfg["default_value"]
         ob_default = (
             ob_default if ob_default is not None else self.cfg["ob_default_value"]
@@ -859,6 +881,11 @@ class Grid:
             h_score: int() heuristic manhattan_distance(position, goal)
 
         """
+        # convert Point format to tuples until everything handles Point
+        if isinstance(start, Point):
+            start = (start.x, start.y)
+        if isinstance(goal, Point):
+            goal = (goal.x, goal.y)
         a_star_config = AStarConfig.from_args(**kwargs)
         a_star_state = AStarState(
             open_set=PriorityQueue(),
