@@ -1,5 +1,5 @@
 slow_threshold_seconds: 60.0
-total_runtime_seconds: 738.901
+total_runtime_seconds: 763.721
 years:
 - 2015
 - 2016
@@ -17,7 +17,7 @@ results:
   year: 2015
   day: 1
   status: ok
-  elapsed_seconds: 0.22378058265894651
+  elapsed_seconds: 0.22393641620874405
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -26,7 +26,7 @@ results:
   year: 2015
   day: 2
   status: ok
-  elapsed_seconds: 0.19809250021353364
+  elapsed_seconds: 0.19198616687208414
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -35,7 +35,7 @@ results:
   year: 2015
   day: 3
   status: ok
-  elapsed_seconds: 0.22660350007936358
+  elapsed_seconds: 0.19885645899921656
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -44,7 +44,7 @@ results:
   year: 2015
   day: 4
   status: ok
-  elapsed_seconds: 0.9049237910658121
+  elapsed_seconds: 0.8982072910293937
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -53,7 +53,7 @@ results:
   year: 2015
   day: 5
   status: ok
-  elapsed_seconds: 0.20727704232558608
+  elapsed_seconds: 0.20848283311352134
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -62,7 +62,7 @@ results:
   year: 2015
   day: 6
   status: ok
-  elapsed_seconds: 1.2404158748686314
+  elapsed_seconds: 1.268366999924183
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -71,7 +71,7 @@ results:
   year: 2015
   day: 7
   status: ok
-  elapsed_seconds: 0.20024929102510214
+  elapsed_seconds: 0.19452291587367654
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -80,7 +80,7 @@ results:
   year: 2015
   day: 8
   status: ok
-  elapsed_seconds: 0.2043604589998722
+  elapsed_seconds: 0.2047812920063734
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -89,7 +89,7 @@ results:
   year: 2015
   day: 9
   status: ok
-  elapsed_seconds: 0.6427859589457512
+  elapsed_seconds: 0.653702249750495
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -98,7 +98,7 @@ results:
   year: 2015
   day: 10
   status: ok
-  elapsed_seconds: 0.7243198328651488
+  elapsed_seconds: 0.7803857498802245
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -107,7 +107,7 @@ results:
   year: 2015
   day: 11
   status: ok
-  elapsed_seconds: 0.6309677921235561
+  elapsed_seconds: 0.6195031669922173
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -116,7 +116,7 @@ results:
   year: 2015
   day: 12
   status: ok
-  elapsed_seconds: 0.2018423331901431
+  elapsed_seconds: 0.2007977501489222
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -125,7 +125,7 @@ results:
   year: 2015
   day: 13
   status: ok
-  elapsed_seconds: 0.7547986251302063
+  elapsed_seconds: 0.7626790408976376
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -134,7 +134,7 @@ results:
   year: 2015
   day: 14
   status: ok
-  elapsed_seconds: 0.1927919159643352
+  elapsed_seconds: 0.26788200018927455
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -143,7 +143,7 @@ results:
   year: 2015
   day: 15
   status: ok
-  elapsed_seconds: 1.885904457885772
+  elapsed_seconds: 1.8898940412327647
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -152,7 +152,7 @@ results:
   year: 2015
   day: 16
   status: ok
-  elapsed_seconds: 0.19975054217502475
+  elapsed_seconds: 0.20485587511211634
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -161,7 +161,7 @@ results:
   year: 2015
   day: 17
   status: ok
-  elapsed_seconds: 0.2676557917147875
+  elapsed_seconds: 0.2551781670190394
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -170,7 +170,7 @@ results:
   year: 2015
   day: 18
   status: ok
-  elapsed_seconds: 1.4518106668256223
+  elapsed_seconds: 1.4412737502716482
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -179,7 +179,7 @@ results:
   year: 2015
   day: 19
   status: ok
-  elapsed_seconds: 0.1981890839524567
+  elapsed_seconds: 0.20862862514331937
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -188,7 +188,7 @@ results:
   year: 2015
   day: 20
   status: ok
-  elapsed_seconds: 0.33215291565284133
+  elapsed_seconds: 0.3316343748010695
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -197,7 +197,7 @@ results:
   year: 2015
   day: 21
   status: ok
-  elapsed_seconds: 0.19546899991109967
+  elapsed_seconds: 0.20323154097422957
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -206,7 +206,7 @@ results:
   year: 2015
   day: 22
   status: ok
-  elapsed_seconds: 22.578541124705225
+  elapsed_seconds: 23.222715999931097
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -215,7 +215,7 @@ results:
   year: 2015
   day: 23
   status: ok
-  elapsed_seconds: 0.20603645872324705
+  elapsed_seconds: 0.2142288750037551
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -224,7 +224,7 @@ results:
   year: 2015
   day: 24
   status: ok
-  elapsed_seconds: 0.8750683329999447
+  elapsed_seconds: 0.8887720839120448
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -233,7 +233,7 @@ results:
   year: 2015
   day: 25
   status: ok
-  elapsed_seconds: 0.966949749737978
+  elapsed_seconds: 0.9565017917193472
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -242,7 +242,7 @@ results:
   year: 2016
   day: 1
   status: ok
-  elapsed_seconds: 0.19783945800736547
+  elapsed_seconds: 0.20197312533855438
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -251,7 +251,7 @@ results:
   year: 2016
   day: 2
   status: ok
-  elapsed_seconds: 0.19127620896324515
+  elapsed_seconds: 0.19557316694408655
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -260,7 +260,7 @@ results:
   year: 2016
   day: 3
   status: ok
-  elapsed_seconds: 0.21060875011608005
+  elapsed_seconds: 0.19672770937904716
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -269,7 +269,7 @@ results:
   year: 2016
   day: 4
   status: ok
-  elapsed_seconds: 0.19768170826137066
+  elapsed_seconds: 0.20132520888000727
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -278,7 +278,7 @@ results:
   year: 2016
   day: 5
   status: ok
-  elapsed_seconds: 21.57710654195398
+  elapsed_seconds: 21.836784166749567
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -287,7 +287,7 @@ results:
   year: 2016
   day: 6
   status: ok
-  elapsed_seconds: 0.19807645911350846
+  elapsed_seconds: 0.2155793751589954
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -296,7 +296,7 @@ results:
   year: 2016
   day: 7
   status: ok
-  elapsed_seconds: 0.20460420893505216
+  elapsed_seconds: 0.20600404171273112
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -305,7 +305,7 @@ results:
   year: 2016
   day: 8
   status: ok
-  elapsed_seconds: 0.19146774988621473
+  elapsed_seconds: 0.1971830828115344
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -314,7 +314,7 @@ results:
   year: 2016
   day: 9
   status: ok
-  elapsed_seconds: 0.1932950410991907
+  elapsed_seconds: 0.20148258283734322
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -323,7 +323,7 @@ results:
   year: 2016
   day: 10
   status: ok
-  elapsed_seconds: 0.20439637498930097
+  elapsed_seconds: 0.20885516703128815
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -332,7 +332,7 @@ results:
   year: 2016
   day: 11
   status: ok
-  elapsed_seconds: 12.937678082846105
+  elapsed_seconds: 13.084742333274335
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -341,7 +341,7 @@ results:
   year: 2016
   day: 12
   status: ok
-  elapsed_seconds: 2.073801416903734
+  elapsed_seconds: 2.127304792404175
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -350,7 +350,7 @@ results:
   year: 2016
   day: 13
   status: ok
-  elapsed_seconds: 0.1989493751898408
+  elapsed_seconds: 0.19853529101237655
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -359,7 +359,7 @@ results:
   year: 2016
   day: 14
   status: ok
-  elapsed_seconds: 13.878335707820952
+  elapsed_seconds: 14.14427858311683
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -368,7 +368,7 @@ results:
   year: 2016
   day: 15
   status: ok
-  elapsed_seconds: 1.2246595830656588
+  elapsed_seconds: 1.3794927499257028
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -377,7 +377,7 @@ results:
   year: 2016
   day: 16
   status: ok
-  elapsed_seconds: 2.1286500827409327
+  elapsed_seconds: 2.122083874884993
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -386,7 +386,7 @@ results:
   year: 2016
   day: 17
   status: ok
-  elapsed_seconds: 0.3089062077924609
+  elapsed_seconds: 0.31731974985450506
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -395,7 +395,7 @@ results:
   year: 2016
   day: 18
   status: ok
-  elapsed_seconds: 5.200742915738374
+  elapsed_seconds: 5.039772540796548
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -404,7 +404,7 @@ results:
   year: 2016
   day: 19
   status: ok
-  elapsed_seconds: 0.5644342503510416
+  elapsed_seconds: 0.587998750153929
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -413,7 +413,7 @@ results:
   year: 2016
   day: 20
   status: ok
-  elapsed_seconds: 0.22469666693359613
+  elapsed_seconds: 0.2226448329165578
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -422,7 +422,7 @@ results:
   year: 2016
   day: 21
   status: ok
-  elapsed_seconds: 0.5012470418587327
+  elapsed_seconds: 0.5043358751572669
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -431,7 +431,7 @@ results:
   year: 2016
   day: 22
   status: ok
-  elapsed_seconds: 1.2597443331032991
+  elapsed_seconds: 1.256026209332049
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -440,7 +440,7 @@ results:
   year: 2016
   day: 23
   status: ok
-  elapsed_seconds: 0.21499404171481729
+  elapsed_seconds: 0.24531687516719103
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -449,7 +449,7 @@ results:
   year: 2016
   day: 24
   status: ok
-  elapsed_seconds: 4.984220791142434
+  elapsed_seconds: 5.0143498331308365
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -458,7 +458,7 @@ results:
   year: 2016
   day: 25
   status: ok
-  elapsed_seconds: 6.2237104582600296
+  elapsed_seconds: 6.242962333373725
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -467,7 +467,7 @@ results:
   year: 2017
   day: 1
   status: ok
-  elapsed_seconds: 0.19704179093241692
+  elapsed_seconds: 0.19980400009080768
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -476,7 +476,7 @@ results:
   year: 2017
   day: 2
   status: ok
-  elapsed_seconds: 0.1996483327820897
+  elapsed_seconds: 0.19572454085573554
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -485,7 +485,7 @@ results:
   year: 2017
   day: 3
   status: ok
-  elapsed_seconds: 0.21275462489575148
+  elapsed_seconds: 0.22003624960780144
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -494,7 +494,7 @@ results:
   year: 2017
   day: 4
   status: ok
-  elapsed_seconds: 0.19871741719543934
+  elapsed_seconds: 0.20434258319437504
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -503,7 +503,7 @@ results:
   year: 2017
   day: 5
   status: ok
-  elapsed_seconds: 1.8374430406838655
+  elapsed_seconds: 1.8345039580017328
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -512,7 +512,7 @@ results:
   year: 2017
   day: 6
   status: ok
-  elapsed_seconds: 0.21612225007265806
+  elapsed_seconds: 0.20921233296394348
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -521,7 +521,7 @@ results:
   year: 2017
   day: 7
   status: ok
-  elapsed_seconds: 0.20503020798787475
+  elapsed_seconds: 0.19973141700029373
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -530,7 +530,7 @@ results:
   year: 2017
   day: 8
   status: ok
-  elapsed_seconds: 0.20031637512147427
+  elapsed_seconds: 0.203917917329818
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -539,7 +539,7 @@ results:
   year: 2017
   day: 9
   status: ok
-  elapsed_seconds: 0.2084156246855855
+  elapsed_seconds: 0.1941411248408258
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -548,7 +548,7 @@ results:
   year: 2017
   day: 10
   status: ok
-  elapsed_seconds: 0.21184354228898883
+  elapsed_seconds: 0.2212252919562161
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -557,7 +557,7 @@ results:
   year: 2017
   day: 11
   status: ok
-  elapsed_seconds: 0.21024004183709621
+  elapsed_seconds: 0.2084764582104981
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -566,7 +566,7 @@ results:
   year: 2017
   day: 12
   status: ok
-  elapsed_seconds: 0.20716258324682713
+  elapsed_seconds: 0.19763229228556156
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -575,7 +575,7 @@ results:
   year: 2017
   day: 13
   status: ok
-  elapsed_seconds: 0.2337598749436438
+  elapsed_seconds: 0.22989149997010827
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -584,7 +584,7 @@ results:
   year: 2017
   day: 14
   status: ok
-  elapsed_seconds: 1.1245299582369626
+  elapsed_seconds: 1.0649323328398168
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -593,7 +593,7 @@ results:
   year: 2017
   day: 15
   status: ok
-  elapsed_seconds: 10.966331332921982
+  elapsed_seconds: 10.857907250057906
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -602,7 +602,7 @@ results:
   year: 2017
   day: 16
   status: ok
-  elapsed_seconds: 0.3696280000731349
+  elapsed_seconds: 0.3560961252078414
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -611,7 +611,7 @@ results:
   year: 2017
   day: 17
   status: ok
-  elapsed_seconds: 13.177310667000711
+  elapsed_seconds: 12.984492582734674
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -620,7 +620,7 @@ results:
   year: 2017
   day: 18
   status: ok
-  elapsed_seconds: 0.2913587922230363
+  elapsed_seconds: 0.2841931669972837
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -629,7 +629,7 @@ results:
   year: 2017
   day: 19
   status: ok
-  elapsed_seconds: 0.3532695830799639
+  elapsed_seconds: 0.358798666857183
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -638,7 +638,7 @@ results:
   year: 2017
   day: 20
   status: ok
-  elapsed_seconds: 2.615186917129904
+  elapsed_seconds: 2.553724500350654
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -647,7 +647,7 @@ results:
   year: 2017
   day: 21
   status: ok
-  elapsed_seconds: 5.445480082649738
+  elapsed_seconds: 5.39362004166469
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -656,7 +656,7 @@ results:
   year: 2017
   day: 22
   status: ok
-  elapsed_seconds: 13.576326459180564
+  elapsed_seconds: 13.396099667064846
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -665,7 +665,7 @@ results:
   year: 2017
   day: 23
   status: ok
-  elapsed_seconds: 1.4445102498866618
+  elapsed_seconds: 0.42983095813542604
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -674,7 +674,7 @@ results:
   year: 2017
   day: 24
   status: ok
-  elapsed_seconds: 3.1883578752167523
+  elapsed_seconds: 3.1708863750100136
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -683,7 +683,7 @@ results:
   year: 2017
   day: 25
   status: ok
-  elapsed_seconds: 1.3628364163450897
+  elapsed_seconds: 1.3785538752563298
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -692,7 +692,7 @@ results:
   year: 2018
   day: 1
   status: ok
-  elapsed_seconds: 0.20432816725224257
+  elapsed_seconds: 0.201558459084481
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -701,7 +701,7 @@ results:
   year: 2018
   day: 2
   status: ok
-  elapsed_seconds: 0.23915929207578301
+  elapsed_seconds: 0.22948820935562253
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -710,7 +710,7 @@ results:
   year: 2018
   day: 3
   status: ok
-  elapsed_seconds: 0.5809890832751989
+  elapsed_seconds: 0.574565667193383
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -719,7 +719,7 @@ results:
   year: 2018
   day: 4
   status: ok
-  elapsed_seconds: 0.20553745795041323
+  elapsed_seconds: 0.2236765418201685
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -728,7 +728,7 @@ results:
   year: 2018
   day: 5
   status: ok
-  elapsed_seconds: 6.06742029171437
+  elapsed_seconds: 6.07068383321166
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -737,7 +737,7 @@ results:
   year: 2018
   day: 6
   status: ok
-  elapsed_seconds: 13.639624666888267
+  elapsed_seconds: 13.379098665900528
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -746,7 +746,7 @@ results:
   year: 2018
   day: 7
   status: ok
-  elapsed_seconds: 0.22209420800209045
+  elapsed_seconds: 0.22152129095047712
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -755,7 +755,7 @@ results:
   year: 2018
   day: 8
   status: ok
-  elapsed_seconds: 0.25590658327564597
+  elapsed_seconds: 0.23548574978485703
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -764,7 +764,7 @@ results:
   year: 2018
   day: 9
   status: ok
-  elapsed_seconds: 0.792145499959588
+  elapsed_seconds: 0.7936399579048157
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -773,7 +773,7 @@ results:
   year: 2018
   day: 10
   status: ok
-  elapsed_seconds: 0.81185970781371
+  elapsed_seconds: 0.8104708329774439
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -782,7 +782,7 @@ results:
   year: 2018
   day: 11
   status: ok
-  elapsed_seconds: 0.38981950003653765
+  elapsed_seconds: 0.39448750019073486
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -791,7 +791,7 @@ results:
   year: 2018
   day: 12
   status: ok
-  elapsed_seconds: 0.1983273751102388
+  elapsed_seconds: 0.20088141597807407
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -800,7 +800,7 @@ results:
   year: 2018
   day: 13
   status: ok
-  elapsed_seconds: 0.8164183329790831
+  elapsed_seconds: 0.7939096670597792
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -809,7 +809,7 @@ results:
   year: 2018
   day: 14
   status: ok
-  elapsed_seconds: 12.942847291007638
+  elapsed_seconds: 13.111559166572988
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -818,7 +818,7 @@ results:
   year: 2018
   day: 15
   status: failed
-  elapsed_seconds: 6.244604791980237
+  elapsed_seconds: 6.244189042132348
   return_code: 202
   pylint_score: 10.0
   uses_aoc_run: false
@@ -827,7 +827,7 @@ results:
   year: 2018
   day: 16
   status: ok
-  elapsed_seconds: 0.21966587472707033
+  elapsed_seconds: 0.24724108399823308
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -836,7 +836,7 @@ results:
   year: 2018
   day: 17
   status: ok
-  elapsed_seconds: 2.803855082951486
+  elapsed_seconds: 2.7675400832667947
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -845,7 +845,7 @@ results:
   year: 2018
   day: 18
   status: ok
-  elapsed_seconds: 2.2172032077796757
+  elapsed_seconds: 2.254582750145346
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -854,7 +854,7 @@ results:
   year: 2018
   day: 19
   status: ok
-  elapsed_seconds: 5.885534333996475
+  elapsed_seconds: 5.930527416989207
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -863,7 +863,7 @@ results:
   year: 2018
   day: 20
   status: ok
-  elapsed_seconds: 0.825759207829833
+  elapsed_seconds: 0.83975545829162
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -881,7 +881,7 @@ results:
   year: 2018
   day: 22
   status: ok
-  elapsed_seconds: 0.9453274998813868
+  elapsed_seconds: 0.9483098331838846
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -890,7 +890,7 @@ results:
   year: 2018
   day: 23
   status: ok
-  elapsed_seconds: 0.22684329189360142
+  elapsed_seconds: 0.23082537529990077
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -899,7 +899,7 @@ results:
   year: 2018
   day: 24
   status: ok
-  elapsed_seconds: 4.998275208286941
+  elapsed_seconds: 4.995895124971867
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -908,7 +908,7 @@ results:
   year: 2018
   day: 25
   status: ok
-  elapsed_seconds: 1.2134260418824852
+  elapsed_seconds: 1.2007855828851461
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -917,7 +917,7 @@ results:
   year: 2019
   day: 1
   status: ok
-  elapsed_seconds: 0.1959418342448771
+  elapsed_seconds: 0.19587329123169184
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -926,7 +926,7 @@ results:
   year: 2019
   day: 2
   status: ok
-  elapsed_seconds: 0.21570491697639227
+  elapsed_seconds: 0.22552320873364806
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -935,7 +935,7 @@ results:
   year: 2019
   day: 3
   status: ok
-  elapsed_seconds: 2.1420576251111925
+  elapsed_seconds: 2.197616749908775
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -944,7 +944,7 @@ results:
   year: 2019
   day: 4
   status: ok
-  elapsed_seconds: 0.4008948332630098
+  elapsed_seconds: 0.3978543751873076
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -953,7 +953,7 @@ results:
   year: 2019
   day: 5
   status: ok
-  elapsed_seconds: 0.20464754197746515
+  elapsed_seconds: 0.19814420770853758
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -962,7 +962,7 @@ results:
   year: 2019
   day: 6
   status: ok
-  elapsed_seconds: 0.24502137536183
+  elapsed_seconds: 0.24545475002378225
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -971,7 +971,7 @@ results:
   year: 2019
   day: 7
   status: ok
-  elapsed_seconds: 0.3860204997472465
+  elapsed_seconds: 0.38868454098701477
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -980,7 +980,7 @@ results:
   year: 2019
   day: 8
   status: ok
-  elapsed_seconds: 0.19812287483364344
+  elapsed_seconds: 0.19441962474957108
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -989,7 +989,7 @@ results:
   year: 2019
   day: 9
   status: ok
-  elapsed_seconds: 0.4761678329668939
+  elapsed_seconds: 0.47199916699901223
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -998,7 +998,7 @@ results:
   year: 2019
   day: 10
   status: ok
-  elapsed_seconds: 3.0125364582054317
+  elapsed_seconds: 2.961683291941881
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1007,7 +1007,7 @@ results:
   year: 2019
   day: 11
   status: ok
-  elapsed_seconds: 0.3209630409255624
+  elapsed_seconds: 0.3210168331861496
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1016,7 +1016,7 @@ results:
   year: 2019
   day: 12
   status: ok
-  elapsed_seconds: 1.0775801669806242
+  elapsed_seconds: 1.060859624762088
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1025,7 +1025,7 @@ results:
   year: 2019
   day: 13
   status: ok
-  elapsed_seconds: 0.7612069169990718
+  elapsed_seconds: 0.7683374169282615
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1034,7 +1034,7 @@ results:
   year: 2019
   day: 14
   status: ok
-  elapsed_seconds: 0.25175024988129735
+  elapsed_seconds: 0.2463568327948451
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1043,7 +1043,7 @@ results:
   year: 2019
   day: 15
   status: ok
-  elapsed_seconds: 1.0123827499337494
+  elapsed_seconds: 1.0043389173224568
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1052,7 +1052,7 @@ results:
   year: 2019
   day: 16
   status: ok
-  elapsed_seconds: 2.178822959307581
+  elapsed_seconds: 2.210980957839638
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1061,7 +1061,7 @@ results:
   year: 2019
   day: 17
   status: ok
-  elapsed_seconds: 0.3261508331634104
+  elapsed_seconds: 0.34040233399719
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1070,7 +1070,7 @@ results:
   year: 2019
   day: 18
   status: ok
-  elapsed_seconds: 11.354428583290428
+  elapsed_seconds: 11.599856375250965
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1079,7 +1079,7 @@ results:
   year: 2019
   day: 19
   status: ok
-  elapsed_seconds: 3.4280857918784022
+  elapsed_seconds: 3.4667607499286532
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1088,7 +1088,7 @@ results:
   year: 2019
   day: 20
   status: ok
-  elapsed_seconds: 1.4691709158942103
+  elapsed_seconds: 1.4597780420444906
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1097,7 +1097,7 @@ results:
   year: 2019
   day: 21
   status: ok
-  elapsed_seconds: 0.9688164577819407
+  elapsed_seconds: 0.9740149159915745
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1106,7 +1106,7 @@ results:
   year: 2019
   day: 22
   status: ok
-  elapsed_seconds: 0.21104816673323512
+  elapsed_seconds: 0.22001445898786187
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1115,7 +1115,7 @@ results:
   year: 2019
   day: 23
   status: ok
-  elapsed_seconds: 2.0482905828393996
+  elapsed_seconds: 2.074326999951154
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1124,7 +1124,7 @@ results:
   year: 2019
   day: 24
   status: ok
-  elapsed_seconds: 0.6224778750911355
+  elapsed_seconds: 0.6408585417084396
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1133,7 +1133,7 @@ results:
   year: 2019
   day: 25
   status: ok
-  elapsed_seconds: 0.6088086669333279
+  elapsed_seconds: 0.6088068750686944
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1142,7 +1142,7 @@ results:
   year: 2020
   day: 1
   status: ok
-  elapsed_seconds: 0.22260612482205033
+  elapsed_seconds: 0.22137200040742755
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1151,7 +1151,7 @@ results:
   year: 2020
   day: 2
   status: ok
-  elapsed_seconds: 0.19238220807164907
+  elapsed_seconds: 0.19711558381095529
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1160,7 +1160,7 @@ results:
   year: 2020
   day: 3
   status: ok
-  elapsed_seconds: 0.22027304209768772
+  elapsed_seconds: 0.22794329142197967
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1169,7 +1169,7 @@ results:
   year: 2020
   day: 4
   status: ok
-  elapsed_seconds: 0.19411558331921697
+  elapsed_seconds: 0.19680937519297004
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1178,7 +1178,7 @@ results:
   year: 2020
   day: 5
   status: ok
-  elapsed_seconds: 0.21827691700309515
+  elapsed_seconds: 0.21843237476423383
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1187,7 +1187,7 @@ results:
   year: 2020
   day: 6
   status: ok
-  elapsed_seconds: 0.21402724971994758
+  elapsed_seconds: 0.20249345898628235
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1196,7 +1196,7 @@ results:
   year: 2020
   day: 7
   status: ok
-  elapsed_seconds: 0.20646262494847178
+  elapsed_seconds: 0.21755325002595782
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1205,7 +1205,7 @@ results:
   year: 2020
   day: 8
   status: ok
-  elapsed_seconds: 0.2168979155831039
+  elapsed_seconds: 0.22465645894408226
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1214,7 +1214,7 @@ results:
   year: 2020
   day: 9
   status: ok
-  elapsed_seconds: 0.196215583011508
+  elapsed_seconds: 0.19804054219275713
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1223,7 +1223,7 @@ results:
   year: 2020
   day: 10
   status: ok
-  elapsed_seconds: 0.19313908275216818
+  elapsed_seconds: 0.1925093331374228
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1232,7 +1232,7 @@ results:
   year: 2020
   day: 11
   status: ok
-  elapsed_seconds: 2.9791713329032063
+  elapsed_seconds: 3.9685876248404384
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1241,7 +1241,7 @@ results:
   year: 2020
   day: 12
   status: ok
-  elapsed_seconds: 0.2510207090526819
+  elapsed_seconds: 0.25675699999555945
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1250,7 +1250,7 @@ results:
   year: 2020
   day: 13
   status: ok
-  elapsed_seconds: 0.1977141252718866
+  elapsed_seconds: 0.2039574170485139
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1259,7 +1259,7 @@ results:
   year: 2020
   day: 14
   status: ok
-  elapsed_seconds: 0.23261712491512299
+  elapsed_seconds: 0.23162512481212616
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1268,7 +1268,7 @@ results:
   year: 2020
   day: 15
   status: ok
-  elapsed_seconds: 6.228907540906221
+  elapsed_seconds: 6.546062417328358
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1277,7 +1277,7 @@ results:
   year: 2020
   day: 16
   status: ok
-  elapsed_seconds: 0.26053000008687377
+  elapsed_seconds: 0.20423845807090402
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1286,7 +1286,7 @@ results:
   year: 2020
   day: 17
   status: ok
-  elapsed_seconds: 1.6503761666826904
+  elapsed_seconds: 1.6731427498161793
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1295,7 +1295,7 @@ results:
   year: 2020
   day: 18
   status: ok
-  elapsed_seconds: 0.20470787538215518
+  elapsed_seconds: 0.19868045905604959
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1304,7 +1304,7 @@ results:
   year: 2020
   day: 19
   status: ok
-  elapsed_seconds: 4.14217529213056
+  elapsed_seconds: 4.141163040883839
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1313,7 +1313,7 @@ results:
   year: 2020
   day: 20
   status: ok
-  elapsed_seconds: 0.7809140831232071
+  elapsed_seconds: 0.7647311249747872
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1322,7 +1322,7 @@ results:
   year: 2020
   day: 21
   status: ok
-  elapsed_seconds: 0.197500791400671
+  elapsed_seconds: 0.19816491613164544
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1331,7 +1331,7 @@ results:
   year: 2020
   day: 22
   status: ok
-  elapsed_seconds: 1.6062024170532823
+  elapsed_seconds: 1.6084233336150646
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1340,7 +1340,7 @@ results:
   year: 2020
   day: 23
   status: ok
-  elapsed_seconds: 22.80112187517807
+  elapsed_seconds: 23.133636416867375
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1349,7 +1349,7 @@ results:
   year: 2020
   day: 24
   status: ok
-  elapsed_seconds: 2.2568562501110137
+  elapsed_seconds: 2.2932647499255836
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1358,7 +1358,7 @@ results:
   year: 2020
   day: 25
   status: ok
-  elapsed_seconds: 0.42400566721335053
+  elapsed_seconds: 0.4158792910166085
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1367,7 +1367,7 @@ results:
   year: 2021
   day: 1
   status: ok
-  elapsed_seconds: 0.1945219999179244
+  elapsed_seconds: 0.19897458283230662
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1376,7 +1376,7 @@ results:
   year: 2021
   day: 2
   status: ok
-  elapsed_seconds: 0.19437270890921354
+  elapsed_seconds: 0.21049658302217722
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1385,7 +1385,7 @@ results:
   year: 2021
   day: 3
   status: ok
-  elapsed_seconds: 0.19466833397746086
+  elapsed_seconds: 0.202740625012666
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1394,7 +1394,7 @@ results:
   year: 2021
   day: 4
   status: ok
-  elapsed_seconds: 0.21167733380571008
+  elapsed_seconds: 0.21609729202464223
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1403,7 +1403,7 @@ results:
   year: 2021
   day: 5
   status: ok
-  elapsed_seconds: 0.25434383284300566
+  elapsed_seconds: 0.2716762088239193
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1412,7 +1412,7 @@ results:
   year: 2021
   day: 6
   status: ok
-  elapsed_seconds: 0.1947896252386272
+  elapsed_seconds: 0.19522054167464375
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1421,7 +1421,7 @@ results:
   year: 2021
   day: 7
   status: ok
-  elapsed_seconds: 0.3606357080861926
+  elapsed_seconds: 0.3690256248228252
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1430,7 +1430,7 @@ results:
   year: 2021
   day: 8
   status: ok
-  elapsed_seconds: 0.19962862506508827
+  elapsed_seconds: 0.2011992922052741
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1439,7 +1439,7 @@ results:
   year: 2021
   day: 9
   status: ok
-  elapsed_seconds: 0.29447029205039144
+  elapsed_seconds: 0.31086149998009205
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1448,7 +1448,7 @@ results:
   year: 2021
   day: 10
   status: ok
-  elapsed_seconds: 0.1925195842050016
+  elapsed_seconds: 0.19658170826733112
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1457,7 +1457,7 @@ results:
   year: 2021
   day: 11
   status: ok
-  elapsed_seconds: 0.2419481254182756
+  elapsed_seconds: 0.25243333261460066
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1466,7 +1466,7 @@ results:
   year: 2021
   day: 12
   status: ok
-  elapsed_seconds: 1.5132967503741384
+  elapsed_seconds: 1.5376490838825703
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1475,7 +1475,7 @@ results:
   year: 2021
   day: 13
   status: ok
-  elapsed_seconds: 0.23988366732373834
+  elapsed_seconds: 0.22604645835235715
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1484,7 +1484,7 @@ results:
   year: 2021
   day: 14
   status: ok
-  elapsed_seconds: 0.2052317918278277
+  elapsed_seconds: 0.20357087487354875
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1493,7 +1493,7 @@ results:
   year: 2021
   day: 15
   status: ok
-  elapsed_seconds: 2.083687166683376
+  elapsed_seconds: 2.1357957501895726
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1502,7 +1502,7 @@ results:
   year: 2021
   day: 16
   status: ok
-  elapsed_seconds: 0.20961458422243595
+  elapsed_seconds: 0.21054554171860218
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1511,7 +1511,7 @@ results:
   year: 2021
   day: 17
   status: ok
-  elapsed_seconds: 0.410953416954726
+  elapsed_seconds: 0.41956824995577335
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1520,7 +1520,7 @@ results:
   year: 2021
   day: 18
   status: ok
-  elapsed_seconds: 1.2823714576661587
+  elapsed_seconds: 1.2648030826821923
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1529,7 +1529,7 @@ results:
   year: 2021
   day: 19
   status: ok
-  elapsed_seconds: 4.027827249839902
+  elapsed_seconds: 4.147077833302319
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1538,7 +1538,7 @@ results:
   year: 2021
   day: 20
   status: ok
-  elapsed_seconds: 4.795899499673396
+  elapsed_seconds: 4.903133667074144
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1547,7 +1547,7 @@ results:
   year: 2021
   day: 21
   status: ok
-  elapsed_seconds: 0.23667195904999971
+  elapsed_seconds: 0.2442975826561451
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1556,7 +1556,7 @@ results:
   year: 2021
   day: 22
   status: failed
-  elapsed_seconds: 0.43703124998137355
+  elapsed_seconds: 0.4633622500114143
   return_code: 202
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1565,7 +1565,7 @@ results:
   year: 2021
   day: 23
   status: ok
-  elapsed_seconds: 1.5631824997253716
+  elapsed_seconds: 1.5806122091598809
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1574,7 +1574,7 @@ results:
   year: 2021
   day: 24
   status: ok
-  elapsed_seconds: 0.20664749993011355
+  elapsed_seconds: 0.1968950000591576
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1583,7 +1583,7 @@ results:
   year: 2021
   day: 25
   status: ok
-  elapsed_seconds: 0.6466823746450245
+  elapsed_seconds: 0.6550674587488174
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1592,7 +1592,7 @@ results:
   year: 2022
   day: 1
   status: ok
-  elapsed_seconds: 0.20275900000706315
+  elapsed_seconds: 0.20128862466663122
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1601,7 +1601,7 @@ results:
   year: 2022
   day: 2
   status: ok
-  elapsed_seconds: 0.20067449985072017
+  elapsed_seconds: 0.20731045817956328
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1610,7 +1610,7 @@ results:
   year: 2022
   day: 3
   status: ok
-  elapsed_seconds: 0.19664425030350685
+  elapsed_seconds: 0.19366683391854167
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1619,7 +1619,7 @@ results:
   year: 2022
   day: 4
   status: ok
-  elapsed_seconds: 0.2011887081898749
+  elapsed_seconds: 0.1996344579383731
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1628,7 +1628,7 @@ results:
   year: 2022
   day: 5
   status: ok
-  elapsed_seconds: 0.19704099977388978
+  elapsed_seconds: 0.20405766554176807
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1637,7 +1637,7 @@ results:
   year: 2022
   day: 6
   status: ok
-  elapsed_seconds: 0.1979015003889799
+  elapsed_seconds: 0.1980112916789949
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1646,7 +1646,7 @@ results:
   year: 2022
   day: 7
   status: ok
-  elapsed_seconds: 0.19519337499514222
+  elapsed_seconds: 0.2069694590754807
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1655,7 +1655,7 @@ results:
   year: 2022
   day: 8
   status: ok
-  elapsed_seconds: 0.35688962461426854
+  elapsed_seconds: 0.40111116599291563
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1664,7 +1664,7 @@ results:
   year: 2022
   day: 9
   status: ok
-  elapsed_seconds: 0.2445671670138836
+  elapsed_seconds: 0.24683612491935492
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1673,7 +1673,7 @@ results:
   year: 2022
   day: 10
   status: ok
-  elapsed_seconds: 0.19391491683200002
+  elapsed_seconds: 0.19551983382552862
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1682,7 +1682,7 @@ results:
   year: 2022
   day: 11
   status: ok
-  elapsed_seconds: 0.34126433404162526
+  elapsed_seconds: 0.3416960001923144
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1691,7 +1691,7 @@ results:
   year: 2022
   day: 12
   status: ok
-  elapsed_seconds: 1.7155472496524453
+  elapsed_seconds: 1.7134836250916123
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1700,7 +1700,7 @@ results:
   year: 2022
   day: 13
   status: ok
-  elapsed_seconds: 0.21591137489303946
+  elapsed_seconds: 0.21592354169115424
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1709,7 +1709,7 @@ results:
   year: 2022
   day: 14
   status: ok
-  elapsed_seconds: 3.653696875087917
+  elapsed_seconds: 3.6651810840703547
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1718,7 +1718,7 @@ results:
   year: 2022
   day: 15
   status: ok
-  elapsed_seconds: 2.6093927090987563
+  elapsed_seconds: 2.77638979209587
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1736,7 +1736,7 @@ results:
   year: 2022
   day: 17
   status: ok
-  elapsed_seconds: 2.5580783751793206
+  elapsed_seconds: 2.7660217909142375
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1745,7 +1745,7 @@ results:
   year: 2022
   day: 18
   status: ok
-  elapsed_seconds: 1.7960121249780059
+  elapsed_seconds: 1.9753124169074
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1754,7 +1754,7 @@ results:
   year: 2022
   day: 19
   status: ok
-  elapsed_seconds: 32.41569345910102
+  elapsed_seconds: 35.337606499902904
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1763,7 +1763,7 @@ results:
   year: 2022
   day: 20
   status: ok
-  elapsed_seconds: 5.345294958911836
+  elapsed_seconds: 5.436223667114973
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1772,7 +1772,7 @@ results:
   year: 2022
   day: 21
   status: ok
-  elapsed_seconds: 0.24503162503242493
+  elapsed_seconds: 0.21725474996492267
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -1781,7 +1781,7 @@ results:
   year: 2022
   day: 22
   status: ok
-  elapsed_seconds: 0.22054458316415548
+  elapsed_seconds: 0.20404537534341216
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -1790,7 +1790,7 @@ results:
   year: 2022
   day: 23
   status: ok
-  elapsed_seconds: 0.2131518330425024
+  elapsed_seconds: 0.22170370817184448
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -1799,7 +1799,7 @@ results:
   year: 2022
   day: 24
   status: ok
-  elapsed_seconds: 0.22369270818307996
+  elapsed_seconds: 0.2251393748447299
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -1808,7 +1808,7 @@ results:
   year: 2022
   day: 25
   status: ok
-  elapsed_seconds: 0.2171915420331061
+  elapsed_seconds: 0.20592575008049607
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -1817,7 +1817,7 @@ results:
   year: 2023
   day: 1
   status: ok
-  elapsed_seconds: 0.21512479055672884
+  elapsed_seconds: 0.2806409583427012
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1826,7 +1826,7 @@ results:
   year: 2023
   day: 2
   status: ok
-  elapsed_seconds: 0.260685458779335
+  elapsed_seconds: 0.2675601253286004
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1835,7 +1835,7 @@ results:
   year: 2023
   day: 3
   status: ok
-  elapsed_seconds: 0.2955783330835402
+  elapsed_seconds: 0.32518433313816786
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1844,7 +1844,7 @@ results:
   year: 2023
   day: 4
   status: ok
-  elapsed_seconds: 0.5101331663317978
+  elapsed_seconds: 0.587115041911602
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1853,7 +1853,7 @@ results:
   year: 2023
   day: 5
   status: ok
-  elapsed_seconds: 0.22827791702002287
+  elapsed_seconds: 0.24682116694748402
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1862,7 +1862,7 @@ results:
   year: 2023
   day: 6
   status: ok
-  elapsed_seconds: 1.9745900840498507
+  elapsed_seconds: 2.100403666961938
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1871,7 +1871,7 @@ results:
   year: 2023
   day: 7
   status: ok
-  elapsed_seconds: 0.22904404206201434
+  elapsed_seconds: 0.27096695825457573
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1880,7 +1880,7 @@ results:
   year: 2023
   day: 8
   status: ok
-  elapsed_seconds: 0.23767800023779273
+  elapsed_seconds: 0.30214195791631937
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1889,7 +1889,7 @@ results:
   year: 2023
   day: 9
   status: ok
-  elapsed_seconds: 0.23937787488102913
+  elapsed_seconds: 0.27287029195576906
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1898,7 +1898,7 @@ results:
   year: 2023
   day: 10
   status: ok
-  elapsed_seconds: 0.5696513750590384
+  elapsed_seconds: 0.6506279171444476
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1907,7 +1907,7 @@ results:
   year: 2023
   day: 11
   status: ok
-  elapsed_seconds: 0.23313474981114268
+  elapsed_seconds: 0.2688530832529068
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1916,7 +1916,7 @@ results:
   year: 2023
   day: 12
   status: ok
-  elapsed_seconds: 0.6638335422612727
+  elapsed_seconds: 0.8477475000545382
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1925,7 +1925,7 @@ results:
   year: 2023
   day: 13
   status: ok
-  elapsed_seconds: 0.22471566731110215
+  elapsed_seconds: 0.26666016690433025
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1934,7 +1934,7 @@ results:
   year: 2023
   day: 14
   status: ok
-  elapsed_seconds: 0.9559771660715342
+  elapsed_seconds: 1.0397541248239577
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1943,7 +1943,7 @@ results:
   year: 2023
   day: 15
   status: ok
-  elapsed_seconds: 0.2388723329640925
+  elapsed_seconds: 0.25914204120635986
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1952,7 +1952,7 @@ results:
   year: 2023
   day: 16
   status: ok
-  elapsed_seconds: 1.763766209129244
+  elapsed_seconds: 1.9607006250880659
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1961,7 +1961,7 @@ results:
   year: 2023
   day: 17
   status: ok
-  elapsed_seconds: 3.2048421669751406
+  elapsed_seconds: 3.4454439589753747
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1970,7 +1970,7 @@ results:
   year: 2023
   day: 18
   status: ok
-  elapsed_seconds: 0.22946908324956894
+  elapsed_seconds: 0.24582316726446152
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1979,7 +1979,7 @@ results:
   year: 2023
   day: 19
   status: ok
-  elapsed_seconds: 0.2149800406768918
+  elapsed_seconds: 0.2589833331294358
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1988,7 +1988,7 @@ results:
   year: 2023
   day: 20
   status: ok
-  elapsed_seconds: 0.3061549160629511
+  elapsed_seconds: 0.2939284578897059
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -1997,7 +1997,7 @@ results:
   year: 2023
   day: 21
   status: ok
-  elapsed_seconds: 1.4038222907111049
+  elapsed_seconds: 1.3182745832018554
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2006,7 +2006,7 @@ results:
   year: 2023
   day: 22
   status: ok
-  elapsed_seconds: 0.38610508292913437
+  elapsed_seconds: 0.3596002496778965
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2015,7 +2015,7 @@ results:
   year: 2023
   day: 23
   status: ok
-  elapsed_seconds: 31.920796415768564
+  elapsed_seconds: 32.82684849994257
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2023,17 +2023,17 @@ results:
 - module: 2023.24.solution
   year: 2023
   day: 24
-  status: failed
-  elapsed_seconds: 0.24260079208761454
-  return_code: 201
-  pylint_score: 9.55
+  status: ok
+  elapsed_seconds: 0.4113402501679957
+  return_code: 0
+  pylint_score: 10.0
   uses_aoc_run: false
   template_version: '20251203'
 - module: 2023.25.solution
   year: 2023
   day: 25
   status: failed
-  elapsed_seconds: 0.2250977079384029
+  elapsed_seconds: 0.2360225417651236
   return_code: 201
   pylint_score: 9.55
   uses_aoc_run: false
@@ -2042,7 +2042,7 @@ results:
   year: 2024
   day: 1
   status: ok
-  elapsed_seconds: 0.21266837511211634
+  elapsed_seconds: 0.26367183262482285
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2051,7 +2051,7 @@ results:
   year: 2024
   day: 2
   status: ok
-  elapsed_seconds: 0.2173893339931965
+  elapsed_seconds: 0.2605031249113381
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2060,7 +2060,7 @@ results:
   year: 2024
   day: 3
   status: ok
-  elapsed_seconds: 0.2286700000986457
+  elapsed_seconds: 0.2404799167998135
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2069,7 +2069,7 @@ results:
   year: 2024
   day: 4
   status: ok
-  elapsed_seconds: 0.36137920897454023
+  elapsed_seconds: 1.3940576249733567
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2078,7 +2078,7 @@ results:
   year: 2024
   day: 5
   status: ok
-  elapsed_seconds: 0.30612154118716717
+  elapsed_seconds: 0.31878225039690733
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2087,7 +2087,7 @@ results:
   year: 2024
   day: 6
   status: ok
-  elapsed_seconds: 4.5316951661370695
+  elapsed_seconds: 4.905279458034784
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2096,7 +2096,7 @@ results:
   year: 2024
   day: 7
   status: ok
-  elapsed_seconds: 6.947447957936674
+  elapsed_seconds: 7.15668487502262
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2105,7 +2105,7 @@ results:
   year: 2024
   day: 8
   status: ok
-  elapsed_seconds: 0.2828870420344174
+  elapsed_seconds: 0.31430254224687815
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2114,7 +2114,7 @@ results:
   year: 2024
   day: 9
   status: ok
-  elapsed_seconds: 1.361091666854918
+  elapsed_seconds: 1.411296458914876
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2123,7 +2123,7 @@ results:
   year: 2024
   day: 10
   status: ok
-  elapsed_seconds: 0.2960300827398896
+  elapsed_seconds: 0.3095522499643266
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2132,7 +2132,7 @@ results:
   year: 2024
   day: 11
   status: ok
-  elapsed_seconds: 0.2270280420780182
+  elapsed_seconds: 0.2638451671227813
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2141,7 +2141,7 @@ results:
   year: 2024
   day: 12
   status: failed
-  elapsed_seconds: 0.7965075001120567
+  elapsed_seconds: 0.8885869579389691
   return_code: 202
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2150,7 +2150,7 @@ results:
   year: 2024
   day: 13
   status: failed
-  elapsed_seconds: 0.4806266250088811
+  elapsed_seconds: 0.5568617079406977
   return_code: 1
   pylint_score: 8.28
   uses_aoc_run: false
@@ -2159,7 +2159,7 @@ results:
   year: 2024
   day: 14
   status: ok
-  elapsed_seconds: 1.7037765407003462
+  elapsed_seconds: 1.8349609579890966
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2168,7 +2168,7 @@ results:
   year: 2024
   day: 15
   status: ok
-  elapsed_seconds: 0.4356787083670497
+  elapsed_seconds: 0.47232291707769036
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2177,7 +2177,7 @@ results:
   year: 2024
   day: 16
   status: ok
-  elapsed_seconds: 4.347989792004228
+  elapsed_seconds: 4.833440250251442
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2186,7 +2186,7 @@ results:
   year: 2024
   day: 17
   status: ok
-  elapsed_seconds: 0.2424949170090258
+  elapsed_seconds: 0.28645625011995435
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2195,7 +2195,7 @@ results:
   year: 2024
   day: 18
   status: failed
-  elapsed_seconds: 0.24874608404934406
+  elapsed_seconds: 0.3359691658988595
   return_code: 1
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2204,7 +2204,7 @@ results:
   year: 2024
   day: 19
   status: ok
-  elapsed_seconds: 0.511871709022671
+  elapsed_seconds: 0.5615347917191684
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2213,7 +2213,7 @@ results:
   year: 2024
   day: 20
   status: failed
-  elapsed_seconds: 0.2990835001692176
+  elapsed_seconds: 0.3236636659130454
   return_code: 1
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2222,7 +2222,7 @@ results:
   year: 2024
   day: 21
   status: ok
-  elapsed_seconds: 0.23502275021746755
+  elapsed_seconds: 0.26741562504321337
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2231,7 +2231,7 @@ results:
   year: 2024
   day: 22
   status: ok
-  elapsed_seconds: 0.21789095923304558
+  elapsed_seconds: 0.24732870841398835
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -2240,7 +2240,7 @@ results:
   year: 2024
   day: 23
   status: ok
-  elapsed_seconds: 0.22424524975940585
+  elapsed_seconds: 0.24928058311343193
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -2249,7 +2249,7 @@ results:
   year: 2024
   day: 24
   status: ok
-  elapsed_seconds: 0.21464233379811049
+  elapsed_seconds: 0.27547345915809274
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -2258,7 +2258,7 @@ results:
   year: 2024
   day: 25
   status: ok
-  elapsed_seconds: 0.23041595797985792
+  elapsed_seconds: 0.2434025825932622
   return_code: 0
   pylint_score: 9.55
   uses_aoc_run: false
@@ -2267,7 +2267,7 @@ results:
   year: 2025
   day: 1
   status: ok
-  elapsed_seconds: 0.27945887483656406
+  elapsed_seconds: 0.3160162502899766
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2276,7 +2276,7 @@ results:
   year: 2025
   day: 2
   status: ok
-  elapsed_seconds: 3.4506869157776237
+  elapsed_seconds: 3.560207874979824
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2285,7 +2285,7 @@ results:
   year: 2025
   day: 3
   status: ok
-  elapsed_seconds: 0.23125429218634963
+  elapsed_seconds: 0.26721141673624516
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2294,7 +2294,7 @@ results:
   year: 2025
   day: 4
   status: ok
-  elapsed_seconds: 1.1873033330775797
+  elapsed_seconds: 1.2582523748278618
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2303,7 +2303,7 @@ results:
   year: 2025
   day: 5
   status: ok
-  elapsed_seconds: 0.20458324998617172
+  elapsed_seconds: 0.24808266712352633
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2312,7 +2312,7 @@ results:
   year: 2025
   day: 6
   status: ok
-  elapsed_seconds: 0.2004876658320427
+  elapsed_seconds: 0.2421707916073501
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2321,7 +2321,7 @@ results:
   year: 2025
   day: 7
   status: ok
-  elapsed_seconds: 0.3149379580281675
+  elapsed_seconds: 0.33095495821908116
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2330,7 +2330,7 @@ results:
   year: 2025
   day: 8
   status: ok
-  elapsed_seconds: 3.094336665701121
+  elapsed_seconds: 3.297962708864361
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2339,7 +2339,7 @@ results:
   year: 2025
   day: 9
   status: ok
-  elapsed_seconds: 40.145563791971654
+  elapsed_seconds: 43.875605459325016
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2348,7 +2348,7 @@ results:
   year: 2025
   day: 10
   status: ok
-  elapsed_seconds: 4.137497582938522
+  elapsed_seconds: 5.073831541929394
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2357,7 +2357,7 @@ results:
   year: 2025
   day: 11
   status: ok
-  elapsed_seconds: 0.22474016714841127
+  elapsed_seconds: 0.27054520789533854
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2366,7 +2366,7 @@ results:
   year: 2025
   day: 12
   status: ok
-  elapsed_seconds: 0.2818623329512775
+  elapsed_seconds: 0.310397292021662
   return_code: 0
   pylint_score: 10.0
   uses_aoc_run: false
@@ -2379,8 +2379,6 @@ failures:
   exit_code: 202
 - module: 2021.22.solution
   exit_code: 202
-- module: 2023.24.solution
-  exit_code: 201
 - module: 2023.25.solution
   exit_code: 201
 - module: 2024.12.solution
@@ -2840,7 +2838,7 @@ pylint:
 - module: 2023.23.solution
   score: 10.0
 - module: 2023.24.solution
-  score: 9.55
+  score: 10.0
 - module: 2023.25.solution
   score: 9.55
 - module: 2024.1.solution
