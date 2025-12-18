@@ -19,6 +19,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+nodes = {}
+
 
 class Node:
     """
@@ -35,6 +37,7 @@ class Node:
         self.value = value
         self.container = container
         self.neighbors = {}
+        self.idx = None
 
     @property
     def key(self):
@@ -98,7 +101,7 @@ def grid_to_nodes(grid, start, end, ignore_slopes=False):
     """
     Convert grid to graph
     """
-    nodes = {}
+    nodes.clear()
     # start and end are nodes regardless.
     start_node = Node(point=start, grid=grid, container=nodes, value=".")
     nodes[start_node.key] = start_node
@@ -133,10 +136,11 @@ def grid_to_nodes(grid, start, end, ignore_slopes=False):
             grid, n_1.key, node_values, ignore_slopes=ignore_slopes
         )
     logger.debug("Total nodes: %d", len(nodes))
-    return nodes
+    for idx, point in enumerate(nodes.keys()):
+        nodes[point].idx = idx
 
 
-def longest_path(nodes, start, end, current=None, visited=None):
+def longest_path(start, end, current=None, visited=0, length_so_far=0):
     """
     Find longest path in graph from start to end
     """
@@ -147,22 +151,14 @@ def longest_path(nodes, start, end, current=None, visited=None):
         current,
         visited,
     )
-    if visited is None:
-        visited = tuple()
     if current is None:
         current = start
     logger.debug("Visiting node %s(%s)", type(current), current)
-    visited = visited + (current,)
+    visited = visited | (1 << nodes[current].idx)
     if current == end:
         logger.debug("Reached end: %s", visited)
         # Here we need to sum the weights of the path
-        total_weight = 0
-        for idx, p in enumerate(visited[:-1]):
-            next_p = visited[idx + 1]
-            logger.debug("p: %s, next_p: %s", nodes[p], nodes[next_p])
-            total_weight += nodes[p].neighbors[next_p]
-        logger.debug("Total weight for path %s: %d", visited, total_weight)
-        return total_weight
+        return length_so_far
     max_length = 0
     logger.debug("node keys: %s", list(nodes.keys()))
     logger.debug(
@@ -173,9 +169,18 @@ def longest_path(nodes, start, end, current=None, visited=None):
     )
     for neighbor in nodes[current].neighbors.keys():
         logger.debug("Checking neighbor %s in %s", neighbor, visited)
-        if neighbor in visited:
+        if visited & (1 << nodes[neighbor].idx):
             continue
-        max_length = max(max_length, longest_path(nodes, start, end, neighbor, visited))
+        max_length = max(
+            max_length,
+            longest_path(
+                start,
+                end,
+                neighbor,
+                visited,
+                length_so_far + nodes[current].neighbors[neighbor],
+            ),
+        )
     return max_length
 
 
@@ -189,8 +194,8 @@ def solve(input_value, part):
     grid = Grid(input_value)
     start = grid.index(".")
     end = grid.index(".", idx=-1)
-    graph = grid_to_nodes(grid, start, end, ignore_slopes=ignore_slopes)
-    return longest_path(graph, start, end)
+    grid_to_nodes(grid, start, end, ignore_slopes=ignore_slopes)
+    return longest_path(start, end)
 
 
 YEAR = 2023
