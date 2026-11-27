@@ -22,6 +22,7 @@ def solve(input_value, part):
     """
     Function to solve puzzle
     """
+    print(input_value)
     return part
 
 

@@ -66,7 +66,7 @@ class ButtonProblem:
             )
 
         # Solve
-        status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
+        status = prob.solve(pulp.HiGHS(msg=False))
         if pulp.LpStatus[status] != "Optimal":
             raise RuntimeError(
                 f"No optimal solution found, status={pulp.LpStatus[status]}"

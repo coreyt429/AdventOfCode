@@ -1,2744 +1,577 @@
-slow_threshold_seconds: 60.0
-total_runtime_seconds: 754.221
+slow_threshold_seconds: 120.0
+total_runtime_seconds: 123.267
 years:
-- 2015
-- 2016
-- 2017
-- 2018
-- 2019
-- 2020
-- 2021
 - 2022
-- 2023
-- 2024
-- 2025
+stats:
+  solutions_checked: 25
+  passed: 24
+  failed: 0
+  timed_out: 1
+  missing: 0
+  legacy_templates: 0
+  lint_issues: 3
+  wall_time_seconds: 123.26703420910053
+  solution_time_seconds: 80.28931262390688
+  workers: 16
 results:
-- module: 2015.1.solution
-  year: 2015
-  day: 1
-  status: ok
-  elapsed_seconds: 0.2429443751461804
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.2.solution
-  year: 2015
-  day: 2
-  status: ok
-  elapsed_seconds: 0.2053005420602858
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.3.solution
-  year: 2015
-  day: 3
-  status: ok
-  elapsed_seconds: 0.20186599995940924
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.4.solution
-  year: 2015
-  day: 4
-  status: ok
-  elapsed_seconds: 0.904044833034277
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.5.solution
-  year: 2015
-  day: 5
-  status: ok
-  elapsed_seconds: 0.20702524995431304
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.6.solution
-  year: 2015
-  day: 6
-  status: ok
-  elapsed_seconds: 1.2456723330542445
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.7.solution
-  year: 2015
-  day: 7
-  status: ok
-  elapsed_seconds: 0.19537300011143088
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.8.solution
-  year: 2015
-  day: 8
-  status: ok
-  elapsed_seconds: 0.19951995881274343
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.9.solution
-  year: 2015
-  day: 9
-  status: ok
-  elapsed_seconds: 0.6441532499156892
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.10.solution
-  year: 2015
-  day: 10
-  status: ok
-  elapsed_seconds: 0.72792087495327
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.11.solution
-  year: 2015
-  day: 11
-  status: ok
-  elapsed_seconds: 0.6292402502149343
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.12.solution
-  year: 2015
-  day: 12
-  status: ok
-  elapsed_seconds: 0.20431174989789724
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.13.solution
-  year: 2015
-  day: 13
-  status: ok
-  elapsed_seconds: 0.7615909576416016
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.14.solution
-  year: 2015
-  day: 14
-  status: ok
-  elapsed_seconds: 0.19974425015971065
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.15.solution
-  year: 2015
-  day: 15
-  status: ok
-  elapsed_seconds: 1.885896374937147
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.16.solution
-  year: 2015
-  day: 16
-  status: ok
-  elapsed_seconds: 0.19426262518391013
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.17.solution
-  year: 2015
-  day: 17
-  status: ok
-  elapsed_seconds: 0.26245724968612194
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.18.solution
-  year: 2015
-  day: 18
-  status: ok
-  elapsed_seconds: 1.4428674578666687
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.19.solution
-  year: 2015
-  day: 19
-  status: ok
-  elapsed_seconds: 0.202161000110209
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.20.solution
-  year: 2015
-  day: 20
-  status: ok
-  elapsed_seconds: 0.3279371657408774
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.21.solution
-  year: 2015
-  day: 21
-  status: ok
-  elapsed_seconds: 0.20101995766162872
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.22.solution
-  year: 2015
-  day: 22
-  status: ok
-  elapsed_seconds: 22.797455832827836
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.23.solution
-  year: 2015
-  day: 23
-  status: ok
-  elapsed_seconds: 0.20801400020718575
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.24.solution
-  year: 2015
-  day: 24
-  status: ok
-  elapsed_seconds: 0.8935906658880413
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2015.25.solution
-  year: 2015
-  day: 25
-  status: ok
-  elapsed_seconds: 0.9639075002633035
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.1.solution
-  year: 2016
-  day: 1
-  status: ok
-  elapsed_seconds: 0.20431737508624792
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.2.solution
-  year: 2016
-  day: 2
-  status: ok
-  elapsed_seconds: 0.1975066252052784
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.3.solution
-  year: 2016
-  day: 3
-  status: ok
-  elapsed_seconds: 0.194798749871552
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.4.solution
-  year: 2016
-  day: 4
-  status: ok
-  elapsed_seconds: 0.20860229106619954
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.5.solution
-  year: 2016
-  day: 5
-  status: ok
-  elapsed_seconds: 21.611109416000545
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.6.solution
-  year: 2016
-  day: 6
-  status: ok
-  elapsed_seconds: 0.19939058320596814
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.7.solution
-  year: 2016
-  day: 7
-  status: ok
-  elapsed_seconds: 0.21336150029674172
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.8.solution
-  year: 2016
-  day: 8
-  status: ok
-  elapsed_seconds: 0.19942458299919963
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.9.solution
-  year: 2016
-  day: 9
-  status: ok
-  elapsed_seconds: 0.19445983367040753
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.10.solution
-  year: 2016
-  day: 10
-  status: ok
-  elapsed_seconds: 0.19902412500232458
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.11.solution
-  year: 2016
-  day: 11
-  status: ok
-  elapsed_seconds: 12.797121874988079
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.12.solution
-  year: 2016
-  day: 12
-  status: ok
-  elapsed_seconds: 2.0968638746999204
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.13.solution
-  year: 2016
-  day: 13
-  status: ok
-  elapsed_seconds: 0.20304429112002254
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.14.solution
-  year: 2016
-  day: 14
-  status: ok
-  elapsed_seconds: 14.01620591711253
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.15.solution
-  year: 2016
-  day: 15
-  status: ok
-  elapsed_seconds: 1.3310950421728194
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.16.solution
-  year: 2016
-  day: 16
-  status: ok
-  elapsed_seconds: 2.1195124592632055
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.17.solution
-  year: 2016
-  day: 17
-  status: ok
-  elapsed_seconds: 0.313440749887377
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.18.solution
-  year: 2016
-  day: 18
-  status: ok
-  elapsed_seconds: 5.076141832862049
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.19.solution
-  year: 2016
-  day: 19
-  status: ok
-  elapsed_seconds: 0.5712441247887909
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.20.solution
-  year: 2016
-  day: 20
-  status: ok
-  elapsed_seconds: 0.21819170797243714
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.21.solution
-  year: 2016
-  day: 21
-  status: ok
-  elapsed_seconds: 0.5074780001305044
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.22.solution
-  year: 2016
-  day: 22
-  status: ok
-  elapsed_seconds: 1.256689792033285
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.23.solution
-  year: 2016
-  day: 23
-  status: ok
-  elapsed_seconds: 0.216947624925524
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.24.solution
-  year: 2016
-  day: 24
-  status: ok
-  elapsed_seconds: 4.996332666836679
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2016.25.solution
-  year: 2016
-  day: 25
-  status: ok
-  elapsed_seconds: 6.193979582749307
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.1.solution
-  year: 2017
-  day: 1
-  status: ok
-  elapsed_seconds: 0.2514102905988693
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.2.solution
-  year: 2017
-  day: 2
-  status: ok
-  elapsed_seconds: 0.20816466584801674
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.3.solution
-  year: 2017
-  day: 3
-  status: ok
-  elapsed_seconds: 0.2215068330988288
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.4.solution
-  year: 2017
-  day: 4
-  status: ok
-  elapsed_seconds: 0.20143566699698567
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.5.solution
-  year: 2017
-  day: 5
-  status: ok
-  elapsed_seconds: 1.8169444580562413
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.6.solution
-  year: 2017
-  day: 6
-  status: ok
-  elapsed_seconds: 0.20319687481969595
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.7.solution
-  year: 2017
-  day: 7
-  status: ok
-  elapsed_seconds: 0.20573937520384789
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.8.solution
-  year: 2017
-  day: 8
-  status: ok
-  elapsed_seconds: 0.20538362488150597
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.9.solution
-  year: 2017
-  day: 9
-  status: ok
-  elapsed_seconds: 0.19428408285602927
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.10.solution
-  year: 2017
-  day: 10
-  status: ok
-  elapsed_seconds: 0.21221204102039337
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.11.solution
-  year: 2017
-  day: 11
-  status: ok
-  elapsed_seconds: 0.20501012494787574
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.12.solution
-  year: 2017
-  day: 12
-  status: ok
-  elapsed_seconds: 0.2078065830282867
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.13.solution
-  year: 2017
-  day: 13
-  status: ok
-  elapsed_seconds: 0.22450712509453297
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.14.solution
-  year: 2017
-  day: 14
-  status: ok
-  elapsed_seconds: 1.0578286247327924
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.15.solution
-  year: 2017
-  day: 15
-  status: ok
-  elapsed_seconds: 10.934884916990995
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.16.solution
-  year: 2017
-  day: 16
-  status: ok
-  elapsed_seconds: 0.3449360001832247
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.17.solution
-  year: 2017
-  day: 17
-  status: ok
-  elapsed_seconds: 13.34242141712457
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.18.solution
-  year: 2017
-  day: 18
-  status: ok
-  elapsed_seconds: 0.27134633297100663
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.19.solution
-  year: 2017
-  day: 19
-  status: ok
-  elapsed_seconds: 0.3556502088904381
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.20.solution
-  year: 2017
-  day: 20
-  status: ok
-  elapsed_seconds: 2.5549540002830327
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.21.solution
-  year: 2017
-  day: 21
-  status: ok
-  elapsed_seconds: 5.240861333440989
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.22.solution
-  year: 2017
-  day: 22
-  status: ok
-  elapsed_seconds: 13.495053291786462
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.23.solution
-  year: 2017
-  day: 23
-  status: ok
-  elapsed_seconds: 0.4198132501915097
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.24.solution
-  year: 2017
-  day: 24
-  status: ok
-  elapsed_seconds: 3.148595250211656
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2017.25.solution
-  year: 2017
-  day: 25
-  status: ok
-  elapsed_seconds: 1.314506541006267
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.1.solution
-  year: 2018
-  day: 1
-  status: ok
-  elapsed_seconds: 0.2120919581502676
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.2.solution
-  year: 2018
-  day: 2
-  status: ok
-  elapsed_seconds: 0.22567400010302663
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.3.solution
-  year: 2018
-  day: 3
-  status: ok
-  elapsed_seconds: 0.5613140827044845
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.4.solution
-  year: 2018
-  day: 4
-  status: ok
-  elapsed_seconds: 0.19781333301216364
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.5.solution
-  year: 2018
-  day: 5
-  status: ok
-  elapsed_seconds: 6.071459208149463
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.6.solution
-  year: 2018
-  day: 6
-  status: ok
-  elapsed_seconds: 13.32336208410561
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.7.solution
-  year: 2018
-  day: 7
-  status: ok
-  elapsed_seconds: 0.20424358267337084
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.8.solution
-  year: 2018
-  day: 8
-  status: ok
-  elapsed_seconds: 0.25202300027012825
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.9.solution
-  year: 2018
-  day: 9
-  status: ok
-  elapsed_seconds: 0.7973534590564668
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.10.solution
-  year: 2018
-  day: 10
-  status: ok
-  elapsed_seconds: 0.8069126661866903
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.11.solution
-  year: 2018
-  day: 11
-  status: ok
-  elapsed_seconds: 0.41165029210969806
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.12.solution
-  year: 2018
-  day: 12
-  status: ok
-  elapsed_seconds: 0.2004893748089671
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.13.solution
-  year: 2018
-  day: 13
-  status: ok
-  elapsed_seconds: 0.7996584591455758
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.14.solution
-  year: 2018
-  day: 14
-  status: ok
-  elapsed_seconds: 12.736400207970291
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.15.solution
-  year: 2018
-  day: 15
-  status: failed
-  elapsed_seconds: 6.1925547500140965
-  return_code: 202
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.16.solution
-  year: 2018
-  day: 16
-  status: ok
-  elapsed_seconds: 0.27453862503170967
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.17.solution
-  year: 2018
-  day: 17
-  status: ok
-  elapsed_seconds: 2.7475730413571
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.18.solution
-  year: 2018
-  day: 18
-  status: ok
-  elapsed_seconds: 2.2150010420009494
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.19.solution
-  year: 2018
-  day: 19
-  status: ok
-  elapsed_seconds: 5.915366834029555
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.20.solution
-  year: 2018
-  day: 20
-  status: ok
-  elapsed_seconds: 0.8088295832276344
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.21.solution
-  year: 2018
-  day: 21
-  status: timeout
-  elapsed_seconds: null
-  return_code: null
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.22.solution
-  year: 2018
-  day: 22
-  status: ok
-  elapsed_seconds: 0.7967383749783039
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.23.solution
-  year: 2018
-  day: 23
-  status: ok
-  elapsed_seconds: 0.22320758318528533
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.24.solution
-  year: 2018
-  day: 24
-  status: ok
-  elapsed_seconds: 5.021845666691661
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2018.25.solution
-  year: 2018
-  day: 25
-  status: ok
-  elapsed_seconds: 1.2035761252045631
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.1.solution
-  year: 2019
-  day: 1
-  status: ok
-  elapsed_seconds: 0.196255125105381
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.2.solution
-  year: 2019
-  day: 2
-  status: ok
-  elapsed_seconds: 0.22558500012382865
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.3.solution
-  year: 2019
-  day: 3
-  status: ok
-  elapsed_seconds: 2.1564262080937624
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.4.solution
-  year: 2019
-  day: 4
-  status: ok
-  elapsed_seconds: 0.39778908295556903
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.5.solution
-  year: 2019
-  day: 5
-  status: ok
-  elapsed_seconds: 0.19560841657221317
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.6.solution
-  year: 2019
-  day: 6
-  status: ok
-  elapsed_seconds: 0.2507903752848506
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.7.solution
-  year: 2019
-  day: 7
-  status: ok
-  elapsed_seconds: 0.38419145811349154
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.8.solution
-  year: 2019
-  day: 8
-  status: ok
-  elapsed_seconds: 0.1928226249292493
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.9.solution
-  year: 2019
-  day: 9
-  status: ok
-  elapsed_seconds: 0.46089624986052513
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.10.solution
-  year: 2019
-  day: 10
-  status: ok
-  elapsed_seconds: 2.92334062512964
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.11.solution
-  year: 2019
-  day: 11
-  status: ok
-  elapsed_seconds: 0.3250230001285672
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.12.solution
-  year: 2019
-  day: 12
-  status: ok
-  elapsed_seconds: 1.0766118341125548
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.13.solution
-  year: 2019
-  day: 13
-  status: ok
-  elapsed_seconds: 0.7649886249564588
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.14.solution
-  year: 2019
-  day: 14
-  status: ok
-  elapsed_seconds: 0.244292457588017
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.15.solution
-  year: 2019
-  day: 15
-  status: ok
-  elapsed_seconds: 1.023086791858077
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.16.solution
-  year: 2019
-  day: 16
-  status: ok
-  elapsed_seconds: 2.1986680827103555
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.17.solution
-  year: 2019
-  day: 17
-  status: ok
-  elapsed_seconds: 0.3266596673056483
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.18.solution
-  year: 2019
-  day: 18
-  status: ok
-  elapsed_seconds: 11.18694629194215
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.19.solution
-  year: 2019
-  day: 19
-  status: ok
-  elapsed_seconds: 3.4648237079381943
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.20.solution
-  year: 2019
-  day: 20
-  status: ok
-  elapsed_seconds: 1.4703725837171078
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.21.solution
-  year: 2019
-  day: 21
-  status: ok
-  elapsed_seconds: 1.0042520421557128
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.22.solution
-  year: 2019
-  day: 22
-  status: ok
-  elapsed_seconds: 0.2180462498217821
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.23.solution
-  year: 2019
-  day: 23
-  status: ok
-  elapsed_seconds: 2.0608202079311013
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.24.solution
-  year: 2019
-  day: 24
-  status: ok
-  elapsed_seconds: 0.6144132916815579
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2019.25.solution
-  year: 2019
-  day: 25
-  status: ok
-  elapsed_seconds: 0.6225961251184344
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.1.solution
-  year: 2020
-  day: 1
-  status: ok
-  elapsed_seconds: 0.2105292077176273
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.2.solution
-  year: 2020
-  day: 2
-  status: ok
-  elapsed_seconds: 0.19238633336499333
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.3.solution
-  year: 2020
-  day: 3
-  status: ok
-  elapsed_seconds: 0.2167850830592215
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.4.solution
-  year: 2020
-  day: 4
-  status: ok
-  elapsed_seconds: 0.19739620806649327
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.5.solution
-  year: 2020
-  day: 5
-  status: ok
-  elapsed_seconds: 0.22576037514954805
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.6.solution
-  year: 2020
-  day: 6
-  status: ok
-  elapsed_seconds: 0.19330062484368682
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.7.solution
-  year: 2020
-  day: 7
-  status: ok
-  elapsed_seconds: 0.20656458334997296
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.8.solution
-  year: 2020
-  day: 8
-  status: ok
-  elapsed_seconds: 0.22537333285436034
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.9.solution
-  year: 2020
-  day: 9
-  status: ok
-  elapsed_seconds: 0.1998663330450654
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.10.solution
-  year: 2020
-  day: 10
-  status: ok
-  elapsed_seconds: 0.19758875016123056
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.11.solution
-  year: 2020
-  day: 11
-  status: ok
-  elapsed_seconds: 3.00300983292982
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.12.solution
-  year: 2020
-  day: 12
-  status: ok
-  elapsed_seconds: 0.2511450001038611
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.13.solution
-  year: 2020
-  day: 13
-  status: ok
-  elapsed_seconds: 0.20709504187107086
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.14.solution
-  year: 2020
-  day: 14
-  status: ok
-  elapsed_seconds: 0.23222849983721972
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.15.solution
-  year: 2020
-  day: 15
-  status: ok
-  elapsed_seconds: 6.277960333041847
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.16.solution
-  year: 2020
-  day: 16
-  status: ok
-  elapsed_seconds: 0.22217141604050994
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.17.solution
-  year: 2020
-  day: 17
-  status: ok
-  elapsed_seconds: 1.6434103748761117
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.18.solution
-  year: 2020
-  day: 18
-  status: ok
-  elapsed_seconds: 0.20018808403983712
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.19.solution
-  year: 2020
-  day: 19
-  status: ok
-  elapsed_seconds: 4.161690916866064
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.20.solution
-  year: 2020
-  day: 20
-  status: ok
-  elapsed_seconds: 0.7941521252505481
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.21.solution
-  year: 2020
-  day: 21
-  status: ok
-  elapsed_seconds: 0.19738245895132422
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.22.solution
-  year: 2020
-  day: 22
-  status: ok
-  elapsed_seconds: 1.640703750308603
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.23.solution
-  year: 2020
-  day: 23
-  status: ok
-  elapsed_seconds: 22.854264416731894
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.24.solution
-  year: 2020
-  day: 24
-  status: ok
-  elapsed_seconds: 2.3212314997799695
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2020.25.solution
-  year: 2020
-  day: 25
-  status: ok
-  elapsed_seconds: 0.4199987077154219
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.1.solution
-  year: 2021
-  day: 1
-  status: ok
-  elapsed_seconds: 0.31531541608273983
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.2.solution
-  year: 2021
-  day: 2
-  status: ok
-  elapsed_seconds: 0.19809329183772206
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.3.solution
-  year: 2021
-  day: 3
-  status: ok
-  elapsed_seconds: 0.1987758749164641
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.4.solution
-  year: 2021
-  day: 4
-  status: ok
-  elapsed_seconds: 0.21556391706690192
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.5.solution
-  year: 2021
-  day: 5
-  status: ok
-  elapsed_seconds: 0.2559710838831961
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.6.solution
-  year: 2021
-  day: 6
-  status: ok
-  elapsed_seconds: 0.20449716690927744
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.7.solution
-  year: 2021
-  day: 7
-  status: ok
-  elapsed_seconds: 0.36901645781472325
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.8.solution
-  year: 2021
-  day: 8
-  status: ok
-  elapsed_seconds: 0.19859904190525413
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.9.solution
-  year: 2021
-  day: 9
-  status: ok
-  elapsed_seconds: 0.2996605420485139
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.10.solution
-  year: 2021
-  day: 10
-  status: ok
-  elapsed_seconds: 0.1957573750987649
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.11.solution
-  year: 2021
-  day: 11
-  status: ok
-  elapsed_seconds: 0.2457880419678986
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.12.solution
-  year: 2021
-  day: 12
-  status: ok
-  elapsed_seconds: 1.5201082089915872
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.13.solution
-  year: 2021
-  day: 13
-  status: ok
-  elapsed_seconds: 0.22289058286696672
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.14.solution
-  year: 2021
-  day: 14
-  status: ok
-  elapsed_seconds: 0.19297362491488457
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.15.solution
-  year: 2021
-  day: 15
-  status: ok
-  elapsed_seconds: 2.098275166004896
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.16.solution
-  year: 2021
-  day: 16
-  status: ok
-  elapsed_seconds: 0.21391700021922588
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.17.solution
-  year: 2021
-  day: 17
-  status: ok
-  elapsed_seconds: 0.4181316662579775
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.18.solution
-  year: 2021
-  day: 18
-  status: ok
-  elapsed_seconds: 1.2763168341480196
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.19.solution
-  year: 2021
-  day: 19
-  status: ok
-  elapsed_seconds: 4.090336041990668
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.20.solution
-  year: 2021
-  day: 20
-  status: ok
-  elapsed_seconds: 4.82742795906961
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.21.solution
-  year: 2021
-  day: 21
-  status: ok
-  elapsed_seconds: 0.24422091711312532
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.22.solution
-  year: 2021
-  day: 22
-  status: failed
-  elapsed_seconds: 0.44545095786452293
-  return_code: 202
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.23.solution
-  year: 2021
-  day: 23
-  status: ok
-  elapsed_seconds: 1.5658251252025366
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.24.solution
-  year: 2021
-  day: 24
-  status: ok
-  elapsed_seconds: 0.20201575011014938
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2021.25.solution
-  year: 2021
-  day: 25
-  status: ok
-  elapsed_seconds: 0.6438570423051715
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
 - module: 2022.1.solution
   year: 2022
   day: 1
+  path: 2022/1/solution.py
   status: ok
-  elapsed_seconds: 1.1993516669608653
+  elapsed_seconds: 0.26162291690707207
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.1Part 1: 71780, took 0.00025 seconds
+
+    INFO:aoc.py:436 - 2022.1Part 2: 212489, took 0.00025 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.2.solution
   year: 2022
   day: 2
+  path: 2022/2/solution.py
   status: ok
-  elapsed_seconds: 0.20394975040107965
+  elapsed_seconds: 0.30613525002263486
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.2Part 1: 10718, took 0.00065 seconds
+
+    INFO:aoc.py:436 - 2022.2Part 2: 14652, took 0.00072 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.3.solution
   year: 2022
   day: 3
+  path: 2022/3/solution.py
   status: ok
-  elapsed_seconds: 0.19923141598701477
+  elapsed_seconds: 0.275538207963109
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.3Part 1: 8039, took 0.00030 seconds
+
+    INFO:aoc.py:436 - 2022.3Part 2: 2510, took 0.00018 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.4.solution
   year: 2022
   day: 4
+  path: 2022/4/solution.py
   status: ok
-  elapsed_seconds: 0.19810754107311368
+  elapsed_seconds: 0.260980874998495
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.4Part 1: 487, took 0.00064 seconds
+
+    INFO:aoc.py:436 - 2022.4Part 2: 849, took 0.00060 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.5.solution
   year: 2022
   day: 5
+  path: 2022/5/solution.py
   status: ok
-  elapsed_seconds: 0.19942112499848008
+  elapsed_seconds: 0.42560379207134247
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.5Part 1: TPGVQPFDH, took 0.00034 seconds
+
+    INFO:aoc.py:436 - 2022.5Part 2: DMRDFRHHH, took 0.00024 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.6.solution
   year: 2022
   day: 6
+  path: 2022/6/solution.py
   status: ok
-  elapsed_seconds: 0.19466766715049744
+  elapsed_seconds: 0.2418137500062585
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.6Part 1: 1155, took 0.00016 seconds
+
+    INFO:aoc.py:436 - 2022.6Part 2: 2789, took 0.00084 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.7.solution
   year: 2022
   day: 7
+  path: 2022/7/solution.py
   status: ok
-  elapsed_seconds: 0.19435675023123622
+  elapsed_seconds: 0.2367953748907894
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.7Part 1: 1307902, took 0.00049 seconds
+
+    INFO:aoc.py:436 - 2022.7Part 2: 7068748, took 0.00041 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.8.solution
   year: 2022
   day: 8
+  path: 2022/8/solution.py
   status: ok
-  elapsed_seconds: 0.3537184167653322
+  elapsed_seconds: 1.0704617500305176
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.8Part 1: 1798, took 0.26646 seconds
+
+    INFO:aoc.py:436 - 2022.8Part 2: 259308, took 0.27270 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.9.solution
   year: 2022
   day: 9
+  path: 2022/9/solution.py
   status: ok
-  elapsed_seconds: 0.2479663328267634
+  elapsed_seconds: 0.6114560421556234
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.9Part 1: 6087, took 0.00840 seconds
+
+    INFO:aoc.py:436 - 2022.9Part 2: 2493, took 0.02669 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.10.solution
   year: 2022
   day: 10
+  path: 2022/10/solution.py
   status: ok
-  elapsed_seconds: 0.19574516685679555
+  elapsed_seconds: 0.23886458319611847
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.10Part 1: 17840, took 0.00004 seconds
+
+    INFO:aoc.py:436 - 2022.10Part 2: EALGULPG, took 0.00006 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.11.solution
   year: 2022
   day: 11
+  path: 2022/11/solution.py
   status: ok
-  elapsed_seconds: 0.372038499917835
+  elapsed_seconds: 1.7286763340234756
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.11Part 1: 58056, took 0.00044 seconds
+
+    INFO:aoc.py:436 - 2022.11Part 2: 15048718170, took 0.31195 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.12.solution
   year: 2022
   day: 12
+  path: 2022/12/solution.py
   status: ok
-  elapsed_seconds: 1.7153592081740499
+  elapsed_seconds: 4.357118790969253
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.12Part 1: 520, took 0.06936 seconds
+
+    INFO:aoc.py:436 - 2022.12Part 2: 508, took 3.89620 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.13.solution
   year: 2022
   day: 13
+  path: 2022/13/solution.py
   status: ok
-  elapsed_seconds: 0.21208645915612578
+  elapsed_seconds: 0.3446110829245299
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.13Part 1: 5684, took 0.01028 seconds
+
+    INFO:aoc.py:436 - 2022.13Part 2: 22932, took 0.01179 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.14.solution
   year: 2022
   day: 14
+  path: 2022/14/solution.py
   status: ok
-  elapsed_seconds: 3.6870679170824587
+  elapsed_seconds: 7.837150082923472
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.14Part 1: 793, took 0.37576 seconds
+
+    INFO:aoc.py:436 - 2022.14Part 2: 24166, took 7.18424 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.15.solution
   year: 2022
   day: 15
+  path: 2022/15/solution.py
   status: ok
-  elapsed_seconds: 2.608301875181496
+  elapsed_seconds: 5.947609249968082
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.15Part 1: 4876693, took 2.95579 seconds
+
+    INFO:aoc.py:436 - 2022.15Part 2: 11645454855041, took 2.59362 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.16.solution
   year: 2022
   day: 16
+  path: 2022/16/solution.py
   status: timeout
   elapsed_seconds: null
   return_code: null
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.16Part 1: 1580, took 0.60503 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.17.solution
   year: 2022
   day: 17
+  path: 2022/17/solution.py
   status: ok
-  elapsed_seconds: 2.6898462078534067
+  elapsed_seconds: 4.802992375101894
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.17Part 1: 3224, took 1.74190 seconds
+
+    INFO:aoc.py:436 - 2022.17Part 2: 1595988538691, took 2.79450 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.18.solution
   year: 2022
   day: 18
+  path: 2022/18/solution.py
   status: ok
-  elapsed_seconds: 1.8670037919655442
+  elapsed_seconds: 3.2095134160481393
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.18Part 1: 4548, took 0.27566 seconds
+
+    INFO:aoc.py:436 - 2022.18Part 2: 2588, took 2.68678 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.19.solution
   year: 2022
   day: 19
+  path: 2022/19/solution.py
   status: ok
-  elapsed_seconds: 35.40308441687375
+  elapsed_seconds: 39.008666957961395
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.19Part 1: 1009, took 21.90309 seconds
+
+    INFO:aoc.py:436 - 2022.19Part 2: 18816, took 16.88207 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.20.solution
   year: 2022
   day: 20
+  path: 2022/20/solution.py
   status: ok
-  elapsed_seconds: 5.705942541826516
+  elapsed_seconds: 7.766827041981742
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.20Part 1: 9866, took 0.76970 seconds
+
+    INFO:aoc.py:436 - 2022.20Part 2: 12374299815791, took 6.76649 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.21.solution
   year: 2022
   day: 21
+  path: 2022/21/solution.py
   status: ok
-  elapsed_seconds: 0.2670222921296954
+  elapsed_seconds: 0.30178029206581414
   return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
+  format_return_code: 0
+  format_output: 1 file reformatted
+  pylint_score: 10.0
+  pylint_return_code: 0
+  pylint_output: '-------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 9.19/10, +0.81)'
+  run_output: 'INFO:aoc.py:436 - 2022.21Part 1: 324122188240430, took 0.00217 seconds
+
+    INFO:aoc.py:436 - 2022.21Part 2: 3412650897405, took 0.04488 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.22.solution
   year: 2022
   day: 22
+  path: 2022/22/solution.py
   status: ok
-  elapsed_seconds: 0.2540737078525126
+  elapsed_seconds: 0.2788178329356015
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 9.55
-  uses_aoc_run: false
+  pylint_return_code: 4
+  pylint_output: '************* Module 2022.22.solution
+
+    2022/22/solution.py:21:10: W0613: Unused argument ''input_value'' (unused-argument)
+
+
+    ------------------------------------------------------------------
+
+    Your code has been rated at 9.55/10 (previous run: 9.55/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.22Part 1: 1, took 0.00000 seconds
+
+    INFO:aoc.py:436 - 2022.22Part 2: 2, took 0.00000 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.23.solution
   year: 2022
   day: 23
+  path: 2022/23/solution.py
   status: ok
-  elapsed_seconds: 0.23669658275321126
+  elapsed_seconds: 0.3252369170077145
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 9.55
-  uses_aoc_run: false
+  pylint_return_code: 4
+  pylint_output: '************* Module 2022.23.solution
+
+    2022/23/solution.py:21:10: W0613: Unused argument ''input_value'' (unused-argument)
+
+
+    ------------------------------------------------------------------
+
+    Your code has been rated at 9.55/10 (previous run: 9.55/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.23Part 1: 1, took 0.00000 seconds
+
+    INFO:aoc.py:436 - 2022.23Part 2: 2, took 0.00000 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.24.solution
   year: 2022
   day: 24
+  path: 2022/24/solution.py
   status: ok
-  elapsed_seconds: 0.23383070901036263
+  elapsed_seconds: 0.23407170781865716
   return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 9.55
-  uses_aoc_run: false
+  pylint_return_code: 4
+  pylint_output: '************* Module 2022.24.solution
+
+    2022/24/solution.py:21:10: W0613: Unused argument ''input_value'' (unused-argument)
+
+
+    ------------------------------------------------------------------
+
+    Your code has been rated at 9.55/10 (previous run: 9.55/10, +0.00)'
+  run_output: 'INFO:aoc.py:436 - 2022.24Part 1: 1, took 0.00000 seconds
+
+    INFO:aoc.py:436 - 2022.24Part 2: 2, took 0.00000 seconds'
   template_version: '20251203'
+  uses_aoc_run: false
 - module: 2022.25.solution
   year: 2022
   day: 25
+  path: 2022/25/solution.py
   status: ok
-  elapsed_seconds: 0.20984566677361727
+  elapsed_seconds: 0.21696799993515015
   return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.1.solution
-  year: 2023
-  day: 1
-  status: ok
-  elapsed_seconds: 0.24212100030854344
-  return_code: 0
+  format_return_code: 0
+  format_output: 1 file left unchanged
   pylint_score: 10.0
-  uses_aoc_run: false
+  pylint_return_code: 0
+  pylint_output: '--------------------------------------------------------------------
+
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)'
+  run_output: '[''21020=22-2=11002=2'', ''2--221202=102-'', ''22120-'', ''1=0000=1-2='',
+    ''10=221'', ''110=1121002-10--='', ''10=00==--121==0='', ''202=-1221'', ''101-01-'',
+    ''12==-'', ''221101-=110=0'', ''1=-=2-12-2202='', ''1=0-02-=0102-=-12'', ''1==-0'',
+    ''1=212--00'', ''202'', ''1-11121--21-21=-2'', ''22--2-=-2'', ''2-00-0=---2-==-'',
+    ''1=2=-2-=0--1-22'', ''1=000=0-112'', ''121=-001=0'', ''110-=-020--=0'', ''1=0-1'',
+    ''2=0--==0'', ''102=21=201=-21=21'', ''11-22=-22=1-0='', ''1011----1----2-1'',
+    ''2===-00022'', ''12-'', ''20=0'', ''10=011=00=0-'', ''20-=0-0-1=2====0-2'', ''2000-01011=001='',
+    ''1=0-01'', ''2=-1'', ''12=10--=-1-'', ''2=21=12='', ''22=21-0'', ''1==-02202==--'',
+    ''1==='', ''210020-122222202='', ''102-20211212==11---'', ''1020=221-00=01'',
+    ''1=2=1=0---10'', ''111-'', ''1=02'', ''10-10=-2-0=11'', ''1002-'', ''1-'', ''2=12112-'',
+    ''20=202-=01=2-1'', ''1=-'', ''1=-=222221=1102012'', ''20-1=02=--'', ''2=2-='',
+    ''1=1'', ''1-0==1122-02==2='', ''1-20-0-=0=0'', ''1=022-11-122-0010'', ''1021===1'',
+    ''1=2020--'', ''2=0==00-==0011'', ''1--220-0=-=1-2=01---'', ''2=1=021010=2=1=-'',
+    ''21=2-==22-==0=-010'', ''200-=1'', ''212-'', ''21---=-022-22'', ''1121211-110-00-10'',
+    ''22-=1'', ''1=-=2-2100--=1=02'', ''1=0'', ''11102-202==122-=00'', ''2=1-='',
+    ''1=11--00'', ''211-012--2'', ''1=1021012100'', ''12-101==-110102'', ''1==--2-==-==1-=-'',
+    ''1===21-'', ''2---1100112010202'', ''1200-112=11=-0'', ''1220--00-21--11'', ''12-=0-00-='',
+    ''100122==---=0'', ''2221-==-210101=='', ''202-1=1'', ''100==12101=2='', ''102'',
+    ''210=20=11'', ''12-=-=2--1-=---=20='', ''2222001'', ''12=0'', ''2--=20-10--10'',
+    ''2-1020000-1=1-'', ''1-1'', ''1101-111-'', ''1==201=--=='', ''2='', ''2=0='',
+    ''12='', ''11='', ''1=='', ''1-10000-2='', ''21=-21'', ''10-=--20-2-00==='', ''202122-'',
+    ''1=02--10011'', ''1==-0-1=2111-12=2-2'', ''20'', ''1==-'', ''2=-0-=222=-02='',
+    ''1110=1-=1022-'', ''122=2==0=2222--12'', ''10111000-=2--=0--0'', ''1-22'', ''2=10-0=--21'',
+    ''1===-'', ''1=022-'', ''1=2===2-'', ''22211=--10120120=0'', ''101--=111101-=11'',
+    ''1212=10'', ''20100'', ''12=112=11==01'', ''202111=--2===0'']
+
+    [''21020=22-2=11002=2'', ''2--221202=102-'', ''22120-'', ''1=0000=1-2='', ''10=221'',
+    ''110=1121002-10--='', ''10=00==--121==0='', ''202=-1221'', ''101-01-'', ''12==-'',
+    ''221101-=110=0'', ''1=-=2-12-2202='', ''1=0-02-=0102-=-12'', ''1==-0'', ''1=212--00'',
+    ''202'', ''1-11121--21-21=-2'', ''22--2-=-2'', ''2-00-0=---2-==-'', ''1=2=-2-=0--1-22'',
+    ''1=000=0-112'', ''121=-001=0'', ''110-=-020--=0'', ''1=0-1'', ''2=0--==0'', ''102=21=201=-21=21'',
+    ''11-22=-22=1-0='', ''1011----1----2-1'', ''2===-00022'', ''12-'', ''20=0'', ''10=011=00=0-'',
+    ''20-=0-0-1=2====0-2'', ''2000-01011=001='', ''1=0-01'', ''2=-1'', ''12=10--=-1-'',
+    ''2=21=12='', ''22=21-0'', ''1==-02202==--'', ''1==='', ''210020-122222202='',
+    ''102-20211212==11---'', ''1020=221-00=01'', ''1=2=1=0---10'', ''111-'', ''1=02'',
+    ''10-10=-2-0=11'', ''1002-'', ''1-'', ''2=12112-'', ''20=202-=01=2-1'', ''1=-'',
+    ''1=-=222221=1102012'', ''20-1=02=--'', ''2=2-='', ''1=1'', ''1-0==1122-02==2='',
+    ''1-20-0-=0=0'', ''1=022-11-122-0010'', ''1021===1'', ''1=2020--'', ''2=0==00-==0011'',
+    ''1--220-0=-=1-2=01---'', ''2=1=021010=2=1=-'', ''21=2-==22-==0=-010'', ''200-=1'',
+    ''212-'', ''21---=-022-22'', ''1121211-110-00-10'', ''22-=1'', ''1=-=2-2100--=1=02'',
+    ''1=0'', ''11102-202==122-=00'', ''2=1-='', ''1=11--00'', ''211-012--2'', ''1=1021012100'',
+    ''12-101==-110102'', ''1==--2-==-==1-=-'', ''1===21-'', ''2---1100112010202'',
+    ''1200-112=11=-0'', ''1220--00-21--11'', ''12-=0-00-='', ''100122==---=0'', ''2221-==-210101=='',
+    ''202-1=1'', ''100==12101=2='', ''102'', ''210=20=11'', ''12-=-=2--1-=---=20='',
+    ''2222001'', ''12=0'', ''2--=20-10--10'', ''2-1020000-1=1-'', ''1-1'', ''1101-111-'',
+    ''1==201=--=='', ''2='', ''2=0='', ''12='', ''11='', ''1=='', ''1-10000-2='',
+    ''21=-21'', ''10-=--20-2-00==='', ''202122-'', ''1=02--10011'', ''1==-0-1=2111-12=2-2'',
+    ''20'', ''1==-'', ''2=-0-=222=-02='', ''1110=1-=1022-'', ''122=2==0=2222--12'',
+    ''10111000-=2--=0--0'', ''1-22'', ''2=10-0=--21'', ''1===-'', ''1=022-'', ''1=2===2-'',
+    ''22211=--10120120=0'', ''101--=111101-=11'', ''1212=10'', ''20100'', ''12=112=11==01'',
+    ''202111=--2===0'']
+
+    INFO:aoc.py:436 - 2022.25Part 1: 1, took 0.00001 seconds
+
+    INFO:aoc.py:436 - 2022.25Part 2: 2, took 0.00001 seconds'
   template_version: '20251203'
-- module: 2023.2.solution
-  year: 2023
-  day: 2
-  status: ok
-  elapsed_seconds: 0.25177091732621193
-  return_code: 0
-  pylint_score: 10.0
   uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.3.solution
-  year: 2023
-  day: 3
-  status: ok
-  elapsed_seconds: 0.2864627502858639
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.4.solution
-  year: 2023
-  day: 4
-  status: ok
-  elapsed_seconds: 0.49366299994289875
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.5.solution
-  year: 2023
-  day: 5
-  status: ok
-  elapsed_seconds: 0.20767533313483
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.6.solution
-  year: 2023
-  day: 6
-  status: ok
-  elapsed_seconds: 1.8611831250600517
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.7.solution
-  year: 2023
-  day: 7
-  status: ok
-  elapsed_seconds: 0.21740175038576126
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.8.solution
-  year: 2023
-  day: 8
-  status: ok
-  elapsed_seconds: 0.22902254108339548
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.9.solution
-  year: 2023
-  day: 9
-  status: ok
-  elapsed_seconds: 0.24382283305749297
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.10.solution
-  year: 2023
-  day: 10
-  status: ok
-  elapsed_seconds: 0.5714328330941498
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.11.solution
-  year: 2023
-  day: 11
-  status: ok
-  elapsed_seconds: 0.25603375025093555
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.12.solution
-  year: 2023
-  day: 12
-  status: ok
-  elapsed_seconds: 0.7679479587823153
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.13.solution
-  year: 2023
-  day: 13
-  status: ok
-  elapsed_seconds: 0.2748153326101601
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.14.solution
-  year: 2023
-  day: 14
-  status: ok
-  elapsed_seconds: 1.0271018748171628
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.15.solution
-  year: 2023
-  day: 15
-  status: ok
-  elapsed_seconds: 0.24379099998623133
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.16.solution
-  year: 2023
-  day: 16
-  status: ok
-  elapsed_seconds: 1.8567536673508584
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.17.solution
-  year: 2023
-  day: 17
-  status: ok
-  elapsed_seconds: 3.4873807919211686
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.18.solution
-  year: 2023
-  day: 18
-  status: ok
-  elapsed_seconds: 0.24464849987998605
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.19.solution
-  year: 2023
-  day: 19
-  status: ok
-  elapsed_seconds: 0.24311570916324854
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.20.solution
-  year: 2023
-  day: 20
-  status: ok
-  elapsed_seconds: 0.3313326248899102
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.21.solution
-  year: 2023
-  day: 21
-  status: ok
-  elapsed_seconds: 1.5330669158138335
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.22.solution
-  year: 2023
-  day: 22
-  status: ok
-  elapsed_seconds: 0.4042616249062121
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.23.solution
-  year: 2023
-  day: 23
-  status: ok
-  elapsed_seconds: 33.16000474989414
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.24.solution
-  year: 2023
-  day: 24
-  status: ok
-  elapsed_seconds: 0.47161070816218853
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2023.25.solution
-  year: 2023
-  day: 25
-  status: ok
-  elapsed_seconds: 3.2131539997644722
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.1.solution
-  year: 2024
-  day: 1
-  status: ok
-  elapsed_seconds: 0.2515806667506695
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.2.solution
-  year: 2024
-  day: 2
-  status: ok
-  elapsed_seconds: 0.2222594590857625
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.3.solution
-  year: 2024
-  day: 3
-  status: ok
-  elapsed_seconds: 0.24996162485331297
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.4.solution
-  year: 2024
-  day: 4
-  status: ok
-  elapsed_seconds: 0.35591662488877773
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.5.solution
-  year: 2024
-  day: 5
-  status: ok
-  elapsed_seconds: 0.27683866675943136
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.6.solution
-  year: 2024
-  day: 6
-  status: ok
-  elapsed_seconds: 4.707130167167634
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.7.solution
-  year: 2024
-  day: 7
-  status: ok
-  elapsed_seconds: 6.8335924171842635
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.8.solution
-  year: 2024
-  day: 8
-  status: ok
-  elapsed_seconds: 0.3032965832389891
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.9.solution
-  year: 2024
-  day: 9
-  status: ok
-  elapsed_seconds: 1.5000827922485769
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.10.solution
-  year: 2024
-  day: 10
-  status: ok
-  elapsed_seconds: 0.2872095420025289
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.11.solution
-  year: 2024
-  day: 11
-  status: ok
-  elapsed_seconds: 0.26757350005209446
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.12.solution
-  year: 2024
-  day: 12
-  status: failed
-  elapsed_seconds: 0.8068277076818049
-  return_code: 202
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.13.solution
-  year: 2024
-  day: 13
-  status: failed
-  elapsed_seconds: 0.48354995902627707
-  return_code: 1
-  pylint_score: 8.28
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.14.solution
-  year: 2024
-  day: 14
-  status: ok
-  elapsed_seconds: 1.7703568330034614
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.15.solution
-  year: 2024
-  day: 15
-  status: ok
-  elapsed_seconds: 0.4515878329984844
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.16.solution
-  year: 2024
-  day: 16
-  status: ok
-  elapsed_seconds: 4.683546584099531
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.17.solution
-  year: 2024
-  day: 17
-  status: ok
-  elapsed_seconds: 0.255154165904969
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.18.solution
-  year: 2024
-  day: 18
-  status: failed
-  elapsed_seconds: 0.2611051248386502
-  return_code: 1
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.19.solution
-  year: 2024
-  day: 19
-  status: ok
-  elapsed_seconds: 0.5326554169878364
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.20.solution
-  year: 2024
-  day: 20
-  status: failed
-  elapsed_seconds: 0.2915202500298619
-  return_code: 1
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.21.solution
-  year: 2024
-  day: 21
-  status: ok
-  elapsed_seconds: 0.2350472081452608
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.22.solution
-  year: 2024
-  day: 22
-  status: ok
-  elapsed_seconds: 0.2360136667266488
-  return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.23.solution
-  year: 2024
-  day: 23
-  status: ok
-  elapsed_seconds: 0.2422224166803062
-  return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.24.solution
-  year: 2024
-  day: 24
-  status: ok
-  elapsed_seconds: 0.23971975035965443
-  return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2024.25.solution
-  year: 2024
-  day: 25
-  status: ok
-  elapsed_seconds: 0.22736708307638764
-  return_code: 0
-  pylint_score: 9.55
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.1.solution
-  year: 2025
-  day: 1
-  status: ok
-  elapsed_seconds: 0.31268420815467834
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.2.solution
-  year: 2025
-  day: 2
-  status: ok
-  elapsed_seconds: 3.583346416708082
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.3.solution
-  year: 2025
-  day: 3
-  status: ok
-  elapsed_seconds: 0.2206809581257403
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.4.solution
-  year: 2025
-  day: 4
-  status: ok
-  elapsed_seconds: 1.3078937497921288
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.5.solution
-  year: 2025
-  day: 5
-  status: ok
-  elapsed_seconds: 0.2440050421282649
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.6.solution
-  year: 2025
-  day: 6
-  status: ok
-  elapsed_seconds: 0.23844108311459422
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.7.solution
-  year: 2025
-  day: 7
-  status: ok
-  elapsed_seconds: 0.3041779575869441
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.8.solution
-  year: 2025
-  day: 8
-  status: ok
-  elapsed_seconds: 3.155333375092596
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.9.solution
-  year: 2025
-  day: 9
-  status: ok
-  elapsed_seconds: 41.683501542080194
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.10.solution
-  year: 2025
-  day: 10
-  status: ok
-  elapsed_seconds: 4.557280291803181
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.11.solution
-  year: 2025
-  day: 11
-  status: ok
-  elapsed_seconds: 0.2464656662195921
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
-- module: 2025.12.solution
-  year: 2025
-  day: 12
-  status: ok
-  elapsed_seconds: 0.27995279198512435
-  return_code: 0
-  pylint_score: 10.0
-  uses_aoc_run: false
-  template_version: '20251203'
+problems:
+- module: 2022.16.solution
+  check: run
+  details: timed out
+- module: 2022.22.solution
+  check: pylint
+  details: 9.55/10
+- module: 2022.23.solution
+  check: pylint
+  details: 9.55/10
+- module: 2022.24.solution
+  check: pylint
+  details: 9.55/10
 timeouts:
-- 2018.21.solution
 - 2022.16.solution
-failures:
-- module: 2018.15.solution
-  exit_code: 202
-- module: 2021.22.solution
-  exit_code: 202
-- module: 2024.12.solution
-  exit_code: 202
-- module: 2024.13.solution
-  exit_code: 1
-- module: 2024.18.solution
-  exit_code: 1
-- module: 2024.20.solution
-  exit_code: 1
+failures: []
 missing: []
 pylint:
-- module: 2015.1.solution
-  score: 10.0
-- module: 2015.2.solution
-  score: 10.0
-- module: 2015.3.solution
-  score: 10.0
-- module: 2015.4.solution
-  score: 10.0
-- module: 2015.5.solution
-  score: 10.0
-- module: 2015.6.solution
-  score: 10.0
-- module: 2015.7.solution
-  score: 10.0
-- module: 2015.8.solution
-  score: 10.0
-- module: 2015.9.solution
-  score: 10.0
-- module: 2015.10.solution
-  score: 10.0
-- module: 2015.11.solution
-  score: 10.0
-- module: 2015.12.solution
-  score: 10.0
-- module: 2015.13.solution
-  score: 10.0
-- module: 2015.14.solution
-  score: 10.0
-- module: 2015.15.solution
-  score: 10.0
-- module: 2015.16.solution
-  score: 10.0
-- module: 2015.17.solution
-  score: 10.0
-- module: 2015.18.solution
-  score: 10.0
-- module: 2015.19.solution
-  score: 10.0
-- module: 2015.20.solution
-  score: 10.0
-- module: 2015.21.solution
-  score: 10.0
-- module: 2015.22.solution
-  score: 10.0
-- module: 2015.23.solution
-  score: 10.0
-- module: 2015.24.solution
-  score: 10.0
-- module: 2015.25.solution
-  score: 10.0
-- module: 2016.1.solution
-  score: 10.0
-- module: 2016.2.solution
-  score: 10.0
-- module: 2016.3.solution
-  score: 10.0
-- module: 2016.4.solution
-  score: 10.0
-- module: 2016.5.solution
-  score: 10.0
-- module: 2016.6.solution
-  score: 10.0
-- module: 2016.7.solution
-  score: 10.0
-- module: 2016.8.solution
-  score: 10.0
-- module: 2016.9.solution
-  score: 10.0
-- module: 2016.10.solution
-  score: 10.0
-- module: 2016.11.solution
-  score: 10.0
-- module: 2016.12.solution
-  score: 10.0
-- module: 2016.13.solution
-  score: 10.0
-- module: 2016.14.solution
-  score: 10.0
-- module: 2016.15.solution
-  score: 10.0
-- module: 2016.16.solution
-  score: 10.0
-- module: 2016.17.solution
-  score: 10.0
-- module: 2016.18.solution
-  score: 10.0
-- module: 2016.19.solution
-  score: 10.0
-- module: 2016.20.solution
-  score: 10.0
-- module: 2016.21.solution
-  score: 10.0
-- module: 2016.22.solution
-  score: 10.0
-- module: 2016.23.solution
-  score: 10.0
-- module: 2016.24.solution
-  score: 10.0
-- module: 2016.25.solution
-  score: 10.0
-- module: 2017.1.solution
-  score: 10.0
-- module: 2017.2.solution
-  score: 10.0
-- module: 2017.3.solution
-  score: 10.0
-- module: 2017.4.solution
-  score: 10.0
-- module: 2017.5.solution
-  score: 10.0
-- module: 2017.6.solution
-  score: 10.0
-- module: 2017.7.solution
-  score: 10.0
-- module: 2017.8.solution
-  score: 10.0
-- module: 2017.9.solution
-  score: 10.0
-- module: 2017.10.solution
-  score: 10.0
-- module: 2017.11.solution
-  score: 10.0
-- module: 2017.12.solution
-  score: 10.0
-- module: 2017.13.solution
-  score: 10.0
-- module: 2017.14.solution
-  score: 10.0
-- module: 2017.15.solution
-  score: 10.0
-- module: 2017.16.solution
-  score: 10.0
-- module: 2017.17.solution
-  score: 10.0
-- module: 2017.18.solution
-  score: 10.0
-- module: 2017.19.solution
-  score: 10.0
-- module: 2017.20.solution
-  score: 10.0
-- module: 2017.21.solution
-  score: 10.0
-- module: 2017.22.solution
-  score: 10.0
-- module: 2017.23.solution
-  score: 10.0
-- module: 2017.24.solution
-  score: 10.0
-- module: 2017.25.solution
-  score: 10.0
-- module: 2018.1.solution
-  score: 10.0
-- module: 2018.2.solution
-  score: 10.0
-- module: 2018.3.solution
-  score: 10.0
-- module: 2018.4.solution
-  score: 10.0
-- module: 2018.5.solution
-  score: 10.0
-- module: 2018.6.solution
-  score: 10.0
-- module: 2018.7.solution
-  score: 10.0
-- module: 2018.8.solution
-  score: 10.0
-- module: 2018.9.solution
-  score: 10.0
-- module: 2018.10.solution
-  score: 10.0
-- module: 2018.11.solution
-  score: 10.0
-- module: 2018.12.solution
-  score: 10.0
-- module: 2018.13.solution
-  score: 10.0
-- module: 2018.14.solution
-  score: 10.0
-- module: 2018.15.solution
-  score: 10.0
-- module: 2018.16.solution
-  score: 10.0
-- module: 2018.17.solution
-  score: 10.0
-- module: 2018.18.solution
-  score: 10.0
-- module: 2018.19.solution
-  score: 10.0
-- module: 2018.20.solution
-  score: 10.0
-- module: 2018.21.solution
-  score: 10.0
-- module: 2018.22.solution
-  score: 10.0
-- module: 2018.23.solution
-  score: 10.0
-- module: 2018.24.solution
-  score: 10.0
-- module: 2018.25.solution
-  score: 10.0
-- module: 2019.1.solution
-  score: 10.0
-- module: 2019.2.solution
-  score: 10.0
-- module: 2019.3.solution
-  score: 10.0
-- module: 2019.4.solution
-  score: 10.0
-- module: 2019.5.solution
-  score: 10.0
-- module: 2019.6.solution
-  score: 10.0
-- module: 2019.7.solution
-  score: 10.0
-- module: 2019.8.solution
-  score: 10.0
-- module: 2019.9.solution
-  score: 10.0
-- module: 2019.10.solution
-  score: 10.0
-- module: 2019.11.solution
-  score: 10.0
-- module: 2019.12.solution
-  score: 10.0
-- module: 2019.13.solution
-  score: 10.0
-- module: 2019.14.solution
-  score: 10.0
-- module: 2019.15.solution
-  score: 10.0
-- module: 2019.16.solution
-  score: 10.0
-- module: 2019.17.solution
-  score: 10.0
-- module: 2019.18.solution
-  score: 10.0
-- module: 2019.19.solution
-  score: 10.0
-- module: 2019.20.solution
-  score: 10.0
-- module: 2019.21.solution
-  score: 10.0
-- module: 2019.22.solution
-  score: 10.0
-- module: 2019.23.solution
-  score: 10.0
-- module: 2019.24.solution
-  score: 10.0
-- module: 2019.25.solution
-  score: 10.0
-- module: 2020.1.solution
-  score: 10.0
-- module: 2020.2.solution
-  score: 10.0
-- module: 2020.3.solution
-  score: 10.0
-- module: 2020.4.solution
-  score: 10.0
-- module: 2020.5.solution
-  score: 10.0
-- module: 2020.6.solution
-  score: 10.0
-- module: 2020.7.solution
-  score: 10.0
-- module: 2020.8.solution
-  score: 10.0
-- module: 2020.9.solution
-  score: 10.0
-- module: 2020.10.solution
-  score: 10.0
-- module: 2020.11.solution
-  score: 10.0
-- module: 2020.12.solution
-  score: 10.0
-- module: 2020.13.solution
-  score: 10.0
-- module: 2020.14.solution
-  score: 10.0
-- module: 2020.15.solution
-  score: 10.0
-- module: 2020.16.solution
-  score: 10.0
-- module: 2020.17.solution
-  score: 10.0
-- module: 2020.18.solution
-  score: 10.0
-- module: 2020.19.solution
-  score: 10.0
-- module: 2020.20.solution
-  score: 10.0
-- module: 2020.21.solution
-  score: 10.0
-- module: 2020.22.solution
-  score: 10.0
-- module: 2020.23.solution
-  score: 10.0
-- module: 2020.24.solution
-  score: 10.0
-- module: 2020.25.solution
-  score: 10.0
-- module: 2021.1.solution
-  score: 10.0
-- module: 2021.2.solution
-  score: 10.0
-- module: 2021.3.solution
-  score: 10.0
-- module: 2021.4.solution
-  score: 10.0
-- module: 2021.5.solution
-  score: 10.0
-- module: 2021.6.solution
-  score: 10.0
-- module: 2021.7.solution
-  score: 10.0
-- module: 2021.8.solution
-  score: 10.0
-- module: 2021.9.solution
-  score: 10.0
-- module: 2021.10.solution
-  score: 10.0
-- module: 2021.11.solution
-  score: 10.0
-- module: 2021.12.solution
-  score: 10.0
-- module: 2021.13.solution
-  score: 10.0
-- module: 2021.14.solution
-  score: 10.0
-- module: 2021.15.solution
-  score: 10.0
-- module: 2021.16.solution
-  score: 10.0
-- module: 2021.17.solution
-  score: 10.0
-- module: 2021.18.solution
-  score: 10.0
-- module: 2021.19.solution
-  score: 10.0
-- module: 2021.20.solution
-  score: 10.0
-- module: 2021.21.solution
-  score: 10.0
-- module: 2021.22.solution
-  score: 10.0
-- module: 2021.23.solution
-  score: 10.0
-- module: 2021.24.solution
-  score: 10.0
-- module: 2021.25.solution
-  score: 10.0
 - module: 2022.1.solution
   score: 10.0
 - module: 2022.2.solution
@@ -2780,7 +613,7 @@ pylint:
 - module: 2022.20.solution
   score: 10.0
 - module: 2022.21.solution
-  score: 9.55
+  score: 10.0
 - module: 2022.22.solution
   score: 9.55
 - module: 2022.23.solution
@@ -2788,129 +621,5 @@ pylint:
 - module: 2022.24.solution
   score: 9.55
 - module: 2022.25.solution
-  score: 9.55
-- module: 2023.1.solution
-  score: 10.0
-- module: 2023.2.solution
-  score: 10.0
-- module: 2023.3.solution
-  score: 10.0
-- module: 2023.4.solution
-  score: 10.0
-- module: 2023.5.solution
-  score: 10.0
-- module: 2023.6.solution
-  score: 10.0
-- module: 2023.7.solution
-  score: 10.0
-- module: 2023.8.solution
-  score: 10.0
-- module: 2023.9.solution
-  score: 10.0
-- module: 2023.10.solution
-  score: 10.0
-- module: 2023.11.solution
-  score: 10.0
-- module: 2023.12.solution
-  score: 10.0
-- module: 2023.13.solution
-  score: 10.0
-- module: 2023.14.solution
-  score: 10.0
-- module: 2023.15.solution
-  score: 10.0
-- module: 2023.16.solution
-  score: 10.0
-- module: 2023.17.solution
-  score: 10.0
-- module: 2023.18.solution
-  score: 10.0
-- module: 2023.19.solution
-  score: 10.0
-- module: 2023.20.solution
-  score: 10.0
-- module: 2023.21.solution
-  score: 10.0
-- module: 2023.22.solution
-  score: 10.0
-- module: 2023.23.solution
-  score: 10.0
-- module: 2023.24.solution
-  score: 10.0
-- module: 2023.25.solution
-  score: 10.0
-- module: 2024.1.solution
-  score: 10.0
-- module: 2024.2.solution
-  score: 10.0
-- module: 2024.3.solution
-  score: 10.0
-- module: 2024.4.solution
-  score: 10.0
-- module: 2024.5.solution
-  score: 10.0
-- module: 2024.6.solution
-  score: 10.0
-- module: 2024.7.solution
-  score: 10.0
-- module: 2024.8.solution
-  score: 10.0
-- module: 2024.9.solution
-  score: 10.0
-- module: 2024.10.solution
-  score: 10.0
-- module: 2024.11.solution
-  score: 10.0
-- module: 2024.12.solution
-  score: 10.0
-- module: 2024.13.solution
-  score: 8.28
-- module: 2024.14.solution
-  score: 10.0
-- module: 2024.15.solution
-  score: 10.0
-- module: 2024.16.solution
-  score: 10.0
-- module: 2024.17.solution
-  score: 10.0
-- module: 2024.18.solution
-  score: 10.0
-- module: 2024.19.solution
-  score: 10.0
-- module: 2024.20.solution
-  score: 10.0
-- module: 2024.21.solution
-  score: 10.0
-- module: 2024.22.solution
-  score: 9.55
-- module: 2024.23.solution
-  score: 9.55
-- module: 2024.24.solution
-  score: 9.55
-- module: 2024.25.solution
-  score: 9.55
-- module: 2025.1.solution
-  score: 10.0
-- module: 2025.2.solution
-  score: 10.0
-- module: 2025.3.solution
-  score: 10.0
-- module: 2025.4.solution
-  score: 10.0
-- module: 2025.5.solution
-  score: 10.0
-- module: 2025.6.solution
-  score: 10.0
-- module: 2025.7.solution
-  score: 10.0
-- module: 2025.8.solution
-  score: 10.0
-- module: 2025.9.solution
-  score: 10.0
-- module: 2025.10.solution
-  score: 10.0
-- module: 2025.11.solution
-  score: 10.0
-- module: 2025.12.solution
   score: 10.0
 legacy_template: []

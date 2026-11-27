@@ -26,6 +26,7 @@ build/
 .reminder
 input.txt
 answers.json
+example.txt
 
 # Lint/test caches
 .mypy_cache/
